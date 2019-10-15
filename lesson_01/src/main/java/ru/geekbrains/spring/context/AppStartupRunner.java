@@ -14,12 +14,28 @@ public class AppStartupRunner implements ApplicationRunner {
 
     private final ApplicationContext context;
 
+    private final Jaguar jaguar;
+
+    // @Autowired
+    // field injection is not recommended, use constructor param
+    private Jaguar jaguar2;
+
     @Autowired
-    public AppStartupRunner(ApplicationContext context) {
+    public AppStartupRunner(ApplicationContext context, Jaguar jaguar) {
         this.context = context;
+        this.jaguar = jaguar;
     }
 
 
+    public Jaguar getJaguar2() {
+        return jaguar2;
+    }
+
+    @Autowired
+    public void setJaguar2(Jaguar jaguar2) {
+        this.jaguar2 = jaguar2;
+    }
+    
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -33,11 +49,24 @@ public class AppStartupRunner implements ApplicationRunner {
         Tiger tiger2 = context.getBean("tiger2", Tiger.class);
         System.out.println(tiger2.toString());
 
-        System.out.println(tiger.getColor() == tiger2.getColor());
+        System.out.println(tiger == tiger2);
         System.out.println(tiger.equals(tiger2));
 
 
         Tiger tiger3 = context.getBean(Tiger.class);
         System.out.println(tiger3.toString());
+
+
+        System.out.println("\n---------------------------------------------\n");
+        System.out.println("Jaguar is singleton");
+        System.out.println("-------------------\n");
+
+        jaguar.getColor().setBaseColor("red");
+        jaguar.getColor().setTextureColor("green");
+        System.out.println(jaguar.toString());
+        System.out.println(jaguar2.toString());
+
+        System.out.println(jaguar == jaguar2);
+        System.out.println(jaguar.equals(jaguar2));
     }
 }

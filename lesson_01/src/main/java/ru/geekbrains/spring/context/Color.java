@@ -3,6 +3,9 @@ package ru.geekbrains.spring.context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import java.util.Objects;
 
 public class Color {
 
@@ -35,6 +38,20 @@ public class Color {
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Color)) return false;
+        Color color = (Color) o;
+        return Objects.equals(baseColor, color.baseColor) &&
+               Objects.equals(textureColor, color.textureColor);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(baseColor, textureColor);
+    }
 
     @Override
     public String toString() {
