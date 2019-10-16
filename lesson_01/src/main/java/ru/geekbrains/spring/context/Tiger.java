@@ -14,8 +14,14 @@ public class Tiger {
     private static final Logger log = LoggerFactory.getLogger(AppStartupRunner.class);
 
     @Value("Tiger")
-    private String name;
+    protected String name;
 
+    /* Почему статический анализатор не орет здесь:
+    Field injection is not recommended less... (Ctrl+F1)
+    Spring Team recommends: "Always use constructor based dependency injection in your beans.
+    Always use assertions for mandatory dependencies".
+    - ???
+    */
     @Autowired
     private Color color;
 

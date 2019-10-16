@@ -16,33 +16,35 @@ public class AppConfiguration {
     }
 
 
+
     @Bean
     @Scope("prototype")
-    @Primary
+    @Primary // for getBean by Tiger.class
     public Tiger tiger(){
         return new Tiger();
     }
-
 
 
     @Bean
     @Scope("prototype")
     public FactoryBean<Tiger> tiger2() {
 
-        Tiger t = new Tiger();
-        t.setColor(color());
-        t.setName("Тигра");
-        t.getColor().setBaseColor("синий");
-        t.getColor().setTextureColor("оранжевый");
+        Tiger tiger = new Tiger();
+        tiger.setColor(color());
+        tiger.setName("Тигра");
+        tiger.getColor().setBaseColor("синий");
+        tiger.getColor().setTextureColor("оранжевый");
+        // Further we need to disable autowiring Tiger.color to tiger
+        // or we will lost all data what we manually configured in tiger.
 
 
-        // here override @Autowired dependency injection of t.color
-        // (disable DI for autowired fields)
+        // Here override @Autowired dependency injection of Tiger.color field
+        // (disable DI for autowired fields (Is this disable all DI for tiger object ?) )
         return new FactoryBean<Tiger>()
         {
             @Override
             public Tiger getObject() {
-                return t;
+                return tiger;
             }
 
             @Override
@@ -50,12 +52,14 @@ public class AppConfiguration {
                 return Tiger.class;
             }
 
-            @Override
-            public boolean isSingleton(){
-                return true;
-            }
+// ( it does not matter here ?)
+//
+//            @Override
+//            public boolean isSingleton(){
+//                return true;
+//            }
+
         };
     }
-
 
 }

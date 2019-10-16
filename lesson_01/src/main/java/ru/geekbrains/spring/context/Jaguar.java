@@ -10,7 +10,6 @@ import java.util.Objects;
 @Scope("singleton")
 public class Jaguar {
 
-
     private Color color;
 
     @Autowired
