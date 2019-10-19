@@ -6,12 +6,14 @@ import org.springframework.stereotype.Component;
 
 
 @Component
-public class AlarmSenderImpl implements AlarmSender{
+public class AlarmSenderInternet implements AlarmSender{
 
     private final MessageService messageService;
 
+
+    // same thing with @Qualifier bean name specification when injecting via setter
     @Autowired
-    public AlarmSenderImpl(@Qualifier("fireBaseService") MessageService messageService) {
+    public AlarmSenderInternet(@Qualifier("fireBaseService") MessageService messageService) {
         this.messageService = messageService;
     }
 

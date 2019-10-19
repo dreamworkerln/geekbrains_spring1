@@ -3,11 +3,14 @@ package ru.geekbrains.spring.context;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import ru.geekbrains.spring.context.push.AlarmSender;
+import ru.geekbrains.spring.context.push.MessageService;
+import ru.geekbrains.spring.context.push.Priority;
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
@@ -25,19 +28,20 @@ public class AppStartupRunner implements ApplicationRunner {
 
     // field injection is not recommended, using constructor param here
     @Autowired
-    public AppStartupRunner(ApplicationContext context, Jaguar jaguar, AlarmSender alarmSender) {
+    public AppStartupRunner(ApplicationContext context, Jaguar jaguar,
+                            @Qualifier("alarmSenderInternet")
+                            AlarmSender alarmSender) {
+
         this.context = context;
         this.jaguar = jaguar;
         this.alarmSender = alarmSender;
     }
 
 
-//    public Jaguar getJaguar2() {
-//        return jaguar2;
-//    }
-
+    // Обмажемся аннотациями
     @Autowired
-    public void setJaguar2(Jaguar jaguar2) {
+    @Qualifier("jaguar")
+    public void setJaguar2(@Qualifier("jaguar") Jaguar jaguar2) {
         this.jaguar2 = jaguar2;
     }
     
@@ -94,5 +98,11 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("AlarmSender");
         System.out.println("-------------------\n");
         alarmSender.sendAlarm("Alarm!!!");
+
+
+
+        AlarmSender alarmSender2 = context.getBean("alarmSenderGSM", AlarmSender.class);
+        alarmSender2.sendAlarm("new alarm!");
+        System.out.println("---------------------------------------------\n\n");
     }
 }
