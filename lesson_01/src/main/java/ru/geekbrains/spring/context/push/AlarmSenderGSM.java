@@ -15,10 +15,10 @@ public class AlarmSenderGSM implements AlarmSender {
     // same thing with @Qualifier bean name specification when injecting via setter
 
 
-    // Борьба аннотаций
+    // Обмажемся аннотациями (если указать разные, то не взлетит)
     @Autowired
-    //@Qualifier("SMSService")
-    public void setMessageService(@Qualifier("SMSService") MessageService messageService) {
+    @Qualifier("fireBaseService")
+    public void setMessageService(@Qualifier("fireBaseService") MessageService messageService) {
         this.messageService = messageService;
     }
 

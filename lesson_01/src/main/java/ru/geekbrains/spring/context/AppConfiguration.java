@@ -25,9 +25,9 @@ public class AppConfiguration {
     }
 
 
-    @Bean
+    @Bean("mutatedTiger")
     @Scope("prototype")
-    public FactoryBean<Tiger> tiger2() {
+    public FactoryBean<Tiger> tigerBlaBla() {
 
         Tiger tiger = new Tiger();
         tiger.setColor(color());
@@ -40,6 +40,9 @@ public class AppConfiguration {
 
         // Here override @Autowired dependency injection of Tiger.color field
         // (disable DI for autowired fields (Is this disable all DI for tiger object ?) )
+
+        //How to use the Spring FactoryBean?
+        //https://www.baeldung.com/spring-factorybean
         return new FactoryBean<Tiger>()
         {
             @Override
@@ -52,12 +55,10 @@ public class AppConfiguration {
                 return Tiger.class;
             }
 
-// ( it does not matter here ?)
-//
-//            @Override
-//            public boolean isSingleton(){
-//                return true;
-//            }
+            @Override
+            public boolean isSingleton(){
+                return false;
+            }
 
         };
     }

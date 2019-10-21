@@ -38,10 +38,9 @@ public class AppStartupRunner implements ApplicationRunner {
     }
 
 
-    // Обмажемся аннотациями
+
     @Autowired
-    @Qualifier("jaguar")
-    public void setJaguar2(@Qualifier("jaguar") Jaguar jaguar2) {
+    public void setJaguar2(Jaguar jaguar2) {
         this.jaguar2 = jaguar2;
     }
     
@@ -69,7 +68,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n\n---------------------------------------------");
         System.out.println("tiger2 vs tiger2 ");
         System.out.println("-------------------\n");
-        Tiger tiger22 = context.getBean("tiger2", Tiger.class);
+        Tiger tiger22 = context.getBean("mutatedTiger", Tiger.class);
         System.out.println(String.format("tiger2 == tiger22: %1$b", tiger2 == tiger22));
         System.out.println("tiger2.equals(tiger22): " + tiger2.equals(tiger22));
         
