@@ -1,4 +1,4 @@
-package ru.geekbrains.spring.context;
+package ru.geekbrains.spring.context.beans;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -24,7 +24,7 @@ public class Jaguar {
         return "The jaguar has " + color.toString();
     }
 
-    Color getColor() {
+    public Color getColor() {
         return color;
     }
 

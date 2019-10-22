@@ -1,8 +1,9 @@
-package ru.geekbrains.spring.context.push;
+package ru.geekbrains.spring.context.beans.push.messageservice;
 
 import org.springframework.stereotype.Component;
+import ru.geekbrains.spring.context.beans.push.Priority;
 
-@Component
+@Component("firebase")
 public class FireBaseService implements MessageService{
 
     @Override

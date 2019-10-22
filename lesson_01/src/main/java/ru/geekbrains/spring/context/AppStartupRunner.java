@@ -8,9 +8,10 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
-import ru.geekbrains.spring.context.push.AlarmSender;
-import ru.geekbrains.spring.context.push.MessageService;
-import ru.geekbrains.spring.context.push.Priority;
+import ru.geekbrains.spring.context.beans.Jaguar;
+import ru.geekbrains.spring.context.beans.Tiger;
+import ru.geekbrains.spring.context.beans.push.AlarmSender;
+
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
@@ -22,6 +23,7 @@ public class AppStartupRunner implements ApplicationRunner {
 
     private final AlarmSender alarmSender;
 
+
     // @Autowired
     // field injection is not recommended, using here
     private Jaguar jaguar2;
@@ -29,8 +31,7 @@ public class AppStartupRunner implements ApplicationRunner {
     // field injection is not recommended, using constructor param here
     @Autowired
     public AppStartupRunner(ApplicationContext context, Jaguar jaguar,
-                            @Qualifier("alarmSenderInternet")
-                            AlarmSender alarmSender) {
+                            @Qualifier("alarmSenderInternet") AlarmSender alarmSender) {
 
         this.context = context;
         this.jaguar = jaguar;
@@ -43,7 +44,9 @@ public class AppStartupRunner implements ApplicationRunner {
     public void setJaguar2(Jaguar jaguar2) {
         this.jaguar2 = jaguar2;
     }
-    
+
+
+
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
@@ -59,7 +62,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("-------------------\n");
         Tiger tiger = context.getBean("tiger", Tiger.class);
         System.out.println(tiger.toString());
-        Tiger tiger2 = context.getBean("tiger2", Tiger.class);
+        Tiger tiger2 = context.getBean("mutatedTiger", Tiger.class);
         System.out.println(tiger2.toString());
         System.out.println(String.format("tiger == tiger2: %1$b",tiger == tiger2));
         System.out.println("tiger.equals(tiger2): " + tiger.equals(tiger2));
@@ -102,6 +105,7 @@ public class AppStartupRunner implements ApplicationRunner {
 
         AlarmSender alarmSender2 = context.getBean("alarmSenderGSM", AlarmSender.class);
         alarmSender2.sendAlarm("new alarm!");
-        System.out.println("---------------------------------------------\n\n");
+        System.out.println("---------------------------------------------\n");
+
     }
 }

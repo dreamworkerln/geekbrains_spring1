@@ -1,4 +1,4 @@
-package ru.geekbrains.spring.context.push;
+package ru.geekbrains.spring.context.beans.push;
 
 public enum Priority {
     HI(0),
