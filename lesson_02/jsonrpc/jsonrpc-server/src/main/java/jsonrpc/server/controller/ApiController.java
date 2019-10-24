@@ -53,8 +53,7 @@ public class ApiController {
         this.objectMapper = objectMapper;
         this.modelMapper = modelMapper;
 
-        //handlers = HandlerInitialingProcessor.handlers;
-
+        // scanning handlers
         loadHandlers();
     }
 
@@ -182,35 +181,23 @@ public class ApiController {
         try {
 
 
-            // Ask spring to initialize all beans with
+            // Ask spring to load and find all beans with
             Map<String,Object> beans = context.getBeansWithAnnotation(JrpcController.class);
-            beans.keySet().forEach(System.out::println);
+            //beans.keySet().forEach(System.out::println);
 
-            //Map<String,Object> beans = context.getBeansWithAnnotation(JrpcController.class);
-
-            // https://stackoverflow.com/questions/27929965/find-method-level-custom-annotation-in-a-spring-context
+             // https://stackoverflow.com/questions/27929965/find-method-level-custom-annotation-in-a-spring-context
             for (Map.Entry<String, Object> entry : beans.entrySet()) {
 
                 Object bean = entry.getValue();
                 Class<?> beanClass = bean.getClass();
 
-//                if (org.springframework.aop.support.AopUtils.isAopProxy(entry.getValue())) {
-//                    //beanClass = org.springframework.aop.support.AopUtils.getTargetClass(obj);
-//                }
-//                else {
-//                    System.out.println("ВСЕ плохо, хозяина!!!");
-//                }
-
-
                 JrpcController jrpcController = beanClass.getAnnotation(JrpcController.class);
 
                 for (Method method : beanClass.getDeclaredMethods()) {
                     if (method.isAnnotationPresent(JrpcHandler.class)) {
+
                         //Should give you expected results
-
                         JrpcHandler jrpcHandler = method.getAnnotation(JrpcHandler.class);
-
-                        //JrpcHandler handlerAnnotation = AnnotationUtils.getAnnotation(method, JrpcHandler.class);
 
                         JrpcMethodHandler handler = jsonNode -> {
                             try {
@@ -221,9 +208,6 @@ public class ApiController {
                         };
 
                         handlers.put(jrpcController.path() + "." + jrpcHandler.method(), handler);
-
-
-
                     }
                 }
 

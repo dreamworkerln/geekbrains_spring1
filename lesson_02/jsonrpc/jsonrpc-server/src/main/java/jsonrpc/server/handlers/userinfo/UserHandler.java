@@ -22,7 +22,6 @@ import static jsonrpc.server.configuration.SpringConfiguration.MAIN_ENTITIES_PAT
 
 
 @Service
-@Scope("prototype")
 @JrpcController(path = MAIN_ENTITIES_PATH + "." + "user")
 public class UserHandler extends MethodHandlerBase {
 

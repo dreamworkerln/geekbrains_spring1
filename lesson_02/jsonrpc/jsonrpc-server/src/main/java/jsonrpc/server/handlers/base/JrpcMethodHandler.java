@@ -7,4 +7,4 @@ import jsonrpc.protocol.dto.base.jrpc.JrpcResponse;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public interface JrpcMethodHandler extends Function<JsonNode,JrpcResponse>/*, Consumer<ObjectMapper> */{}
+public interface JrpcMethodHandler extends Function<JsonNode,JrpcResponse> {}

@@ -7,6 +7,8 @@ import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
 import jsonrpc.protocol.dto.base.jrpc.JrpcResponse;
 import jsonrpc.server.entities.base.Request;
 
+
+
 public abstract class MethodHandlerBase /*JrpcMethodHandler*/ {
 
     //private Class<? extends JrpcRequest> requestType;
