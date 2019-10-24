@@ -1,0 +1,89 @@
+package jsonrpc.server.configuration;
+
+import jsonrpc.protocol.dto.base.jrpc.JrpcResponse;
+import jsonrpc.server.controller.ApiController;
+import jsonrpc.server.handlers.base.JrpcHandler;
+import jsonrpc.server.handlers.base.JrpcMethodHandler;
+import org.springframework.aop.support.AopUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.SmartInitializingSingleton;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.ReflectionUtils;
+
+import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+
+@Configuration
+public class HandlerInitialingProcessor implements BeanPostProcessor, SmartInitializingSingleton {
+
+    private final ApplicationContext context;
+
+
+
+    //private final Set<String> caches = new HashSet<String>();
+
+    public static final Map<String, JrpcMethodHandler> handlers = new ConcurrentHashMap<>();
+
+
+
+
+    @Autowired
+    public HandlerInitialingProcessor(ApplicationContext context) {
+        this.context = context;
+
+        ApiController apiController = context.getBean("apiController", ApiController.class);
+        apiController.setHandlers(handlers);
+    }
+
+    @Override
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        return bean;
+    }
+
+    @Override
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+        Class<?> targetClass = AopUtils.getTargetClass(bean);
+
+        //System.out.println(beanName);
+
+        ReflectionUtils.doWithMethods(targetClass, method -> {
+
+            JrpcHandler handlerAnnotation = AnnotationUtils.getAnnotation(method, JrpcHandler.class);
+
+            //noinspection ConstantConditions
+            if (handlerAnnotation == null) {
+                return;
+            }
+
+            System.out.println(bean);
+
+
+
+            JrpcMethodHandler handler = jsonNode -> {
+                try {
+                    return (JrpcResponse) method.invoke(bean, jsonNode);
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    throw new RuntimeException(e);
+                }
+            };
+
+            handlers.put(handlerAnnotation.method(), handler);
+        });
+        return bean;
+    }
+
+    @Override
+    public void afterSingletonsInstantiated() {
+        // ...
+    }
+
+
+    // =================================================================================
+
+}

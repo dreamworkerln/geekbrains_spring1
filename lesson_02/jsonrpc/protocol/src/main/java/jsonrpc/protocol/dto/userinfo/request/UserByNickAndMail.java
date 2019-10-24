@@ -1,22 +1,20 @@
 package jsonrpc.protocol.dto.userinfo.request;
 
 
-import jsonrpc.protocol.dto.base.jrpc.JrpcParam;
+import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
-public class UserProfile extends JrpcParam {
+public class UserByNickAndMail extends JrpcRequest {
 
     private final static Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private String email;
     private String nickname;
 
-    protected UserProfile() {
-
-    }
+    protected UserByNickAndMail() {}
 
     public String getEmail() {
         return email;

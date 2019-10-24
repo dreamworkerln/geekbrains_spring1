@@ -11,7 +11,7 @@ public class GreetingControllerTest {
 
 
 //        // Creating object of Organisation
-//        UserProfile profile = new UserProfile();
+//        UserByNickAndMail profile = new UserByNickAndMail();
 //
 //        profile.setEmail("vasya@pupkin.ru");
 //
@@ -23,7 +23,7 @@ public class GreetingControllerTest {
 //
 //        try {
 //
-//            // get UserProfile object as a json string
+//            // get UserByNickAndMail object as a json string
 //            String jsonStr = Obj.writeValueAsString(profile);
 //
 //            // Displaying JSON String

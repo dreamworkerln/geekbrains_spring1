@@ -19,17 +19,15 @@ import java.lang.annotation.Target;
 
 // Allow to use only on types:
 @Target(ElementType.TYPE)
-public @interface ApiHandler {
-    /**
-     * JrpcParam method name, coming from json request 'method' param value
-     */
-    String method();
+public @interface JrpcController {
+
+    String path();
 
 //    /**
-//     * JrpcParam class - класс, представляющий собой параметр (json-rpc) запроса
+//     * JrpcRequest class - класс, представляющий собой параметр (json-rpc) запроса
 //     * @return
 //     */
-//    Class<? extends JrpcParam> request();
+//    Class<? extends JrpcRequest> request();
 
 //    /**
 //     * Name of request class (short)

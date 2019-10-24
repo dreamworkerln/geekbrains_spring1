@@ -7,7 +7,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserInfo extends JrpcResponse {
+public class UserDto extends JrpcResponse {
 
     private String email;
     private String info;
@@ -37,7 +37,6 @@ public class UserInfo extends JrpcResponse {
 
     public void setDate(Instant date) {
         this.date = date;
-
         this.epoch = date.toEpochMilli();
     }
 
