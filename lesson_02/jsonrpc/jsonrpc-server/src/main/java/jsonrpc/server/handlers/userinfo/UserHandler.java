@@ -2,6 +2,7 @@ package jsonrpc.server.handlers.userinfo;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.Cat;
 import jsonrpc.protocol.dto.base.jrpc.JrpcResponse;
 import jsonrpc.protocol.dto.userinfo.request.UserByColor;
@@ -10,8 +11,7 @@ import jsonrpc.protocol.dto.userinfo.response.UserDto;
 import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
 import jsonrpc.server.handlers.base.MethodHandlerBase;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -24,6 +24,10 @@ import static jsonrpc.server.configuration.SpringConfiguration.MAIN_ENTITIES_PAT
 @Service
 @JrpcController(path = MAIN_ENTITIES_PATH + "." + "user")
 public class UserHandler extends MethodHandlerBase {
+    
+    protected UserHandler(ObjectMapper objectMapper, ModelMapper modelMapper) {
+        super(objectMapper, modelMapper);
+    }
 
 
     // curl -v POST -H "Content-Type: application/json" -d '{"id":"22", "token":"f229fbea-a4b9-40a8-b8ee-e2b47bc1391d",
@@ -97,13 +101,19 @@ public class UserHandler extends MethodHandlerBase {
         return result;
     }
 
+
+    @Override
+    protected void setMappings() {
+        // Do nothing
+    }
+
     
 
     //public UserInfoHandler() {}
 
     /*
     @Override
-    public JrpcResponse handle(JrpcRequest jrpcRequest) {
+    public JrpcResponse handle(JrpcParameter jrpcRequest) {
 
         UserDto response = new UserDto();
         UserByNickAndMail request = (UserByNickAndMail) jrpcRequest;
@@ -148,7 +158,7 @@ public class UserHandler extends MethodHandlerBase {
 
 
 //    @Override
-//    protected Class<? extends JrpcRequest> getRequestType() {
+//    protected Class<? extends JrpcParameter> getRequestType() {
 //        return UserByNickAndMail.class;
 //    }
 //

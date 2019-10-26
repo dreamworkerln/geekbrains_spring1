@@ -1,8 +1,8 @@
 package jsonrpc.protocol.dto.userinfo.request;
 
-import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
+import jsonrpc.protocol.dto.base.jrpc.JrpcParameter;
 
-public class UserByColor extends JrpcRequest {
+public class UserByColor extends JrpcParameter {
 
     private String color;
 

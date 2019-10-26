@@ -41,7 +41,7 @@ public class Application {
     private static void setupLog4j() {
 
         String path_tmp = System.getProperty("user.dir") + "/" + "log/";
-        // DONT CALL LOGGERS BEFORE log.name SET BELOW
+        // DON'T CALL LOGGERS BEFORE log.name SET BELOW
         System.setProperty("trace.folder.path", path_tmp + "trace.log");
         System.setProperty("info.folder.path", path_tmp + "info.log");
         System.setProperty("error.folder.path", path_tmp + "error.log");

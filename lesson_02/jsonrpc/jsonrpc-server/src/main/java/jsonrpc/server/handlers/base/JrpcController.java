@@ -24,10 +24,10 @@ public @interface JrpcController {
     String path();
 
 //    /**
-//     * JrpcRequest class - класс, представляющий собой параметр (json-rpc) запроса
+//     * JrpcParameter class - класс, представляющий собой параметр (json-rpc) запроса
 //     * @return
 //     */
-//    Class<? extends JrpcRequest> request();
+//    Class<? extends JrpcParameter> request();
 
 //    /**
 //     * Name of request class (short)

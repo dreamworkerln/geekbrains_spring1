@@ -1,19 +1,26 @@
 package jsonrpc.server.handlers.base;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.jrpc.JrpcResponse;
-import jsonrpc.server.entities.base.Request;
-
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 public abstract class MethodHandlerBase /*JrpcMethodHandler*/ {
 
-    //private Class<? extends JrpcRequest> requestType;
+    //private Class<? extends JrpcParameter> requestType;
 
-    protected ObjectMapper objectMapper = new ObjectMapper();
+    protected final ObjectMapper objectMapper;
+    protected final ModelMapper modelMapper;
+
+    @Autowired
+    protected MethodHandlerBase(ObjectMapper objectMapper, ModelMapper modelMapper) {
+        this.objectMapper = objectMapper;
+        this.modelMapper = modelMapper;
+
+        setMappings();
+    }
+
+    protected abstract void setMappings();
 
 //    public MethodHandlerBase() {
 //        requestType = getRequestType();
@@ -28,7 +35,7 @@ public abstract class MethodHandlerBase /*JrpcMethodHandler*/ {
 
         ObjectMapper objectMapper = new ObjectMapper();
         // parse request
-        JrpcRequest request;
+        JrpcParameter request;
         try {
             request = objectMapper.treeToValue(params, requestType);
         } catch (JsonProcessingException e) {
@@ -47,11 +54,11 @@ public abstract class MethodHandlerBase /*JrpcMethodHandler*/ {
     */
 
     /*
-    protected abstract JrpcResponse handle(JrpcRequest jrpcRequest);
+    protected abstract JrpcResponse handle(JrpcParameter jrpcRequest);
     
-    protected abstract Class<? extends JrpcRequest> getRequestType();
+    protected abstract Class<? extends JrpcParameter> getRequestType();
     */
 
     // Entity to DTO
-//    protected abstract JrpcRequest convertToDto(Request request);
+//    protected abstract JrpcParameter convertToDto(Request request);
 }

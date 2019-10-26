@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 public @interface JrpcHandler {
     /**
-     * JrpcRequest method name, coming from json request 'method' param value
+     * JrpcParameter method name, coming from json request 'method' param value
      */
     String method();
 }

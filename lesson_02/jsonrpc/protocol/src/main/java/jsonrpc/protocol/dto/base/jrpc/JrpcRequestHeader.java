@@ -1,7 +1,11 @@
 package jsonrpc.protocol.dto.base.jrpc;
 
 import jsonrpc.protocol.dto.base.Message;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component
+@Scope("prototype")
 /**
  * Base json-rps request, contains access token and method name.
  * <br>(This api is supposed to be called from web-server, not directly by clients)

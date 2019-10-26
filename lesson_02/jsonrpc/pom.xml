@@ -1,33 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>ru.geekbrains.spring1.lesson02</groupId>
     <artifactId>jsonrpc</artifactId>
     <packaging>pom</packaging>
     <version>0.1.0</version>
+    
     <modules>
         <module>jsonrpc-server</module>
         <module>protocol</module>
     </modules>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.0.RELEASE</version>
+    </parent>
+
     <properties>
         <java.version>1.8</java.version>
         <jdk.version>1.8</jdk.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-parent</artifactId>
-                <version>2.2.0.RELEASE</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+
+
+    <!--    <dependencyManagement>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-parent</artifactId>
+                    <version>2.2.0.RELEASE</version>
+                    <type>pom</type>
+                    <scope>import</scope>
+                </dependency>
+            </dependencies>
+        </dependencyManagement>-->
+
+<!--    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-parent</artifactId>
+            <version>2.2.0.RELEASE</version>
+            &lt;!&ndash;<type>pom</type>&ndash;&gt;
+            &lt;!&ndash;<scope>import</scope>&ndash;&gt;
+        </dependency>
+    </dependencies>-->
 
     <build>
         <plugins>
@@ -43,5 +63,5 @@
 
         <finalName>jsonrpc-server-0.1</finalName>
     </build>
-    
+
 </project>

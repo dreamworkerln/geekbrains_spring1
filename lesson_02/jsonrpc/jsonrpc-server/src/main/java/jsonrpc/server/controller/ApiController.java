@@ -13,7 +13,6 @@ import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
 import jsonrpc.server.handlers.base.JrpcMethodHandler;
 import jsonrpc.server.utils.Utils;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -38,20 +37,16 @@ public class ApiController {
 
     private final ObjectMapper objectMapper;
 
-    private final ModelMapper modelMapper;
-
-
-    private final static Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final static String ACCESS_TOKEN = "f229fbea-a4b9-40a8-b8ee-e2b47bc1391d";
 
     private final Map<String, JrpcMethodHandler> handlers = new ConcurrentHashMap<>();
 
     @Autowired
-    public ApiController(ApplicationContext context, ObjectMapper objectMapper, ModelMapper modelMapper) {
+    public ApiController(ApplicationContext context, ObjectMapper objectMapper) {
         this.context = context;
         this.objectMapper = objectMapper;
-        this.modelMapper = modelMapper;
 
         // scanning handlers
         loadHandlers();
@@ -78,7 +73,7 @@ public class ApiController {
         // http response
         HttpResponse httpResponse;
 
-        logger.info("POST '/api'");
+        log.info("POST '/api'");
 
 
         // Пилим аналог
@@ -94,10 +89,9 @@ public class ApiController {
 
         try {
 
-            //ObjectMapper objectMapper = new ObjectMapper();
+            // get json-rpc request header (contains only method, token, id)
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-            // get json-rpc request header (contains only method, token, id)
             JrpcRequestHeader jsonRpcHeader = objectMapper.readValue(json, JrpcRequestHeader.class);
 
             id = jsonRpcHeader.getId();
@@ -121,8 +115,6 @@ public class ApiController {
             }
 
             // ------------------------------------------------------------------------------
-            // Get jrpc method params
-
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
             JsonNode params = objectMapper.readTree(json).get("params");
@@ -133,22 +125,28 @@ public class ApiController {
 
             // ------------------------------------------------------------------------------
 
-            // https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
-            // convert DTO from client to Entity
+
             JrpcMethodHandler handler = handlers.get(method);
 
+            // Treat all errors happens here as INTERNAL_SERVER_ERROR 500
+            try {
+                // executing RPC
+                jrpcResponse = handler.apply(params);
 
-            // Pass ObjectMapper to MethodHandler_OLD(не плодим объекты)
-            //handler.accept(objectMapper);
+                // all going ok, prepare response
+                httpResponse = new HttpResponseJRPC(jrpcResponse);
+                httpResponse.setStatus(HttpStatus.OK);
+            }
+            catch (Exception e) {
+                throw new RuntimeException(e);
+            }
 
-            // executing RPC
-            jrpcResponse = handler.apply(params);
 
-            // all going ok, prepare response
-            httpResponse = new HttpResponseJRPC(jrpcResponse);
-            httpResponse.setStatus(HttpStatus.OK);
+
         }
         catch (IllegalArgumentException | JsonProcessingException e) {
+
+            log.error("",e);
 
             String message = e.getMessage();
             if(Utils.isNullOrEmpty(message)) {
@@ -157,9 +155,11 @@ public class ApiController {
             httpResponse = new HttpResponseError(message, HttpStatus.BAD_REQUEST);
         }
         catch (IllegalAccessException e) {
+            log.error("",e);
             httpResponse = new HttpResponseError(e.getMessage(), HttpStatus.FORBIDDEN);
         }
         catch (Exception e) {
+            log.error("",e);
             httpResponse = new HttpResponseError(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

@@ -1,13 +1,13 @@
 package jsonrpc.protocol.dto.userinfo.request;
 
 
-import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
+import jsonrpc.protocol.dto.base.jrpc.JrpcParameter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.invoke.MethodHandles;
 
-public class UserByNickAndMail extends JrpcRequest {
+public class UserByNickAndMail extends JrpcParameter {
 
     private final static Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
