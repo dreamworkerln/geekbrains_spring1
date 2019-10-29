@@ -29,8 +29,7 @@ public class Order {
 
     private Instant date;
 
-    // ToDO: remove setId setter after ending OrderRepositoryImpl emulation
-    public void setId(Long id) {
+    protected void setId(Long id) {
         this.id = id;
     }
 
@@ -43,15 +42,36 @@ public class Order {
         item.setOrder(this);
     }
 
-    public void addList(Collection<OrderItem> list) {
-        list.forEach(item -> {
-            itemList.add(item);
-            item.setOrder(this);
-        });
+//    public void addList(Collection<OrderItem> list) {
+//        list.forEach(item -> {
+//            itemList.add(item);
+//            item.setOrder(this);
+//        });
+//    }
+
+    public List<OrderItem> getItemList() {
+        return itemList;
     }
 
-    public List<OrderItem> getItems() {
-        return itemList;
+    public void setItemList(List<OrderItem> itemList) {
+        this.itemList = itemList;
+        itemList.forEach(item -> item.setOrder(this));
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
+    public Manager getManager() {
+        return manager;
+    }
+
+    public void setManager(Manager manager) {
+        this.manager = manager;
     }
 
     public Instant getDate() {
@@ -61,4 +81,5 @@ public class Order {
     public void setDate(Instant date) {
         this.date = date;
     }
+
 }

@@ -11,5 +11,29 @@ public class Product {
     private Long id;
 
     private String name;
-    private String articul;
+    private String vCode;
+
+    protected void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getvCode() {
+        return vCode;
+    }
+
+    public void setvCode(String vCode) {
+        this.vCode = vCode;
+    }
 }

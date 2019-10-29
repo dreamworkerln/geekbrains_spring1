@@ -21,6 +21,18 @@ public class OrderItem {
     @JoinColumn(name="order_id", referencedColumnName="id")
     private Order order;
 
+    public OrderItem() {}
+
+
+    public OrderItem(Product product, Integer count) {
+        this.product = product;
+        this.count = count;
+    }
+
+    protected void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

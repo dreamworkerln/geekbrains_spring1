@@ -1,5 +1,7 @@
 package jsonrpc.server.utils;
 
+import java.lang.reflect.Field;
+
 public class Utils {
 
     public static boolean isNullOrEmpty(Object object) {
@@ -32,6 +34,30 @@ public class Utils {
         return b ? "1" : "0";
     }
 
+
+
+    public static void idSetter(Object o, Long id) {
+
+        try {
+            Field field = o.getClass().getDeclaredField("id");
+            field.setAccessible(true);
+            field.set(o, id);
+        }
+        catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static long toLong(String s) {
+
+        return Long.parseLong(s);
+    }
+
+    public static int toInt(String s) {
+
+        return Integer.parseInt(s);
+    }
+
     /*
     public static String milliTimeToEltexTimeString($milliTime)
     {
@@ -55,6 +81,8 @@ public class Utils {
     }
 
 */
+
+
 
 
 

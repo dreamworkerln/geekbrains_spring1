@@ -11,13 +11,14 @@ import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
 import jsonrpc.server.handlers.base.MethodHandlerBase;
 import jsonrpc.server.repository.OrderRepository;
+import org.modelmapper.Converter;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
+import java.time.Instant;
 
 import static jsonrpc.server.configuration.SpringConfiguration.MAIN_ENTITIES_PATH;
 
@@ -53,7 +54,17 @@ public class OrderHandler extends MethodHandlerBase {
         Order order = orderRepository.getById(request.getId());
 
         try {
-            result = convertToDto(order);
+
+            result = modelMapper.map(order, OrderDto.class);
+            
+//          Order order2 = modelMapper.map(result, Order.class);
+//
+//          log.info(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result));
+//          Order order2 = convertToEntity(result);
+//          System.out.println(order2);
+
+
+
         } catch (Exception e) {
             log.error("ModelMapper error", e);
             throw new IllegalArgumentException(e);
@@ -65,14 +76,46 @@ public class OrderHandler extends MethodHandlerBase {
 
 
 
-    //https://amydegregorio.com/2018/05/23/skipping-fields-with-modelmapper/
+    // https://amydegregorio.com/2018/05/23/skipping-fields-with-modelmapper/
+    //
+    // by lambdas
+    // https://stackoverflow.com/questions/49003929/how-to-use-explicit-map-with-java-8-and-modelmapper
     @Override
     protected void setMappings() {
 
-        modelMapper.addMappings(new PropertyMap<OrderDto, Order>() {
+
+// Create type converter for converting final types (for which no proxies can be used by ModelMapper)
+
+//        Converter<Instant, Long> toEpochSecond = context -> context.getSource() ==
+//                                                            null ? null : context.getSource().getEpochSecond();//
+        Converter<Long, Instant> toInstant = context -> context.getSource() ==
+                                                        null ? null : Instant.ofEpochMilli(context.getSource());
+        //modelMapper.addConverter(toEpochSecond);
+
+
+        modelMapper.createTypeMap(Order.class, OrderDto.class).addMappings(
+                mapper -> {
+
+                    //mapper.map(src -> src.getDate().getEpochSecond(), OrderDto::setDate);
+                    mapper.skip(OrderDto::setDate);
+                }).setPostConverter(getToDtoConverter());
+
+        modelMapper.createTypeMap(OrderDto.class, Order.class).addMappings(mapper -> {
+
+            mapper.skip(Order::setDate);
+            //mapper.map(src -> Instant.ofEpochSecond(src.getDate()), Order::setDate);
+        });
+
+        modelMapper.getTypeMaps().forEach(System.out::println);
+
+
+
+/*        modelMapper.addMappings(new PropertyMap<OrderDto, Order>() {
             @Override
             protected void configure() {
                 skip().setDate(null);
+                map(source.getItemList(), destination::setItemList)
+                //map().getItems().forEach(item -> item.setOrder(destination));
             }
         });
 
@@ -81,7 +124,25 @@ public class OrderHandler extends MethodHandlerBase {
             protected void configure() {
                 skip().setDate(null);
             }
-        });
+        });*/
+
+
+        //TypeMap<OrderItemDto, OrderItem> typeMap =  modelMapper.createTypeMap(OrderItemDto.class, OrderItem.class);
+
+
+//        modelMapper.addMappings(new PropertyMap<OrderItemDto, OrderItem>() {
+//            @Override
+//            protected void configure() {
+//                map().setOrder(this);
+//            }
+//        });
+
+//        modelMapper.addMappings(new PropertyMap<OrderItem, OrderDto>() {
+//            @Override
+//            protected void configure() {
+//                skip().setDate(null);
+//            }
+//        });
     }
 
 
@@ -90,19 +151,56 @@ public class OrderHandler extends MethodHandlerBase {
 
 
 
-    private OrderDto convertToDto(Order order) {
+//    private OrderDto convertToDto(Order order) {
+//
+//        OrderDto result = modelMapper.map(order, OrderDto.class);
+//        // result.setDate(order.getDate().getEpochSecond());
+//        return result;
+//    }
+//
+//    private Order convertToEntity(OrderDto orderDto) {
+//
+//        Order result = modelMapper.map(orderDto, Order.class);
+//        //result.setDate(Instant.ofEpochSecond(orderDto.getDate()));
+//
+//        return result;
+//    }
 
-        OrderDto result = modelMapper.map(order, OrderDto.class);
+    // ModelMapper: путешествие туда и обратно
+    // https://habr.com/ru/post/438808/
+    //
+    // https://github.com/promoscow/modelmapper-demo
 
-        result.setDate(order.getDate().getEpochSecond());
 
-        return result;
+
+    private Converter<Order, OrderDto> getToDtoConverter() {
+        return context -> {
+            Order source = context.getSource();
+            OrderDto destination = context.getDestination();
+            mapSpecificFields(source, destination);
+            return context.getDestination();
+        };
     }
 
-    private Order convertToEntity(OrderDto orderDto)  {
+    private Converter<OrderDto, Order> getToEntityConverter() {
+        return context -> {
+            OrderDto source = context.getSource();
+            Order destination = context.getDestination();
+            mapSpecificFields(source, destination);
+            return context.getDestination();
+        };
+    }
 
-        Order result = modelMapper.map(orderDto, Order.class);
-        return result;
+
+
+
+
+    private void mapSpecificFields(Order source, OrderDto destination) {
+        destination.setDate(source.getDate().getEpochSecond());
+    }
+
+    private void mapSpecificFields(OrderDto  source, Order destination) {
+        destination.setDate(Instant.ofEpochSecond(source.getDate()));
     }
 
 

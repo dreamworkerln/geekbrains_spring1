@@ -13,7 +13,6 @@ import java.util.List;
 @Scope("prototype")
 public class OrderDto extends JrpcResponse {
 
-
     private Long id;
 
     private List<OrderItemDto> itemList = new ArrayList<>();
@@ -23,7 +22,7 @@ public class OrderDto extends JrpcResponse {
     private ManagerDto manager;
 
     private Long date;
-    
+
 
     public Long getId() {
         return id;
@@ -64,4 +63,5 @@ public class OrderDto extends JrpcResponse {
     public void setDate(Long date) {
         this.date = date;
     }
+
 }
