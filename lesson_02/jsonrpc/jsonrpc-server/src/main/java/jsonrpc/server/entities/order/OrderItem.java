@@ -1,10 +1,13 @@
-package jsonrpc.server.entities;
+package jsonrpc.server.entities.order;
+
+import jsonrpc.server.entities.Product;
+import jsonrpc.server.entities.base.AbstractEntity;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name="orderItem")
-public class OrderItem {
+public class OrderItem extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

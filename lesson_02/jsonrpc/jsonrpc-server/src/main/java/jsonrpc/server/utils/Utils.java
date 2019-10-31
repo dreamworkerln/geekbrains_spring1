@@ -39,7 +39,16 @@ public class Utils {
     public static void idSetter(Object o, Long id) {
 
         try {
-            Field field = o.getClass().getDeclaredField("id");
+            Class<?> clazz = o.getClass();
+            Field field = null;
+            do {
+                try {
+                    field = clazz.getDeclaredField("id");
+                } catch(Exception ignore) {}
+            }
+            while((clazz = clazz.getSuperclass()) != null);
+
+            assert field != null;
             field.setAccessible(true);
             field.set(o, id);
         }

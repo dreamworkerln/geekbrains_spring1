@@ -1,7 +1,7 @@
 package jsonrpc.server.entities;
 
 import jsonrpc.server.entities.base.Person;
-import org.springframework.data.annotation.Id;
+import jsonrpc.server.entities.order.Order;
 
 import javax.persistence.*;
 import java.util.ArrayList;

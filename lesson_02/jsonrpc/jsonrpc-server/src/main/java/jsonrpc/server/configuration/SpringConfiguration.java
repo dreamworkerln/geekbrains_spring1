@@ -3,6 +3,7 @@ package jsonrpc.server.configuration;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.modelmapper.convention.NamingConventions;
@@ -18,7 +19,8 @@ public class SpringConfiguration {
     @Bean
     @Scope("prototype")
     public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule());  // allow convertation to/from Instant
         //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         //mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true);
         return mapper;
@@ -38,7 +40,7 @@ public class SpringConfiguration {
 //                .setFieldAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PRIVATE)
 //                .setSourceNamingConvention(NamingConventions.JAVABEANS_MUTATOR);
 
-        result.getConfiguration() .setMethodAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PROTECTED);
+        result.getConfiguration().setMethodAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PROTECTED);
 
         return result;
     }

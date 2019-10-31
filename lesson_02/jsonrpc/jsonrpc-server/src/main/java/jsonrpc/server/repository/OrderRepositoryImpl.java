@@ -2,15 +2,14 @@ package jsonrpc.server.repository;
 
 
 import com.github.javafaker.Faker;
-import jsonrpc.server.entities.Order;
-import jsonrpc.server.entities.OrderItem;
+import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.entities.order.OrderItem;
 import jsonrpc.server.entities.Product;
 import jsonrpc.server.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.Field;
 import java.time.Instant;
 
 import static jsonrpc.server.utils.Utils.idSetter;
@@ -40,6 +39,11 @@ public class OrderRepositoryImpl implements OrderRepository{
             // emulation
             result = new Order();
             result.setDate(Instant.ofEpochSecond(1572105211));
+
+            result.toCreate();
+            result.toUpdate();
+
+
             idSetter(result, 33L);
 
             // Just unassociated list of random created products

@@ -1,6 +1,6 @@
 package jsonrpc.protocol.dto.order;
 
-import jsonrpc.protocol.dto.base.jrpc.JrpcResponse;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.client.ClientDto;
 import jsonrpc.protocol.dto.manager.ManagerDto;
 import org.springframework.context.annotation.Scope;
@@ -11,9 +11,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
-public class OrderDto extends JrpcResponse {
-
-    private Long id;
+public class OrderDto extends AbstractDto {
 
     private List<OrderItemDto> itemList = new ArrayList<>();
 
@@ -22,15 +20,6 @@ public class OrderDto extends JrpcResponse {
     private ManagerDto manager;
 
     private Long date;
-
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public List<OrderItemDto> getItemList() {
         return itemList;

@@ -1,5 +1,6 @@
 package jsonrpc.protocol.dto.Product;
 
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.base.jrpc.JrpcParameter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -7,20 +8,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class ProductDto extends JrpcParameter {
-
-    private Long id;
+public class ProductDto extends AbstractDto {
 
     private String name;
-    private String vCode;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private String vCode; // Артикул
 
     public String getName() {
         return name;

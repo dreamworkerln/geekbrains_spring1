@@ -1,7 +1,6 @@
 package jsonrpc.server.handlers.base;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -9,18 +8,16 @@ public abstract class MethodHandlerBase /*JrpcMethodHandler*/ {
 
     //private Class<? extends JrpcParameter> requestType;
 
-    protected final ObjectMapper objectMapper;
-    protected final ModelMapper modelMapper;
+    protected ObjectMapper objectMapper;
+    //protected final ModelMapper modelMapper;
+
+    //protected Mapper mapper;
+
 
     @Autowired
-    protected MethodHandlerBase(ObjectMapper objectMapper, ModelMapper modelMapper) {
+    private final void setObjectMapper(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-        this.modelMapper = modelMapper;
-
-        setMappings();
     }
-
-    protected abstract void setMappings();
 
 //    public MethodHandlerBase() {
 //        requestType = getRequestType();
@@ -28,7 +25,7 @@ public abstract class MethodHandlerBase /*JrpcMethodHandler*/ {
 
     /*
     @Override
-    public JrpcResponse apply(JsonNode params) {
+    public JrpcResult apply(JsonNode params) {
 
         // read https://www.baeldung.com/jackson-inheritance
         // and upgrade code
@@ -54,7 +51,7 @@ public abstract class MethodHandlerBase /*JrpcMethodHandler*/ {
     */
 
     /*
-    protected abstract JrpcResponse handle(JrpcParameter jrpcRequest);
+    protected abstract JrpcResult handle(JrpcParameter jrpcRequest);
     
     protected abstract Class<? extends JrpcParameter> getRequestType();
     */

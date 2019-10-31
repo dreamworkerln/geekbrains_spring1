@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequestHeader;
-import jsonrpc.protocol.dto.base.jrpc.JrpcResponse;
+import jsonrpc.protocol.dto.base.jrpc.JrpcResult;
 import jsonrpc.protocol.dto.base.http.HttpResponse;
 import jsonrpc.protocol.dto.base.http.HttpResponseError;
 import jsonrpc.protocol.dto.base.http.HttpResponseJRPC;
@@ -68,7 +68,7 @@ public class ApiController {
         Long id = null;
 
         // json-rpc response
-        JrpcResponse jrpcResponse;
+        JrpcResult jrpcResult;
 
         // http response
         HttpResponse httpResponse;
@@ -131,17 +131,15 @@ public class ApiController {
             // Treat all errors happens here as INTERNAL_SERVER_ERROR 500
             try {
                 // executing RPC
-                jrpcResponse = handler.apply(params);
+                jrpcResult = handler.apply(params);
 
                 // all going ok, prepare response
-                httpResponse = new HttpResponseJRPC(jrpcResponse);
+                httpResponse = new HttpResponseJRPC(jrpcResult);
                 httpResponse.setStatus(HttpStatus.OK);
             }
             catch (Exception e) {
                 throw new RuntimeException(e);
             }
-
-
 
         }
         catch (IllegalArgumentException | JsonProcessingException e) {
@@ -201,7 +199,7 @@ public class ApiController {
 
                         JrpcMethodHandler handler = jsonNode -> {
                             try {
-                                return (JrpcResponse) method.invoke(bean, jsonNode);
+                                return (JrpcResult) method.invoke(bean, jsonNode);
                             } catch (IllegalAccessException | InvocationTargetException e) {
                                 throw new RuntimeException(e);
                             }
@@ -239,7 +237,7 @@ public class ApiController {
     }
 
 
-    private JrpcResponse foo(JsonNode node) {
+    private JrpcResult foo(JsonNode node) {
         System.out.println("Ololo!!!");
 
         return null;

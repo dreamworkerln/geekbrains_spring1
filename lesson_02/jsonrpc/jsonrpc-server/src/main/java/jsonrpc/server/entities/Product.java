@@ -1,10 +1,12 @@
 package jsonrpc.server.entities;
 
+import jsonrpc.server.entities.base.AbstractEntity;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name="product")
-public class Product {
+public class Product extends AbstractEntity {
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)

@@ -1,25 +1,25 @@
 package jsonrpc.protocol.dto.base.http;
 
-import jsonrpc.protocol.dto.base.jrpc.JrpcResponse;
+import jsonrpc.protocol.dto.base.jrpc.JrpcResult;
 
 /**
  * HTTP response that encapsulate jrpc
  */
 public class HttpResponseJRPC extends HttpResponse {
 
-    protected JrpcResponse result;
+    protected JrpcResult result;
 
     public HttpResponseJRPC() {}
 
-    public HttpResponseJRPC(JrpcResponse result) {
+    public HttpResponseJRPC(JrpcResult result) {
         this.result = result;
     }
 
-    public JrpcResponse getResult() {
+    public JrpcResult getResult() {
         return result;
     }
 
-    public void setResult(JrpcResponse result) {
+    public void setResult(JrpcResult result) {
         this.result = result;
     }
 }

@@ -8,19 +8,9 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class OrderItemDto {
 
-    private Long id;
-
     private ProductDto product;
 
     private Integer count;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public ProductDto getProduct() {
         return product;
