@@ -7,6 +7,8 @@ import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.base.param.GetById;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.utils.Rest;
+import jsonrpc.server.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -15,8 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
-import ru.kvant_telecom.tv.utils.Rest;
-import ru.kvant_telecom.tv.utils.RestFactory;
 
 import java.lang.invoke.MethodHandles;
 

@@ -26,8 +26,6 @@ public class Order extends AbstractEntity {
     @JoinColumn(name="manager_id", referencedColumnName="id")
     private Manager manager;
 
-    private Instant date;
-
     protected void setId(Long id) {
         this.id = id;
     }
@@ -71,14 +69,6 @@ public class Order extends AbstractEntity {
 
     public void setManager(Manager manager) {
         this.manager = manager;
-    }
-
-    public Instant getDate() {
-        return date;
-    }
-
-    public void setDate(Instant date) {
-        this.date = date;
     }
 
 }

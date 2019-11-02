@@ -19,8 +19,6 @@ public class OrderDto extends AbstractDto {
 
     private ManagerDto manager;
 
-    private Long date;
-
     public List<OrderItemDto> getItemList() {
         return itemList;
     }
@@ -43,14 +41,6 @@ public class OrderDto extends AbstractDto {
 
     public void setManager(ManagerDto manager) {
         this.manager = manager;
-    }
-
-    public Long getDate() {
-        return date;
-    }
-
-    public void setDate(Long date) {
-        this.date = date;
     }
 
 }

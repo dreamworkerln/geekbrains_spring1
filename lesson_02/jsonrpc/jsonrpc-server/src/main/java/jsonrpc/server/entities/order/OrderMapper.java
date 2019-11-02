@@ -30,7 +30,7 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
                         // назначаем маппинг полей (для final типов map полей нельзя указывать - не поддерживается блевотекой)
                         // соответственно отключаем маппинг для полей, которые не совпадают
                         mapper -> {
-                            mapper.skip(OrderDto::setDate);
+                            //mapper.skip(OrderDto::setDate);
                             // такие типы (поля) конвертируются потом отдельно в пост-конвертере
                         }).setPostConverter(getToDtoConverter());
 
@@ -39,7 +39,7 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
 
         mapper.createTypeMap(OrderDto.class, Order.class).addMappings(
                 mapper -> {
-                    mapper.skip(Order::setDate);
+                    //mapper.skip(Order::setDate);
                 }).setPostConverter(getToEntityConverter());
 
 
@@ -49,12 +49,12 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
 
     @Override
     protected void mapSpecificFields(Order source, OrderDto destination) {
-        destination.setDate(source.getDate().getEpochSecond());
+        //destination.setDate(source.getDate().getEpochSecond());
     }
 
     @Override
     protected void mapSpecificFields(OrderDto  source, Order destination) {
-        destination.setDate(Instant.ofEpochSecond(source.getDate()));
+        //destination.setDate(Instant.ofEpochSecond(source.getDate()));
     }
 
 
