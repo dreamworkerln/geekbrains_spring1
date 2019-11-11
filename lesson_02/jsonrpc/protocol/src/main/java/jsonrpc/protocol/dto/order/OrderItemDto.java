@@ -1,12 +1,13 @@
 package jsonrpc.protocol.dto.order;
 
 import jsonrpc.protocol.dto.Product.ProductDto;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class OrderItemDto {
+public class OrderItemDto extends AbstractDto {
 
     private ProductDto product;
 
@@ -27,12 +28,4 @@ public class OrderItemDto {
     public void setCount(Integer count) {
         this.count = count;
     }
-
-//    public OrderDto getOrder() {
-//        return order;
-//    }
-//
-//    public void setOrder(OrderDto order) {
-//        this.order = order;
-//    }
 }

@@ -1,15 +1,15 @@
 package jsonrpc.protocol.dto.base.param;
 
-import jsonrpc.protocol.dto.base.jrpc.JrpcParameter;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class GetById extends JrpcParameter {
+public class GetByIdDto extends AbstractDto {
     private Long id;
 
-    protected GetById() {}
+    protected GetByIdDto() {}
 
     public Long getId() {
         return id;

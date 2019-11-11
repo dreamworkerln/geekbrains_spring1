@@ -1,11 +1,10 @@
 package jsonrpc.server.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequestHeader;
-import jsonrpc.protocol.dto.base.jrpc.JrpcResult;
 import jsonrpc.protocol.dto.base.http.HttpResponse;
 import jsonrpc.protocol.dto.base.http.HttpResponseError;
 import jsonrpc.protocol.dto.base.http.HttpResponseJRPC;
@@ -20,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,8 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class ApiController {
@@ -68,12 +72,12 @@ public class ApiController {
         Long id = null;
 
         // json-rpc response
-        JrpcResult jrpcResult;
+        AbstractDto jrpcResult;
 
         // http response
         HttpResponse httpResponse;
 
-        log.info("POST '/api'");
+        log.trace("POST '/api': " + json);
 
 
         // Пилим аналог
@@ -90,7 +94,7 @@ public class ApiController {
         try {
 
             // get json-rpc request header (contains only method, token, id)
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            //objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
             JrpcRequestHeader jsonRpcHeader = objectMapper.readValue(json, JrpcRequestHeader.class);
 
@@ -115,31 +119,21 @@ public class ApiController {
             }
 
             // ------------------------------------------------------------------------------
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+            //objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
             JsonNode params = objectMapper.readTree(json).get("params");
-
-            if (params == null) {
-                throw new IllegalArgumentException("JRPC params==null");
-            }
 
             // ------------------------------------------------------------------------------
 
 
             JrpcMethodHandler handler = handlers.get(method);
 
-            // Treat all errors happens here as INTERNAL_SERVER_ERROR 500
-            try {
-                // executing RPC
-                jrpcResult = handler.apply(params);
+            // executing RPC
+            jrpcResult = handler.apply(params);
 
-                // all going ok, prepare response
-                httpResponse = new HttpResponseJRPC(jrpcResult);
-                httpResponse.setStatus(HttpStatus.OK);
-            }
-            catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            // all going ok, prepare response
+            httpResponse = new HttpResponseJRPC(jrpcResult);
+            httpResponse.setStatus(HttpStatus.OK);
 
         }
         catch (IllegalArgumentException | JsonProcessingException e) {
@@ -183,7 +177,7 @@ public class ApiController {
             Map<String,Object> beans = context.getBeansWithAnnotation(JrpcController.class);
             //beans.keySet().forEach(System.out::println);
 
-             // https://stackoverflow.com/questions/27929965/find-method-level-custom-annotation-in-a-spring-context
+            // https://stackoverflow.com/questions/27929965/find-method-level-custom-annotation-in-a-spring-context
             for (Map.Entry<String, Object> entry : beans.entrySet()) {
 
                 Object bean = entry.getValue();
@@ -191,17 +185,28 @@ public class ApiController {
 
                 JrpcController jrpcController = beanClass.getAnnotation(JrpcController.class);
 
+                // Ищем в бине метод, помеченный аннотацией @JrpcHandler
                 for (Method method : beanClass.getDeclaredMethods()) {
                     if (method.isAnnotationPresent(JrpcHandler.class)) {
 
                         //Should give you expected results
                         JrpcHandler jrpcHandler = method.getAnnotation(JrpcHandler.class);
 
+
                         JrpcMethodHandler handler = jsonNode -> {
                             try {
-                                return (JrpcResult) method.invoke(bean, jsonNode);
+                                return (AbstractDto) method.invoke(bean, jsonNode);
                             } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw new RuntimeException(e);
+
+                                // выбрасываем наверх причину InvocationTargetException -
+                                // Что-то там упало в обработчике метода jrpc
+                                // upcast into unchecked exception
+                                if (e.getCause() != null) {
+                                    throw (RuntimeException) e.getCause();
+                                }
+                                else {
+                                    throw new RuntimeException(e);
+                                }
                             }
                         };
 
@@ -237,11 +242,42 @@ public class ApiController {
     }
 
 
-    private JrpcResult foo(JsonNode node) {
-        System.out.println("Ololo!!!");
+    //@Scheduled(cron = "*/3 * * * * *")
+    //@Scheduled(fixedRate = 5000)
+    public void scheduleTaskUsingCronExpression() throws InterruptedException {
 
-        return null;
+        long now = Instant.now().getEpochSecond();
+        System.out.println(
+                "ОЧКО - schedule tasks using cron jobs - " + now);
+
+        TimeUnit.DAYS.sleep(100000);
     }
+
+
+    //@Scheduled(cron = "*/5 * * * * *")
+    //@Scheduled(fixedRate = 5000)
+    public void scheduleTaskUsingCronExpression2() throws InterruptedException {
+
+        long now = Instant.now().getEpochSecond();
+        System.out.println(
+                "ЗАЛУПА - schedule tasks using cron jobs - " + now);
+
+        TimeUnit.DAYS.sleep(100000);
+
+    }
+
+
+//
+//    private AbstractDto foo(JsonNode node) {
+//        System.out.println("Ololo!!!");
+//
+//        return null;
+//    }
+
+
+
+
+
 
 }
 

@@ -49,6 +49,9 @@
 
         <Logger name="org.hibernate" level="ERROR">
         </Logger>
+
+        <Logger name="com.zaxxer.hikari" level="ERROR">
+        </Logger>
         -->
 
         <Root level="INFO">

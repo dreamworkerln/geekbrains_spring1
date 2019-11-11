@@ -26,13 +26,10 @@ public class Order extends AbstractEntity {
     @JoinColumn(name="manager_id", referencedColumnName="id")
     private Manager manager;
 
-    protected void setId(Long id) {
-        this.id = id;
-    }
 
-    public Long getId() {
-        return id;
-    }
+//    public Long getId() {
+//        return id;
+//    }
 
     public void addItem(OrderItem item) {
         itemList.add(item);

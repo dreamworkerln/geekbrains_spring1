@@ -1,6 +1,6 @@
 package jsonrpc.server.repository;
 
-import jsonrpc.server.entities.Product;
+import jsonrpc.server.entities.product.Product;
 
 // public interface OrderRepository extends JpaRepository<Product, Long> {}
 // emulation

@@ -3,13 +3,14 @@ package jsonrpc.server.entities.base;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
 
-    protected Instant created;
+    private Instant created;
 
-    protected Instant updated;
+    private Instant updated;
 
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -17,6 +18,9 @@ public abstract class AbstractEntity implements Serializable {
 
     public Long getId() {
         return id;
+    }
+    protected void setId(Long id) {
+        this.id = id;
     }
 
     @Column(name = "created", updatable = false)
@@ -29,15 +33,25 @@ public abstract class AbstractEntity implements Serializable {
         return updated;
     }
 
+    @Transient
+    public void setCreated(Instant created) {
+        this.created = created;
+    }
+
+    @Transient
+    public void setUpdated(Instant updated) {
+        this.updated = updated;
+    }
+
     @PrePersist
     public void toCreate() {
-        created = Instant.now();
+        // Truncating to seconds
+        created = Instant.now().truncatedTo(ChronoUnit.SECONDS);
     }
 
     @PreUpdate
     public void toUpdate() {
-        updated = Instant.now();
+        // Truncating to seconds
+        updated = Instant.now().truncatedTo(ChronoUnit.SECONDS);
     }
-
-
 }

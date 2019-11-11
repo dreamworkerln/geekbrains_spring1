@@ -1,5 +1,6 @@
 package jsonrpc.protocol.dto.base.jrpc;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jsonrpc.protocol.dto.base.Message;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -7,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Base json-rps request header, contains access token and method name( param not included)
- * <br> Not contains request param
+ * <br> Не содержит param
  * <br>(This api is supposed to be called from web-server, not directly by clients)
  * <br> But this may be adopted to be called by clients
  * <br> Используется в ApiController, чтобы прочитать только заголовок jrpc запроса.
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Scope("prototype")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class JrpcRequestHeader extends Message {
 
     protected String token;

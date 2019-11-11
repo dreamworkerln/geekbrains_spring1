@@ -1,7 +1,6 @@
 package jsonrpc.protocol.dto.Product;
 
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
-import jsonrpc.protocol.dto.base.jrpc.JrpcParameter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

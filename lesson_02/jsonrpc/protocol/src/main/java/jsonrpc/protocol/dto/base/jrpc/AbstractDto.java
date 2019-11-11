@@ -3,11 +3,11 @@ package jsonrpc.protocol.dto.base.jrpc;
 import java.io.Serializable;
 import java.time.Instant;
 
-public abstract class AbstractDto extends JrpcResult implements Serializable {
+public abstract class AbstractDto implements Serializable {
 
     protected Long id;
-    protected Instant created;
-    protected Instant updated;
+    protected Long created;
+    protected Long updated;
 
     public Long getId() {
         return id;
@@ -17,19 +17,19 @@ public abstract class AbstractDto extends JrpcResult implements Serializable {
         this.id = id;
     }
 
-    public Instant getCreated() {
+    public Long getCreated() {
         return created;
     }
 
-    public void setCreated(Instant created) {
+    public void setCreated(Long created) {
         this.created = created;
     }
 
-    public Instant getUpdated() {
+    public Long getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Instant updated) {
+    public void setUpdated(Long updated) {
         this.updated = updated;
     }
 }

@@ -1,0 +1,15 @@
+config:
+  target: "http://localhost:8085"
+  phases:
+    - duration: 10
+      arrivalRate: 1000
+scenarios:
+  - flow:
+      - post:
+          url: "/api"
+          json:
+            id: 22
+            token: "f229fbea-a4b9-40a8-b8ee-e2b47bc1391d"
+            method: "shop.entities.order.getById"
+            params: 
+              id: 33

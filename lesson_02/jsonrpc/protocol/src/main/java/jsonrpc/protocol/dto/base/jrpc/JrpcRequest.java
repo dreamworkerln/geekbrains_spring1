@@ -13,13 +13,13 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class JrpcRequest extends JrpcRequestHeader {
 
-    private JrpcParameter params;
+    private AbstractDto params;
 
-    public JrpcParameter getParams() {
+    public AbstractDto getParams() {
         return params;
     }
 
-    public void setParams(JrpcParameter param) {
+    public void setParams(AbstractDto param) {
         this.params = param;
     }
 }

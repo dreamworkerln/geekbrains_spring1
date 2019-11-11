@@ -2,15 +2,19 @@ package jsonrpc.server.handlers.order;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
+import jsonrpc.protocol.dto.base.param.GetByIdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.protocol.dto.base.param.GetById;
 import jsonrpc.server.TestSuite;
+import jsonrpc.server.configuration.SpringConfiguration;
+import jsonrpc.server.entities.base.param.GetById;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.utils.Rest;
 import jsonrpc.server.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +27,15 @@ import java.lang.invoke.MethodHandles;
 
 //@RunWith(SpringRunner.class)
 //@EnableConfigurationProperties
-@SpringBootTest(classes = {ObjectMapper.class, GetById.class,OrderDto.class, Order.class, JrpcRequest.class})
+
+
+
+// не догрузишь мапперы - не взлетит
+@SpringBootTest(classes = {SpringConfiguration.class,  // грузим определения бинов
+        GetById.class,
+        OrderDto.class,
+        Order.class,
+        JrpcRequest.class})
 class OrderHandlerTest {
 
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -59,8 +71,8 @@ class OrderHandlerTest {
 
 
 
-        GetById getById = context.getBean(GetById.class);
         ObjectMapper objectMapper = context.getBean(ObjectMapper.class);
+        ModelMapper mapper = context.getBean(ModelMapper.class);
 
 
 //        String json = "{" + TestSuite.INSTANCE.getJrpcHeader() + ", " +
@@ -70,28 +82,30 @@ class OrderHandlerTest {
 //        json = String.format(json,id);
 //        System.out.println(json);
 
-
-        getById.setId(id);
-
+        // Создаем запрос-обертку
         JrpcRequest jrpcRequest = context.getBean(JrpcRequest.class);
+
+        // Создаем запрос
+        GetById getById = context.getBean(GetById.class);
+
+        // определяем параметры запроса
+        getById.setId(id);
         jrpcRequest.setId(22L);
         jrpcRequest.setToken("f229fbea-a4b9-40a8-b8ee-e2b47bc1391d");
-
         
         String methodName = GetById.class.getSimpleName();
         methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
-        jrpcRequest.setMethod("shop.entities.order." + methodName);
-
-        jrpcRequest.setParams(getById);
+        jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
+        jrpcRequest.setParams(mapper.map(getById, GetByIdDto.class));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
 
-        System.out.println(json);
+        log.info(json);
 
         //json = String.format(json, id);
 
-        ResponseEntity<String> response = rest.post("http://localhost:8085/api", json);
-        log.info(response.toString());
+        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
         //System.out.println(response);
     }
 }

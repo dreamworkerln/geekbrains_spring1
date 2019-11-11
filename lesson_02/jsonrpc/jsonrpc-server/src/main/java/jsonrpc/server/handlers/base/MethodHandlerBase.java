@@ -6,8 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class MethodHandlerBase /*JrpcMethodHandler*/ {
 
-    //private Class<? extends JrpcParameter> requestType;
-
     protected ObjectMapper objectMapper;
     //protected final ModelMapper modelMapper;
 

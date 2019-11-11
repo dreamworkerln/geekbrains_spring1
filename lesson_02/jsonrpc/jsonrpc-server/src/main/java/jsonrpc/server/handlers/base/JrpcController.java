@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Mark class as billing request handler
+ * Mark class as jrpc request handler
  * <br>
  * This allow to find appropriate handler for request (mapping)
  */
@@ -22,15 +22,4 @@ import java.lang.annotation.Target;
 public @interface JrpcController {
 
     String path();
-
-//    /**
-//     * JrpcParameter class - класс, представляющий собой параметр (json-rpc) запроса
-//     * @return
-//     */
-//    Class<? extends JrpcParameter> request();
-
-//    /**
-//     * Name of request class (short)
-//     */
-//    Class requestClassName();
 }

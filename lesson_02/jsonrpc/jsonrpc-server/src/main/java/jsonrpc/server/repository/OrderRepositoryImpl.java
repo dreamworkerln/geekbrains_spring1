@@ -4,21 +4,17 @@ package jsonrpc.server.repository;
 import com.github.javafaker.Faker;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderItem;
-import jsonrpc.server.entities.Product;
-import jsonrpc.server.utils.Utils;
+import jsonrpc.server.entities.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
-
-import java.time.Instant;
+import org.springframework.stereotype.Service;
 
 import static jsonrpc.server.utils.Utils.idSetter;
 import static jsonrpc.server.utils.Utils.toLong;
 
 // Fake repository
 
-@Component
-@Primary
+@Service
+//@Primary
 public class OrderRepositoryImpl implements OrderRepository{
 
     private Faker faker = new Faker();
@@ -38,12 +34,12 @@ public class OrderRepositoryImpl implements OrderRepository{
         if (id == 33) {
             // emulation
             result = new Order();
-            //result.setDate(Instant.ofEpochSecond(1572105211));
 
+            // init create and update time
             result.toCreate();
             result.toUpdate();
 
-
+            // set id via reflection
             idSetter(result, 33L);
 
             // Just unassociated list of random created products
@@ -51,15 +47,14 @@ public class OrderRepositoryImpl implements OrderRepository{
 
                 Product p = productRepository.getById(toLong(faker.number().digits(7)));
 
-                OrderItem oi = new OrderItem(p, i);
-                Utils.idSetter(oi, toLong(faker.number().digits(7)));
-                oi.setCount(faker.number().numberBetween(1, 50));
+                OrderItem oi = new OrderItem(p, faker.number().numberBetween(1, 50));
+                idSetter(oi, toLong(faker.number().digits(7)));
+                oi.toCreate();
+                oi.toUpdate();
+
+                //idSetter(oi, toLong(faker.number().digits(7)));
                 result.addItem(oi);
             }
-
-//            for (int i = 0; i < faker.number().numberBetween(1, 5); i++) {
-//                result.getZololo().add(faker.cat().name());
-//            }
         }
 
         return result;

@@ -1,13 +1,13 @@
 package jsonrpc.server.handlers.order;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.param.GetByIdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.protocol.dto.base.param.GetById;
-import jsonrpc.protocol.dto.base.jrpc.JrpcResult;
+import jsonrpc.protocol.dto.order.OrderItemDto;
+import jsonrpc.server.entities.base.param.GetById;
 import jsonrpc.server.entities.order.Order;
-import jsonrpc.server.entities.order.OrderMapper;
+import jsonrpc.server.entities.order.OrderItem;
 import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
 import jsonrpc.server.handlers.base.MethodHandlerBase;
@@ -30,10 +30,10 @@ public class OrderHandler extends MethodHandlerBase {
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final OrderRepository orderRepository;
-    private final OrderMapper mapper;
+    private final ModelMapper mapper;
 
     @Autowired
-    protected OrderHandler(OrderMapper mapper, OrderRepository orderRepository) {
+    protected OrderHandler(ModelMapper mapper, OrderRepository orderRepository) {
 
         this.mapper = mapper;
         this.orderRepository = orderRepository;
@@ -41,28 +41,47 @@ public class OrderHandler extends MethodHandlerBase {
 
 
     @JrpcHandler(method = "getById")
-    public JrpcResult getById(JsonNode params) {
+    public AbstractDto getById(JsonNode params) {
 
         OrderDto result;
         GetById request;
 
+        // parsing request
         try {
-            request = objectMapper.treeToValue(params, GetById.class);
-        } catch (JsonProcessingException e) {
+            GetByIdDto requestDto = objectMapper.treeToValue(params, GetByIdDto.class);
+            request = mapper.map(requestDto, GetById.class);
+
+            // validate request
+            GetById.validate(request);
+
+            //request = objectMapper.treeToValue(params, GetById.class);
+        }
+        // All parse/deserialize errors interpret as 400 error
+        catch (Exception e) {
             log.error("json parse error: " + params.toPrettyString(), e);
             throw new IllegalArgumentException(e);
         }
 
+
+
         // Getting from repository order by "id"
         Order order = orderRepository.getById(request.getId());
 
+        OrderItem oi = order.getItemList().get(0);
+        order.getItemList().clear();
+        order.getItemList().add(oi);
+
+        OrderItemDto zpzpzp =  mapper.map(order.getItemList().get(0), OrderItemDto.class);
+
+        System.out.println(zpzpzp);
+
+
         try {
             
-            result = mapper.toDto(order);
+            result = mapper.map(order, OrderDto.class);
             
         } catch (Exception e) {
-            log.error("ModelMapper error", e);
-            throw new IllegalArgumentException(e);
+            throw new IllegalArgumentException("ModelMapper error", e);
         }
         return result;
     }

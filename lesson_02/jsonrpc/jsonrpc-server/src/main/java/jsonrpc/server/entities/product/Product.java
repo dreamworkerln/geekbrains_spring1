@@ -1,4 +1,4 @@
-package jsonrpc.server.entities;
+package jsonrpc.server.entities.product;
 
 import jsonrpc.server.entities.base.AbstractEntity;
 
@@ -8,20 +8,8 @@ import javax.persistence.*;
 @Table(name="product")
 public class Product extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
-
     private String name;
     private String vCode;
-
-    protected void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;

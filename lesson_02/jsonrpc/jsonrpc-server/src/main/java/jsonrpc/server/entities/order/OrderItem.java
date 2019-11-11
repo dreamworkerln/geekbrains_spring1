@@ -1,6 +1,6 @@
 package jsonrpc.server.entities.order;
 
-import jsonrpc.server.entities.Product;
+import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.base.AbstractEntity;
 
 import javax.persistence.*;
@@ -8,11 +8,6 @@ import javax.persistence.*;
 @Entity
 @Table(name="orderItem")
 public class OrderItem extends AbstractEntity {
-
-    @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private Long id;
-
 
     @ManyToOne
     @JoinColumn(name="product_id", referencedColumnName="id")
@@ -30,14 +25,6 @@ public class OrderItem extends AbstractEntity {
     public OrderItem(Product product, Integer count) {
         this.product = product;
         this.count = count;
-    }
-
-    protected void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public Product getProduct() {

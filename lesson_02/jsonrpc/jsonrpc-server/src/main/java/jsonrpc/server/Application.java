@@ -5,11 +5,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PreDestroy;
 import java.lang.invoke.MethodHandles;
 
 @SpringBootApplication
+@EnableScheduling
 public class Application {
 
     private static Logger log;

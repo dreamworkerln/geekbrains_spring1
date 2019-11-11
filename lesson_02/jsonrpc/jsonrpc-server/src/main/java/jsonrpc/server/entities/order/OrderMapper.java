@@ -22,39 +22,39 @@ public class OrderMapper extends AbstractMapper<Order, OrderDto> {
     @PostConstruct
     protected void setupMapper() {
 
-        //
-
-        TypeMap<Order, OrderDto> typeMap =
+        TypeMap<Order, OrderDto> tmEtD =
 
                 mapper.createTypeMap(Order.class, OrderDto.class).addMappings(
                         // назначаем маппинг полей (для final типов map полей нельзя указывать - не поддерживается блевотекой)
-                        // соответственно отключаем маппинг для полей, которые не совпадают
+                        // соответственно отключаем маппинг для полей, которые не совпадают по типам
                         mapper -> {
+                            //mapper.skip(AbstractDto::setCreated);
+
                             //mapper.skip(OrderDto::setDate);
-                            // такие типы (поля) конвертируются потом отдельно в пост-конвертере
+                            // такие типы (поля) конвертируются потом отдельно в пост-конвертере, конкретно тут - в mapSpecificFields
                         }).setPostConverter(getToDtoConverter());
 
 
 
-
-        mapper.createTypeMap(OrderDto.class, Order.class).addMappings(
+        TypeMap<OrderDto, Order> tmDtE = mapper.createTypeMap(OrderDto.class, Order.class).addMappings(
                 mapper -> {
                     //mapper.skip(Order::setDate);
                 }).setPostConverter(getToEntityConverter());
 
 
-
-
+        includeBase(tmEtD, tmDtE);
     }
 
     @Override
     protected void mapSpecificFields(Order source, OrderDto destination) {
-        //destination.setDate(source.getDate().getEpochSecond());
+        // пост-конвертор у предка не вызывается(?), поэтому стартуем с толкача
+        super.mapSpecificFields(source, destination); // Не забудь вызывать этот метод!
     }
 
     @Override
-    protected void mapSpecificFields(OrderDto  source, Order destination) {
-        //destination.setDate(Instant.ofEpochSecond(source.getDate()));
+    protected void mapSpecificFields(OrderDto source, Order destination) {
+        super.mapSpecificFields(destination, source);
+
     }
 
 
