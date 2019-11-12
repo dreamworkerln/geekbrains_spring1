@@ -1,13 +1,11 @@
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/order/OrderItemDto.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/order/OrderDto.java
-/home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/base/param/GetById.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/base/jrpc/JrpcError.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/base/jrpc/JrpcRequest.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/base/jrpc/AbstractDto.java
-/home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/base/jrpc/JrpcParameter.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/manager/ManagerDto.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/Product/ProductDto.java
-/home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/base/jrpc/JrpcResult.java
+/home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/base/param/GetByIdDto.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/base/http/HttpResponseError.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/base/jrpc/JrpcRequestHeader.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/protocol/src/main/java/jsonrpc/protocol/dto/client/ClientDto.java

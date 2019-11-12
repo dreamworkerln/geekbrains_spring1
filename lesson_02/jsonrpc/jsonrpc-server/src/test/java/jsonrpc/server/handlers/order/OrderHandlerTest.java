@@ -10,6 +10,7 @@ import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.SpringConfiguration;
 import jsonrpc.server.entities.base.param.GetById;
 import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.entities.product.ProductMapper2;
 import jsonrpc.server.utils.Rest;
 import jsonrpc.server.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
@@ -35,7 +36,8 @@ import java.lang.invoke.MethodHandles;
         GetById.class,
         OrderDto.class,
         Order.class,
-        JrpcRequest.class})
+        JrpcRequest.class,
+        ProductMapper2.class})
 class OrderHandlerTest {
 
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -68,8 +70,6 @@ class OrderHandlerTest {
     void getById() throws JsonProcessingException {
 
         Long id = 33L;
-
-
 
         ObjectMapper objectMapper = context.getBean(ObjectMapper.class);
         ModelMapper mapper = context.getBean(ModelMapper.class);
