@@ -1,6 +1,7 @@
 package jsonrpc.server.handlers.order;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import jsonrpc.protocol.dto.Product.ProductDto;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.base.param.GetByIdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
@@ -8,6 +9,8 @@ import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.server.entities.base.param.GetById;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderItem;
+import jsonrpc.server.entities.product.Product;
+import jsonrpc.server.entities.product.ProductMapper2;
 import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
 import jsonrpc.server.handlers.base.MethodHandlerBase;
@@ -32,11 +35,14 @@ public class OrderHandler extends MethodHandlerBase {
     private final OrderRepository orderRepository;
     private final ModelMapper mapper;
 
+    private final ProductMapper2 productMapper2;
+
     @Autowired
-    protected OrderHandler(ModelMapper mapper, OrderRepository orderRepository) {
+    protected OrderHandler(ModelMapper mapper, OrderRepository orderRepository, ProductMapper2 productMapper2) {
 
         this.mapper = mapper;
         this.orderRepository = orderRepository;
+        this.productMapper2 = productMapper2;
     }
 
 
@@ -71,9 +77,14 @@ public class OrderHandler extends MethodHandlerBase {
         order.getItemList().clear();
         order.getItemList().add(oi);
 
+        ProductDto p = productMapper2.toDto(order.getItemList().get(0).getProduct());
+        System.out.println(p);
+
         OrderItemDto zpzpzp =  mapper.map(order.getItemList().get(0), OrderItemDto.class);
 
         System.out.println(zpzpzp);
+
+
 
 
         try {

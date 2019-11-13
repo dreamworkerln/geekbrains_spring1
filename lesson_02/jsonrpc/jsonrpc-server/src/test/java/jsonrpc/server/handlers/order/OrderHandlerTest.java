@@ -2,7 +2,6 @@ package jsonrpc.server.handlers.order;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
 import jsonrpc.protocol.dto.base.param.GetByIdDto;
 import jsonrpc.protocol.dto.order.OrderDto;

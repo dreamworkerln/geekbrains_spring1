@@ -21,6 +21,7 @@
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/jsonrpc-server/src/main/java/jsonrpc/server/entities/base/AbstractEntity.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/jsonrpc-server/src/main/java/jsonrpc/server/entities/order/OrderItem.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/jsonrpc-server/src/main/java/jsonrpc/server/repository/OrderRepository.java
+/home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/jsonrpc-server/src/main/java/jsonrpc/server/entities/base/mapper/InstantLongMapper.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/jsonrpc-server/src/main/java/jsonrpc/server/handlers/base/JrpcMethodHandler.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/jsonrpc-server/src/main/java/jsonrpc/server/handlers/product/ProductHandler.java
 /home/khatuncev/coding/java/geekbrains/geekbrains_spring1/lesson_02/jsonrpc/jsonrpc-server/src/main/java/jsonrpc/server/entities/base/Person.java
