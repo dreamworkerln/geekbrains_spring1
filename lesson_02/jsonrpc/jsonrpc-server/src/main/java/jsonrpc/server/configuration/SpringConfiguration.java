@@ -1,12 +1,11 @@
 package jsonrpc.server.configuration;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 @Configuration
 public class SpringConfiguration {
@@ -14,20 +13,22 @@ public class SpringConfiguration {
     public static final String MAIN_ENTITIES_PATH = "shop.entities";
 
     @Bean
-    @Scope("singleton")
-    //ToDo: ObjectMapper is threadsafe, so need setup several ObjectMapper with different config on startup
-    // And set bean scope to "singleton"
+    // ObjectMapper is threadsafe
     public ObjectMapper objectMapper() {
 
         ObjectMapper mapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule());  // allow convertation to/from Instant
 
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        //mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 
         //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         //mapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true);
         return mapper;
     }
+
+
+
 
 /*  @Bean
     @Scope("singleton")// ModelMapper is threadsafe

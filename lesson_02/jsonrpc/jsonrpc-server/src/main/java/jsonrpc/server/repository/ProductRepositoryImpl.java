@@ -3,9 +3,12 @@ package jsonrpc.server.repository;
 import com.github.javafaker.Faker;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.utils.Utils;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.time.Instant;
+
+@Repository
 //@Primary
 public class ProductRepositoryImpl implements ProductRepository{
 
@@ -25,6 +28,9 @@ public class ProductRepositoryImpl implements ProductRepository{
 
         result.setName(faker.beer().name());
         result.setvCode(faker.number().digits(7));
+
+
+        result.setTestDate(Instant.EPOCH);
 
 
 

@@ -6,6 +6,7 @@ import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderItem;
 import jsonrpc.server.entities.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import static jsonrpc.server.utils.Utils.idSetter;
@@ -13,7 +14,7 @@ import static jsonrpc.server.utils.Utils.toLong;
 
 // Fake repository
 
-@Service
+@Repository
 //@Primary
 public class OrderRepositoryImpl implements OrderRepository{
 
@@ -48,6 +49,8 @@ public class OrderRepositoryImpl implements OrderRepository{
                 Product p = productRepository.getById(toLong(faker.number().digits(7)));
 
                 OrderItem oi = new OrderItem(p, faker.number().numberBetween(1, 50));
+                oi.toCreate();
+                oi.toUpdate();
                 idSetter(oi, toLong(faker.number().digits(7)));
 
                 //idSetter(oi, toLong(faker.number().digits(7)));

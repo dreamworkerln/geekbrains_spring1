@@ -56,12 +56,14 @@ public class ApiController {
 
     public ResponseEntity processRequest(@RequestHeader("token") String token, @RequestBody String json) {
 
-        // testing:
+        // OAuth2 / tokens, etc -  сказали credentials передавать в инкапсулирующем потоке
+        // (играющим роль транспортного для json-rpc)
+        // в случае http - в заголовке,
+        // в случае websocket - также в http заголовке (до апгрейда http в websocket)
 
-
-
-        // DEBUG
-        // java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -Dserver.port=8081 -jar chuck-api-1.0.jar
+        // REMOTE DEBUG
+        // mvn -DskipTests package (obtain .jar)
+        // java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -Dserver.port=8081 -jar jsonrpc-server-0.1.jar
 
 
         Long id = null;
