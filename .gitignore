@@ -30,5 +30,7 @@ log/
 log_test/
 
 lesson_2/selector02/server/data/
+# mapstruct generated mapperImpls
+lesson_02/jsonrpc/jsonrpc-server/target/generated-sources/annotations/
 
 
