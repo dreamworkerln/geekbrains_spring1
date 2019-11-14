@@ -1,13 +1,13 @@
 package jsonrpc.protocol.dto.Product;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 
 @Component
 @Scope("prototype")
-public class ProductDto extends AbstractDto {
+public class ProductDto extends AbstractDtoPersisted {
 
     private String name;
     private String vCode; // Артикул

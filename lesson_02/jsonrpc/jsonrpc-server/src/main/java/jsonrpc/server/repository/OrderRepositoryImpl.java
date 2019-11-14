@@ -49,8 +49,6 @@ public class OrderRepositoryImpl implements OrderRepository{
 
                 OrderItem oi = new OrderItem(p, faker.number().numberBetween(1, 50));
                 idSetter(oi, toLong(faker.number().digits(7)));
-                oi.toCreate();
-                oi.toUpdate();
 
                 //idSetter(oi, toLong(faker.number().digits(7)));
                 result.addItem(oi);

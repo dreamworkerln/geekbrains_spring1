@@ -1,13 +1,13 @@
 package jsonrpc.protocol.dto.order;
 
 import jsonrpc.protocol.dto.Product.ProductDto;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class OrderItemDto extends AbstractDto {
+public class OrderItemDto extends AbstractDtoPersisted {
 
     private ProductDto product;
 

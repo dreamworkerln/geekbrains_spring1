@@ -1,12 +1,11 @@
 package jsonrpc.server.entities.base.param;
 
-import jsonrpc.server.entities.base.AbstractEntity;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class GetById extends AbstractEntity {
+public class GetById extends AbstractParam {
     private Long id;
 
     protected GetById() {}

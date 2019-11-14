@@ -6,10 +6,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class GetByIdDto extends AbstractDto {
-    private Long id;
+public class GetByIdDto extends AbstractParamDto {
 
-    protected GetByIdDto() {}
+    private Long id;
 
     public Long getId() {
         return id;

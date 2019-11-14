@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2019-11-13T19:45:17+0300",
+    date = "2019-11-14T14:44:08+0300",
     comments = "version: 1.3.1.Final, compiler: javac, environment: Java 1.8.0_222 (Private Build)"
 )
 @Component
-public class ProductMapper2Impl implements ProductMapper2 {
+public class ProductMapperImpl implements ProductMapper {
 
     @Autowired
     private InstantLongMapper instantLongMapper;
@@ -32,5 +32,21 @@ public class ProductMapper2Impl implements ProductMapper2 {
         productDto.setvCode( product.getvCode() );
 
         return productDto;
+    }
+
+    @Override
+    public Product toEntity(ProductDto productDto) {
+        if ( productDto == null ) {
+            return null;
+        }
+
+        Product product = new Product();
+
+        product.setCreated( instantLongMapper.map( productDto.getCreated() ) );
+        product.setUpdated( instantLongMapper.map( productDto.getUpdated() ) );
+        product.setName( productDto.getName() );
+        product.setvCode( productDto.getvCode() );
+
+        return product;
     }
 }

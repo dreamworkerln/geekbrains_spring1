@@ -1,21 +1,17 @@
 package jsonrpc.server.handlers.order;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jsonrpc.protocol.dto.Product.ProductDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.base.param.GetByIdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.server.entities.base.param.GetById;
+import jsonrpc.server.entities.base.param.GetByIdMapper;
 import jsonrpc.server.entities.order.Order;
-import jsonrpc.server.entities.order.OrderItem;
-import jsonrpc.server.entities.product.Product;
-import jsonrpc.server.entities.product.ProductMapper2;
+import jsonrpc.server.entities.order.OrderMapper;
 import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
-import jsonrpc.server.handlers.base.MethodHandlerBase;
 import jsonrpc.server.repository.OrderRepository;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,21 +24,25 @@ import static jsonrpc.server.configuration.SpringConfiguration.MAIN_ENTITIES_PAT
 
 @Service
 @JrpcController(path = MAIN_ENTITIES_PATH + "." + "order")
-public class OrderHandler extends MethodHandlerBase {
+public class OrderHandler {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final OrderRepository orderRepository;
-    private final ModelMapper mapper;
+    private final ObjectMapper objectMapper;
+    private final OrderMapper orderMapper;
+    private final GetByIdMapper getByIdMapper;
 
-    private final ProductMapper2 productMapper2;
 
     @Autowired
-    protected OrderHandler(ModelMapper mapper, OrderRepository orderRepository, ProductMapper2 productMapper2) {
+    protected OrderHandler(OrderRepository orderRepository,
+                           OrderMapper orderMapper,
+                           ObjectMapper objectMapper, GetByIdMapper getByIdMapper) {
 
-        this.mapper = mapper;
         this.orderRepository = orderRepository;
-        this.productMapper2 = productMapper2;
+        this.orderMapper = orderMapper;
+        this.objectMapper = objectMapper;
+        this.getByIdMapper = getByIdMapper;
     }
 
 
@@ -55,7 +55,7 @@ public class OrderHandler extends MethodHandlerBase {
         // parsing request
         try {
             GetByIdDto requestDto = objectMapper.treeToValue(params, GetByIdDto.class);
-            request = mapper.map(requestDto, GetById.class);
+            request = getByIdMapper.toEntity(requestDto);
 
             // validate request
             GetById.validate(request);
@@ -73,26 +73,21 @@ public class OrderHandler extends MethodHandlerBase {
         // Getting from repository order by "id"
         Order order = orderRepository.getById(request.getId());
 
+        /*
         OrderItem oi = order.getItemList().get(0);
         order.getItemList().clear();
         order.getItemList().add(oi);
-
-        ProductDto p = productMapper2.toDto(order.getItemList().get(0).getProduct());
-        System.out.println(p);
-
-        OrderItemDto zpzpzp =  mapper.map(order.getItemList().get(0), OrderItemDto.class);
-
-        System.out.println(zpzpzp);
+        */
 
 
 
 
         try {
-            
-            result = mapper.map(order, OrderDto.class);
-            
+
+            result = orderMapper.toDto(order);
+
         } catch (Exception e) {
-            throw new IllegalArgumentException("ModelMapper error", e);
+            throw new IllegalArgumentException("MapStruct error", e);
         }
         return result;
     }

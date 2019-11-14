@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
-public class Person extends AbstractEntity {
+public class Person extends AbstractEntityPersisted {
 
     private String lastName;
 

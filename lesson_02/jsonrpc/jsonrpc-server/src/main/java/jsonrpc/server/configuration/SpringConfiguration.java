@@ -29,7 +29,7 @@ public class SpringConfiguration {
         return mapper;
     }
 
-    @Bean
+/*  @Bean
     @Scope("singleton")// ModelMapper is threadsafe
     public ModelMapper modelMapper() {
 
@@ -46,7 +46,7 @@ public class SpringConfiguration {
         result.getConfiguration().setMethodAccessLevel(org.modelmapper.config.Configuration.AccessLevel.PROTECTED);
 
         return result;
-    }
+    }*/
 
 
     // ----------------------------------------------------------

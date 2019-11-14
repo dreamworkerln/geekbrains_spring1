@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JrpcRequestHeader extends Message {
 
-    protected String token;
     protected String method;
 
     public String getMethod() {
@@ -30,11 +29,5 @@ public class JrpcRequestHeader extends Message {
         this.method = method;
     }
 
-    public String getToken() {
-        return token;
-    }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

@@ -1,12 +1,11 @@
 package jsonrpc.server.entities.product;
 
-import jsonrpc.server.entities.base.AbstractEntity;
-
+import jsonrpc.server.entities.base.AbstractEntityPersisted;
 import javax.persistence.*;
 
 @Entity
 @Table(name="product")
-public class Product extends AbstractEntity {
+public class Product extends AbstractEntityPersisted {
 
     private String name;
     private String vCode;

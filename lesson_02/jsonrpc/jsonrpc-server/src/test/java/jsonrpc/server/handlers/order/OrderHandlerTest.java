@@ -3,18 +3,17 @@ package jsonrpc.server.handlers.order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.param.GetByIdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.SpringConfiguration;
 import jsonrpc.server.entities.base.param.GetById;
+import jsonrpc.server.entities.base.param.GetByIdMapper;
+import jsonrpc.server.entities.base.param.GetByIdMapperImpl;
 import jsonrpc.server.entities.order.Order;
-import jsonrpc.server.entities.product.ProductMapper2;
 import jsonrpc.server.utils.Rest;
 import jsonrpc.server.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,8 @@ import java.lang.invoke.MethodHandles;
         OrderDto.class,
         Order.class,
         JrpcRequest.class,
-        ProductMapper2.class})
+//        GetByIdMapper.class,
+        GetByIdMapperImpl.class})
 class OrderHandlerTest {
 
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -71,7 +71,7 @@ class OrderHandlerTest {
         Long id = 33L;
 
         ObjectMapper objectMapper = context.getBean(ObjectMapper.class);
-        ModelMapper mapper = context.getBean(ModelMapper.class);
+        //ModelMapper mapper = context.getBean(ModelMapper.class);
 
 
 //        String json = "{" + TestSuite.INSTANCE.getJrpcHeader() + ", " +
@@ -87,21 +87,25 @@ class OrderHandlerTest {
         // Создаем запрос
         GetById getById = context.getBean(GetById.class);
 
+        GetByIdMapper getByIdMapper = context.getBean(GetByIdMapper.class);
+
         // определяем параметры запроса
         getById.setId(id);
         jrpcRequest.setId(22L);
-        jrpcRequest.setToken("f229fbea-a4b9-40a8-b8ee-e2b47bc1391d");
+        //jrpcRequest.setToken("f229fbea-a4b9-40a8-b8ee-e2b47bc1391d");
         
         String methodName = GetById.class.getSimpleName();
         methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
         jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
-        jrpcRequest.setParams(mapper.map(getById, GetByIdDto.class));
+        jrpcRequest.setParams(getByIdMapper.toDto(getById));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
 
         log.info(json);
 
         //json = String.format(json, id);
+
+        rest.setCustomHeader("token", "f229fbea-a4b9-40a8-b8ee-e2b47bc1391d");
 
         ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
         log.info(response.getStatusCode().toString() + "\n" + response.getBody());

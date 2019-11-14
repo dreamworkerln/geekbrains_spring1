@@ -2,16 +2,15 @@ package jsonrpc.server.entities.order;
 
 import jsonrpc.server.entities.Client;
 import jsonrpc.server.entities.Manager;
-import jsonrpc.server.entities.base.AbstractEntity;
+import jsonrpc.server.entities.base.AbstractEntityPersisted;
 
 import javax.persistence.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name="orders")  // Ambiguous with hsql keyword 'order'
-public class Order extends AbstractEntity {
+public class Order extends AbstractEntityPersisted {
 
     @OneToMany(mappedBy= "order", fetch=FetchType.LAZY)
     @OrderBy("id ASC")

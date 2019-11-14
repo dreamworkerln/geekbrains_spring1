@@ -19,19 +19,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.Instant;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -59,7 +54,7 @@ public class ApiController {
     @RequestMapping(value="/api", method = RequestMethod.POST)
     //public UserDto register(@RequestBody UserByNickAndMail request)
 
-    public ResponseEntity processRequest(@RequestBody String json) {
+    public ResponseEntity processRequest(@RequestHeader("token") String token, @RequestBody String json) {
 
         // testing:
 
@@ -71,7 +66,7 @@ public class ApiController {
 
         Long id = null;
 
-        // json-rpc response
+        // jrpc response
         AbstractDto jrpcResult;
 
         // http response
@@ -93,14 +88,17 @@ public class ApiController {
 
         try {
 
-            // get json-rpc request header (contains only method, token, id)
+            // get json-rpc request header (contains only method, id)
             //objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
+            // JrpcRequestHeader не содержит свойство params, поэтому десереализация происходит без проблем
             JrpcRequestHeader jsonRpcHeader = objectMapper.readValue(json, JrpcRequestHeader.class);
+
+
 
             id = jsonRpcHeader.getId();
             final String method = jsonRpcHeader.getMethod();
-            final String token = jsonRpcHeader.getToken();
+            //final String token = jsonRpcHeader.getToken();
 
             // ------------------------------------------------------------------------------
             // Parsing jrpc header
@@ -121,6 +119,7 @@ public class ApiController {
             // ------------------------------------------------------------------------------
             //objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
 
+            // reading params
             JsonNode params = objectMapper.readTree(json).get("params");
 
             // ------------------------------------------------------------------------------
@@ -216,25 +215,6 @@ public class ApiController {
 
             }
 
-            //handlers.put("ololo", this::foo);
-
-            //JrpcHandler handler = AnnotationUtils.findAnnotation(null, JrpcHandler.class);
-
-
-//            for (Map.Entry<String, Object> entry : beans.entrySet()) {
-//
-//                JrpcController annotation = context.findAnnotationOnBean(entry.getKey(), JrpcController.class);
-//
-//                // reference to handler method
-//                //noinspection unchecked
-//                MethodHandler_OLD methodHandlerOLD = (MethodHandler_OLD)entry.getValue();
-//                //RequestHandler_NOTUSED handler = new RequestHandler_NOTUSED(methodReference, annotation.request());
-//
-//                handlers.put(annotation.method(), methodHandlerOLD);
-//
-//            }
-
-
         } catch (BeansException e) {
             throw new RuntimeException(e);
         }
@@ -242,8 +222,8 @@ public class ApiController {
     }
 
 
-    //@Scheduled(cron = "*/3 * * * * *")
     //@Scheduled(fixedRate = 5000)
+    //@Scheduled(cron = "*/3 * * * * *")
     public void scheduleTaskUsingCronExpression() throws InterruptedException {
 
         long now = Instant.now().getEpochSecond();
@@ -253,9 +233,8 @@ public class ApiController {
         TimeUnit.DAYS.sleep(100000);
     }
 
-
-    //@Scheduled(cron = "*/5 * * * * *")
-    //@Scheduled(fixedRate = 5000)
+    //@Scheduled(fixedRate = 6000)
+    //@Scheduled(cron = "*/4 * * * * *")
     public void scheduleTaskUsingCronExpression2() throws InterruptedException {
 
         long now = Instant.now().getEpochSecond();
