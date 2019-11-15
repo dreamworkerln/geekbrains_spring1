@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+
 import static jsonrpc.server.utils.Utils.idSetter;
 import static jsonrpc.server.utils.Utils.toLong;
 
@@ -26,6 +29,7 @@ public class OrderRepositoryImpl implements OrderRepository{
     public OrderRepositoryImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
 
     @Override
     public Order getById(Long id) {

@@ -62,7 +62,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("-------------------\n");
         Tiger tiger = context.getBean("tiger", Tiger.class);
         System.out.println(tiger.toString());
-        Tiger tiger2 = context.getBean("mutatedTiger", Tiger.class);
+        Tiger tiger2 = context.getBean("factorizedTiger", Tiger.class);
         System.out.println(tiger2.toString());
         System.out.println(String.format("tiger == tiger2: %1$b",tiger == tiger2));
         System.out.println("tiger.equals(tiger2): " + tiger.equals(tiger2));
@@ -71,7 +71,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n\n---------------------------------------------");
         System.out.println("tiger2 vs tiger2 ");
         System.out.println("-------------------\n");
-        Tiger tiger22 = context.getBean("mutatedTiger", Tiger.class);
+        Tiger tiger22 = context.getBean("factorizedTiger", Tiger.class);
         System.out.println(String.format("tiger2 == tiger22: %1$b", tiger2 == tiger22));
         System.out.println("tiger2.equals(tiger22): " + tiger2.equals(tiger22));
         

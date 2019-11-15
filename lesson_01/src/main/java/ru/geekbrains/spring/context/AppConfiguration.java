@@ -28,9 +28,9 @@ public class AppConfiguration {
     }
 
 
-    @Bean("mutatedTiger")
+    @Bean("factorizedTiger")
     @Scope("prototype")
-    public FactoryBean<Tiger> tiger2() {
+    public FactoryBean<Tiger> tigerFactory() {
 
         Tiger tiger = new Tiger();
         tiger.setColor(color());
@@ -50,6 +50,8 @@ public class AppConfiguration {
 
         // How to use the Spring FactoryBean?
         // https://www.baeldung.com/spring-factorybean
+
+        // maybe use @PostConstruct for Tiger bean ?
 
 
         return new FactoryBean<Tiger>()
