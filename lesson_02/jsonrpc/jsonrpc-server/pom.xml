@@ -138,14 +138,6 @@
             <scope>compile</scope>
         </dependency>
 
-
-        <!--&lt;!&ndash; ~/.m2/repository/ru/kvant_telecom/tv/lib/1.0-SNAPSHOT &ndash;&gt;-->
-        <!--<dependency>-->
-        <!--<groupId>ru.kvant_telecom.tv</groupId>-->
-        <!--<artifactId>utils</artifactId>-->
-        <!--<version>1.0-SNAPSHOT</version>-->
-        <!--</dependency>-->
-
         <!-- https://mvnrepository.com/artifact/com.github.javafaker/javafaker -->
         <dependency>
             <groupId>com.github.javafaker</groupId>

@@ -41,30 +41,6 @@
         </dependency>
     </dependencies>
 
-
-
-    <!--    <dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-parent</artifactId>
-                    <version>2.2.0.RELEASE</version>
-                    <type>pom</type>
-                    <scope>import</scope>
-                </dependency>
-            </dependencies>
-        </dependencyManagement>-->
-
-    <!--    <dependencies>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-parent</artifactId>
-                <version>2.2.0.RELEASE</version>
-                &lt;!&ndash;<type>pom</type>&ndash;&gt;
-                &lt;!&ndash;<scope>import</scope>&ndash;&gt;
-            </dependency>
-        </dependencies>-->
-
     <build>
         <plugins>
             <plugin>

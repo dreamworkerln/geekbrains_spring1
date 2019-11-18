@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,8 +40,10 @@ public class ApiController {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    // Next move to Oauth2
     private final static String ACCESS_TOKEN = "f229fbea-a4b9-40a8-b8ee-e2b47bc1391d";
 
+    // Map обработчиков jrpc запросов
     private final Map<String, JrpcMethodHandler> handlers = new ConcurrentHashMap<>();
 
     @Autowired
@@ -47,11 +51,25 @@ public class ApiController {
         this.context = context;
         this.objectMapper = objectMapper;
 
-        // scanning handlers
+        // scanning/loading handlers
         loadHandlers();
     }
 
-    @RequestMapping(value="/api", method = RequestMethod.POST)
+    /*
+    @RequestMapping(value = "/**", method = RequestMethod.POST)
+    public void processRequest(HttpServletRequest request,
+                                         HttpServletResponse response) {
+
+        System.out.println(request);
+
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+    }
+    */
+
+
+
+
+    @RequestMapping(value = "/api", method = RequestMethod.POST)
     //public UserDto register(@RequestBody UserByNickAndMail request)
 
     public ResponseEntity processRequest(@RequestHeader("token") String token, @RequestBody String json) {
@@ -62,8 +80,27 @@ public class ApiController {
         // в случае websocket - также в http заголовке (до апгрейда http в websocket)
 
         // REMOTE DEBUG
-        // mvn -DskipTests package (obtain .jar)
-        // java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -Dserver.port=8081 -jar jsonrpc-server-0.1.jar
+        // mvn -DskipTests package (will obtain .jar)
+        //
+        // java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005 -jar jsonrpc-server-0.1.jar
+        // may set suspend=y to suspend application execution until debugger has been attached
+        //
+        // remote-alias - алиас ssh-соединения, сконфигурировано в ~/.ssh/config
+        //
+        // Будет держать туннель(проброс портов) до посинения
+        // ssh -fNT -L 8084:localhost:8084 -L 5005:localhost:5005 -L 9001:localhost:9001 remote-alias
+        //
+        //
+        // Через 100с тунель автоматически закроется, если не был открыт сокет
+        // (если соединение было установлено - будет ждать когда сокет закроется)
+        // ssh -f -L 8084:localhost:8084 -L 5005:localhost:5005 -L 9001:localhost:9001 remote-alias sleep 100;
+        //
+        //
+        // 8084 порт можно не пробрасывать
+        //
+        // -f run in background
+        // -N no command execution
+        // -T no terminal allocation
 
 
         Long id = null;
@@ -83,14 +120,8 @@ public class ApiController {
         // соответственно http path один, а method указывается внутри json
         // => самодельный routing (аналог @GetMapping, будем маршрутизировать по именам методов)
 
-        // now simply convert your JSON string into your UserByNickAndMail POJO
-        // using Jackson's ObjectMapper.readValue() method, whose first
-        // parameter your JSON parameter as String, and the second
-        // parameter is the POJO class.
-
         try {
 
-            // get json-rpc request header (contains only method, id)
             //objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
             // JrpcRequestHeader не содержит свойство params, поэтому десереализация происходит без проблем
@@ -165,9 +196,9 @@ public class ApiController {
     // =================================================================================================
 
     /**
-     * Fill requestHandlerList based on classes located in entities.message.request.*
+     * Fill handlers based on classes located in entities.message.request.*
      * <br>
-     * Using reflection get all classes on server that handle clients requests
+     * Using reflection get all classes in package that handle clients requests
      */
     private void loadHandlers() {
 
@@ -200,8 +231,7 @@ public class ApiController {
                             } catch (IllegalAccessException | InvocationTargetException e) {
 
                                 // выбрасываем наверх причину InvocationTargetException -
-                                // Что-то там упало в обработчике метода jrpc
-                                // upcast into unchecked exception
+                                // Что-то там упало в обработчике метода jrpc upcast into unchecked exception
                                 if (e.getCause() != null) {
                                     throw (RuntimeException) e.getCause();
                                 }
