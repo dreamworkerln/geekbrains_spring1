@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.TestSuite;
+import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.configuration.SpringConfiguration;
 import jsonrpc.server.entities.base.param.GetById;
 import jsonrpc.server.entities.base.param.GetByIdMapper;
@@ -17,9 +18,14 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
@@ -31,19 +37,20 @@ import java.util.stream.Stream;
 import static java.util.function.Function.identity;
 
 
-//@RunWith(SpringRunner.class)
-//@EnableConfigurationProperties
+// Не включишь - не будут прогружаться конфиги из кастомных .properties файлов
+@EnableConfigurationProperties
 
-
-
-// не догрузишь мапперы - не взлетит
-@SpringBootTest(classes = {SpringConfiguration.class,  // грузим определения бинов
+// не укажешь бины - Spring их и не найдет, явно указываем все требуемые для тестов бины
+// (транзистивная зависимость автоматически не разрешается)
+@SpringBootTest(classes = {
+        SpringConfiguration.class,
         GetById.class,
         OrderDto.class,
         Order.class,
         JrpcRequest.class,
-//        GetByIdMapper.class,
-        GetByIdMapperImpl.class})
+        GetByIdMapperImpl.class,
+        ConfigProperties.class})
+//@TestPropertySource("classpath:configprops.properties") - можно догрузить/переопределить базовые настройки
 class OrderHandlerTest {
 
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -74,6 +81,14 @@ class OrderHandlerTest {
 
     @Test
     void getById() throws JsonProcessingException {
+
+
+        ConfigProperties configProperties = context.getBean(ConfigProperties.class);
+
+
+        System.out.println(configProperties.getHostName());
+
+
 
         Long id = 33L;
 

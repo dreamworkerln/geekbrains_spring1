@@ -33,13 +33,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
      * Custom Jackson Config for Spring Boot
      * https://gdpotter.com/2017/05/24/custom-spring-mvc-jackson/
      *
-     *  Эта штука позволяет настроить ObjectMapper, который Spring Boot юзает для MVC
-     *  Она будет использовать уже сконфигурированный ObjectMapper(ваш bean, если он есть),
+     *  Эта штука позволяет настроить ObjectMapper, который Spring Boot юзает для MVC.
+     *  Она будет использовать уже сконфигурированный ObjectMapper(наш bean, если он есть),
      *  (или default, если не создать соответствующий бин)
      *  Поэтому используем objectMapper.copy() и доводим напильником ObjectMapper MVC,
-     *  чтобы не изменять ObjectMapper из bean(если это нужно).
+     *  чтобы не изменять существующий ObjectMapper bean(если это требуется).
      *
-     *  Здесь ObjectMapper в этом примере конфигурируется отдельно
+     *  В этом примере ObjectMapper конфигурируется отдельно
      *  в бине SpringConfiguration.objectMapper()
      */
     @Override
@@ -48,7 +48,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // удаляем нагенерированные json конвертеры по-умолчанию (у меня аж 2 штуки)
         converters.removeIf(converter -> converter instanceof MappingJackson2HttpMessageConverter);
 
-        //  Добавляем  конвертер из бина
+        //  Клонируем существующий конвертер из бина
         ObjectMapper webObjectMapper = objectMapper.copy();
         // И можем дальше кастомизировать его клон, не трогая оригинальный биновый objectMapper
         //webObjectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
