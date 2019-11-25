@@ -3,13 +3,14 @@ package jsonrpc.server.entities.order;
 import jsonrpc.server.entities.Client;
 import jsonrpc.server.entities.Manager;
 import jsonrpc.server.entities.base.AbstractEntityPersisted;
+import org.apache.commons.lang3.SerializationUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name="orders")  // Ambiguous with hsql keyword 'order'
+@Table(name="order")  // Ambiguous with hsql keyword 'order'
 public class Order extends AbstractEntityPersisted {
 
     @OneToMany(mappedBy= "order", fetch=FetchType.LAZY)
@@ -66,5 +67,14 @@ public class Order extends AbstractEntityPersisted {
     public void setManager(Manager manager) {
         this.manager = manager;
     }
+
+
+    public Order clone() {
+
+        return SerializationUtils.clone(this);
+    }
+
+
+
 
 }

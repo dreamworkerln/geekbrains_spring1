@@ -1,31 +1,21 @@
 package jsonrpc.protocol.dto.order;
 
-import jsonrpc.protocol.dto.Product.ProductDto;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
+import jsonrpc.protocol.dto.product.ProductItemDto;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+
 @Component
 @Scope("prototype")
-public class OrderItemDto extends AbstractDtoPersisted {
+public class OrderItemDto extends ProductItemDto {
 
-    private ProductDto product;
+    private OrderDto order;
 
-    private Integer count;
-
-    public ProductDto getProduct() {
-        return product;
+    public OrderDto getOrder() {
+        return order;
     }
 
-    public void setProduct(ProductDto product) {
-        this.product = product;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
+    public void setOrder(OrderDto order) {
+        this.order = order;
     }
 }

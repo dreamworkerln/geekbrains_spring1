@@ -2,7 +2,6 @@ package jsonrpc.server.configuration;
 
 import org.hibernate.validator.constraints.Length;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.validation.annotation.Validated;
@@ -15,6 +14,7 @@ import javax.validation.constraints.Pattern;
 
 /**
  * Custom properties - for education purposes
+ * https://www.baeldung.com/configuration-properties-in-spring-boot
  */
 //
 //@ContextConfiguration
@@ -74,7 +74,6 @@ public class ConfigProperties {
 
     @Validated
     public static class Credentials {
-
 
         @Length(max = 4, min = 1)
         private String authMethod;

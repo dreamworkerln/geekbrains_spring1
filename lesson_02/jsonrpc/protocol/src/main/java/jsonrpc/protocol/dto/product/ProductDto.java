@@ -1,4 +1,4 @@
-package jsonrpc.protocol.dto.Product;
+package jsonrpc.protocol.dto.product;
 
 import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
 import org.springframework.context.annotation.Scope;
@@ -12,7 +12,7 @@ import java.time.Instant;
 public class ProductDto extends AbstractDtoPersisted {
 
     private String name;
-    private String vCode; // Артикул
+    private String vcode; // Артикул
 
     public String getName() {
         return name;
@@ -22,12 +22,10 @@ public class ProductDto extends AbstractDtoPersisted {
         this.name = name;
     }
 
-    public String getvCode() {
-        return vCode;
-    }
+    public String getVcode() {return vcode;}
 
-    public void setvCode(String vCode) {
-        this.vCode = vCode;
+    public void setVcode(String vcode) {
+        this.vcode = vcode;
     }
 
     // ----------------------------------------------------------------------

@@ -1,6 +1,6 @@
 package jsonrpc.server.entities.product;
 
-import jsonrpc.protocol.dto.Product.ProductDto;
+import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.entities.base.mapper.AbstractMapper;
 import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Component;

@@ -3,9 +3,15 @@ package jsonrpc.server.entities.base.param;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.Min;
+
 @Component
 @Scope("prototype")
 public class GetById extends AbstractParam {
+
+
+    // ToDo: оставить валидацию одну из двух
+    @Min(0)
     private Long id;
 
     protected GetById() {}
@@ -18,13 +24,13 @@ public class GetById extends AbstractParam {
         this.id = id;
     }
 
-    public static void validate(GetById request) {
 
-        if (request == null) {
-            throw new IllegalArgumentException("Error parsing request: params == null");
-        }
+    // =================================================================================
 
-        if (request.getId() <= 0) {
+    @Override
+    public void validate() {
+
+        if (id <= 0) {
             throw new IllegalArgumentException("Error parsing request: id <= 0");
         }
     }

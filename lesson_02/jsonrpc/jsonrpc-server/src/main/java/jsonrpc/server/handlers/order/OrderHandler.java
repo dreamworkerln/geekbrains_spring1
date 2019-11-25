@@ -3,12 +3,12 @@ package jsonrpc.server.handlers.order;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
-import jsonrpc.protocol.dto.base.param.GetByIdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.entities.base.param.GetById;
 import jsonrpc.server.entities.base.param.GetByIdMapper;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderMapper;
+import jsonrpc.server.handlers.base.HandlerBase;
 import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
 import jsonrpc.server.repository.OrderRepository;
@@ -24,25 +24,23 @@ import static jsonrpc.server.configuration.SpringConfiguration.MAIN_ENTITIES_PAT
 
 @Service
 @JrpcController(path = MAIN_ENTITIES_PATH + "." + "order")
-public class OrderHandler {
+public class OrderHandler extends HandlerBase {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final OrderRepository orderRepository;
-    private final ObjectMapper objectMapper;
     private final OrderMapper orderMapper;
-    private final GetByIdMapper getByIdMapper;
-
 
     @Autowired
-    protected OrderHandler(OrderRepository orderRepository,
-                           OrderMapper orderMapper,
-                           ObjectMapper objectMapper, GetByIdMapper getByIdMapper) {
+    protected OrderHandler(ObjectMapper objectMapper,
+                           GetByIdMapper getByIdMapper,
+                           OrderRepository orderRepository,
+                           OrderMapper orderMapper) {
+
+        super(objectMapper, getByIdMapper);
 
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
-        this.objectMapper = objectMapper;
-        this.getByIdMapper = getByIdMapper;
     }
 
 
@@ -50,46 +48,46 @@ public class OrderHandler {
     public AbstractDto getById(JsonNode params) {
 
         OrderDto result;
-        GetById request;
 
         // parsing request
-        try {
-            GetByIdDto requestDto = objectMapper.treeToValue(params, GetByIdDto.class);
-            request = getByIdMapper.toEntity(requestDto);
-
-            // validate request
-            GetById.validate(request);
-
-            //request = objectMapper.treeToValue(params, GetById.class);
-        }
-        // All parse/deserialize errors interpret as 400 error
-        catch (Exception e) {
-            log.error("json parse error: " + params.toPrettyString(), e);
-            throw new IllegalArgumentException(e);
-        }
+        GetById request = getByIdRequest(params);
 
 
-
-        // Getting from repository order by "id"
+        // Getting from repository order by id
         Order order = orderRepository.getById(request.getId());
-
-        /*
-        OrderItem oi = order.getItemList().get(0);
-        order.getItemList().clear();
-        order.getItemList().add(oi);
-        */
-
-
-
 
         try {
 
             result = orderMapper.toDto(order);
 
         } catch (Exception e) {
-            throw new IllegalArgumentException("MapStruct error", e);
+            throw new RuntimeException("MapStruct error", e);
         }
         return result;
+    }
+
+
+    @JrpcHandler(method = "put")
+    public AbstractDto put(JsonNode params) {
+
+        //PutOrder request;
+        Order order;
+        try {
+            //PutOrderDto requestDto = objectMapper.treeToValue(params, PutOrderDto.class);
+            //request = putOrderMapper.toEntity(requestDto);
+            OrderDto requestDto = objectMapper.treeToValue(params, OrderDto.class);
+            order = orderMapper.toEntity(requestDto);
+
+        }
+        // All parse/deserialize errors interpret as 400 error
+        catch (Exception e) {
+            throw new IllegalArgumentException("Jackson parse error", e);
+        }
+
+        // Adding to repository order by id
+        orderRepository.add(order);
+
+        return null;
     }
 
     // ===============================================

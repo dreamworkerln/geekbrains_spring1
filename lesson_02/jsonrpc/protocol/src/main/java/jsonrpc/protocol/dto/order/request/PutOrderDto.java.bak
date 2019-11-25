@@ -1,0 +1,22 @@
+package jsonrpc.protocol.dto.order.request;
+
+
+import jsonrpc.protocol.dto.base.param.AbstractParamDto;
+import jsonrpc.protocol.dto.order.OrderDto;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+@Scope("prototype")
+public class PutOrderDto extends AbstractParamDto {
+
+    private OrderDto orderDto;
+
+    public OrderDto getOrderDto() {
+        return orderDto;
+    }
+
+    public void setOrderDto(OrderDto orderDto) {
+        this.orderDto = orderDto;
+    }
+}

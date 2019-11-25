@@ -4,13 +4,23 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @MappedSuperclass
 public class Person extends AbstractEntityPersisted {
 
+    @NotBlank
     private String lastName;
 
+    @NotBlank
     private String firstName;
+
+    @NotBlank
+    private String login;
+
+    @Pattern(regexp = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,6}$")
+    private String email;
 
     public String getLastName() {
         return lastName;
@@ -27,4 +37,12 @@ public class Person extends AbstractEntityPersisted {
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
+
+    public String getLogin() {return login;}
+
+    public void setLogin(String login) {this.login = login;}
+
+    public String getEmail() {return email;}
+
+    public void setEmail(String email) {this.email = email;}
 }

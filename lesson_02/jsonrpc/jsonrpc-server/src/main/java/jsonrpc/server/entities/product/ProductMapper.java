@@ -1,10 +1,8 @@
 package jsonrpc.server.entities.product;
 
-import jsonrpc.protocol.dto.Product.ProductDto;
+import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.entities.base.mapper.InstantLongMapper;
 import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
-import org.mapstruct.factory.Mappers;
 
 @Mapper(componentModel = "spring",
         //unmappedTargetPolicy = ReportingPolicy.IGNORE,

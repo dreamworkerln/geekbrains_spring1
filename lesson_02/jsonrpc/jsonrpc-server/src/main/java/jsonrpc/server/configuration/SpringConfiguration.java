@@ -60,6 +60,8 @@ public class SpringConfiguration {
             public static class Shop {
 
                 public static final String ORDER = "shop.entities.order";
+                public static final String PRODUCT = "shop.entities.product";
+                public static final String STORAGE = "shop.entities.storage";
             }
 
         }

@@ -1,11 +1,14 @@
 package jsonrpc.server.entities.base;
 
+import org.springframework.validation.annotation.Validated;
+
 import javax.persistence.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @MappedSuperclass
-public class AbstractEntityPersisted extends AbstractEntity {
+@Validated
+public abstract class AbstractEntityPersisted extends AbstractEntity {
 
     private Instant created;
 

@@ -1,0 +1,20 @@
+package jsonrpc.server.entities.order.request;
+
+
+import jsonrpc.protocol.dto.base.param.GetByIdDto;
+import jsonrpc.protocol.dto.order.request.PutOrderDto;
+import jsonrpc.server.entities.base.mapper.InstantLongMapper;
+import jsonrpc.server.entities.base.param.GetById;
+import jsonrpc.server.entities.order.OrderItemMapper;
+import jsonrpc.server.entities.order.OrderMapper;
+import jsonrpc.server.entities.product.ProductMapper;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring",
+        //unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        uses = {InstantLongMapper.class, ProductMapper.class, OrderItemMapper.class, OrderMapper.class})
+public interface PutOrderMapper {
+
+    PutOrderDto toDto(PutOrder putOrder);
+    PutOrder toEntity(PutOrderDto putOrderDto);
+}
