@@ -45,6 +45,23 @@ public class ProductRepositoryImpl implements ProductRepository {
         return productList.get(id).clone();
     }
 
+
+    @Override
+    public List<Product> getByListId(List<Long> list) {
+
+        List<Product> result = new ArrayList<>();
+
+        list.forEach(i -> {
+
+            if (productList.containsKey(i)) {
+                result.add(productList.get(i));
+
+            }
+        });
+
+        return result;
+    }
+
     @Override
     public List<Product> getAll() {
         // returning only clones!

@@ -8,15 +8,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class PutOrderDto extends AbstractParamDto {
+public class PutOrderParamDto extends AbstractParamDto {
 
-    private OrderDto orderDto;
+    public static String METHOD_NAME = "put";
 
-    public OrderDto getOrderDto() {
-        return orderDto;
+    private OrderDto order;
+
+    public OrderDto getOrder() {
+        return order;
     }
 
-    public void setOrderDto(OrderDto orderDto) {
-        this.orderDto = orderDto;
+    public void setOrder(OrderDto order) {
+        this.order = order;
     }
 }

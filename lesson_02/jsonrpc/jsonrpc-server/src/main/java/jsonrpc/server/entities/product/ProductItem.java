@@ -7,9 +7,8 @@ import javax.persistence.*;
 
 
 /*
-Представляет собой хранилище для указанного типа товара
-Выдает информацию о типе товара и его количестве
-Используется в классах (Заказ(корзина), склад)
+Содержит информацию о количестве товара данного типа
+Используется в Storage(хранилище) и Order(корзина)
 */
 
 //@MappedSuperclass
@@ -18,9 +17,9 @@ public class ProductItem extends AbstractEntityPersisted {
 
     @ManyToOne
     @JoinColumn(name="product_id", referencedColumnName="id")
-    private Product product;
+    protected Product product;
 
-    private Integer count;
+    protected Integer count;
 
     //@ManyToOne
     //@JoinColumn(name="order_id", referencedColumnName="id")

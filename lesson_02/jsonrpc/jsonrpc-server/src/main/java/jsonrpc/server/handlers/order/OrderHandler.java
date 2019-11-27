@@ -4,10 +4,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.server.entities.base.param.GetById;
+import jsonrpc.protocol.dto.order.request.PutOrderParamDto;
+import jsonrpc.server.entities.base.param.GetByIdParam;
 import jsonrpc.server.entities.base.param.GetByIdMapper;
+import jsonrpc.server.entities.base.param.GetByListIdMapper;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderMapper;
+import jsonrpc.server.entities.order.request.PutOrderMapper;
+import jsonrpc.server.entities.order.request.PutOrderParam;
 import jsonrpc.server.handlers.base.HandlerBase;
 import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
@@ -22,6 +26,11 @@ import java.lang.invoke.MethodHandles;
 import static jsonrpc.server.configuration.SpringConfiguration.MAIN_ENTITIES_PATH;
 
 
+/**
+ * Выдает информацию о товарах.<br>
+ * Какие типы товаров есть, их описание, артикул и т.д.
+ * (За количеством на складе обращайтесь в сервис Storage)
+ */
 @Service
 @JrpcController(path = MAIN_ENTITIES_PATH + "." + "order")
 public class OrderHandler extends HandlerBase {
@@ -30,17 +39,21 @@ public class OrderHandler extends HandlerBase {
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
+    private final PutOrderMapper putOrderMapper;
+
 
     @Autowired
     protected OrderHandler(ObjectMapper objectMapper,
                            GetByIdMapper getByIdMapper,
+                           GetByListIdMapper getByListIdMapper,
                            OrderRepository orderRepository,
-                           OrderMapper orderMapper) {
+                           OrderMapper orderMapper, PutOrderMapper putOrderMapper) {
 
-        super(objectMapper, getByIdMapper);
+        super(objectMapper, getByIdMapper, getByListIdMapper);
 
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
+        this.putOrderMapper = putOrderMapper;
     }
 
 
@@ -50,7 +63,7 @@ public class OrderHandler extends HandlerBase {
         OrderDto result;
 
         // parsing request
-        GetById request = getByIdRequest(params);
+        GetByIdParam request = getByIdRequest(params);
 
 
         // Getting from repository order by id
@@ -70,27 +83,40 @@ public class OrderHandler extends HandlerBase {
     @JrpcHandler(method = "put")
     public AbstractDto put(JsonNode params) {
 
-        //PutOrder request;
-        Order order;
-        try {
-            //PutOrderDto requestDto = objectMapper.treeToValue(params, PutOrderDto.class);
-            //request = putOrderMapper.toEntity(requestDto);
-            OrderDto requestDto = objectMapper.treeToValue(params, OrderDto.class);
-            order = orderMapper.toEntity(requestDto);
+        PutOrderParam request = putOrderRequest(params);
 
-        }
-        // All parse/deserialize errors interpret as 400 error
-        catch (Exception e) {
-            throw new IllegalArgumentException("Jackson parse error", e);
-        }
+        orderRepository.put(request.getOrder());
 
-        // Adding to repository order by id
-        orderRepository.add(order);
+        System.out.println(orderRepository.getById(1L));
 
+        // nothing to return (result = null)
         return null;
     }
 
-    // ===============================================
+
+
+    // ==============================================================================
+
+
+
+
+
+
+    private PutOrderParam putOrderRequest(JsonNode params) {
+
+        // parsing request
+        PutOrderParam result;
+        try {
+            PutOrderParamDto requestDto = objectMapper.treeToValue(params, PutOrderParamDto.class);
+            result = putOrderMapper.toEntity(requestDto);
+            PutOrderParam.validate(result);
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Jackson parse error", e);
+        }
+        return result;
+    }
+
 
 
 

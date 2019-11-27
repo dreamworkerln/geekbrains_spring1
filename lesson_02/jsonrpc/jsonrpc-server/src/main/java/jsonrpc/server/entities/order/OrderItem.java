@@ -20,4 +20,14 @@ public class OrderItem extends ProductItem {
     public Order getOrder() {return order;}
 
     public void setOrder(Order order) {this.order = order;}
+
+    @Override
+    public String toString() {
+        return "OrderItem{" +
+               "order=" + order.getId() +
+               ", product=" + product +
+               ", count=" + count +
+               ", id=" + id +
+               '}';
+    }
 }

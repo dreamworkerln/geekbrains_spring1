@@ -28,8 +28,11 @@ public class OrderRepositoryImpl implements OrderRepository {
     private AtomicLong identity = new AtomicLong();
 
 
+    /**
+     * SaveOrUpdate Order
+     */
     @Override
-    public void add(Order order) {
+    public void put(Order order) {
 
         // assign id if not persisted yet
         if (order.getId() == null) {

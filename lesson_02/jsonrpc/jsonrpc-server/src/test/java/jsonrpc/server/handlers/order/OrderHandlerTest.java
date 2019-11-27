@@ -3,43 +3,41 @@ package jsonrpc.server.handlers.order;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
+import jsonrpc.protocol.dto.base.param.GetAllParamDto;
+import jsonrpc.protocol.dto.base.param.GetByIdParamDto;
+import jsonrpc.protocol.dto.base.param.GetByListIdParamDto;
 import jsonrpc.protocol.dto.order.OrderDto;
+import jsonrpc.protocol.dto.order.OrderItemDto;
+import jsonrpc.protocol.dto.order.request.PutOrderParamDto;
+import jsonrpc.protocol.dto.product.ProductItemDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.configuration.SpringConfiguration;
 import jsonrpc.server.entities.base.mapper.InstantLongMapper;
-import jsonrpc.server.entities.base.param.GetById;
+import jsonrpc.server.entities.base.param.GetByIdParam;
 import jsonrpc.server.entities.base.param.GetByIdMapper;
 import jsonrpc.server.entities.base.param.GetByIdMapperImpl;
 import jsonrpc.server.entities.order.*;
-import jsonrpc.server.entities.product.Product;
+import jsonrpc.server.entities.order.request.PutOrderParam;
+import jsonrpc.server.entities.order.request.PutOrderMapperImpl;
 import jsonrpc.server.entities.product.ProductItemMapperImpl;
 import jsonrpc.server.entities.product.ProductMapperImpl;
 import jsonrpc.server.utils.Rest;
 import jsonrpc.server.utils.RestFactory;
-import jsonrpc.server.utils.Utils;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.lang.invoke.MethodHandles;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.function.Function.identity;
+import static jsonrpc.server.TestSuite.TOKEN;
 
 
 // Не включишь - не будут прогружаться конфиги из кастомных .properties файлов
@@ -51,18 +49,17 @@ import static java.util.function.Function.identity;
 // (транзистивная зависимость автоматически не разрешается)
 @SpringBootTest(classes = {
         SpringConfiguration.class,
-        GetById.class,
+        GetByIdParamDto.class,
+        GetByListIdParamDto.class,
+        GetAllParamDto.class,
         OrderDto.class,
         Order.class,
+        PutOrderParamDto.class,
         JrpcRequest.class,
         GetByIdMapperImpl.class,
-        OrderMapperImpl.class,
-        OrderItemMapperImpl.class,
-        ProductMapperImpl.class,
-        ProductItemMapperImpl.class,
-        InstantLongMapper.class,
         ConfigProperties.class})
-//@TestPropertySource("classpath:configprops.properties") - можно догрузить/переопределить базовые настройки
+// Так можно догрузить/переопределить базовые настройки
+//@TestPropertySource("classpath:configprops.properties")
 class OrderHandlerTest {
 
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -72,38 +69,92 @@ class OrderHandlerTest {
     private ApplicationContext context;
 
 
-//    private ObjectMapper objectMapper;
-//
-//
-//    private OrderDto orderDto;
-//
-//
-//    private OrderById orderById;
-//
-//
-//    private JrpcRequest jrpcRequest;
+    ObjectMapper objectMapper;
+    JrpcRequest jrpcRequest;
+    GetByIdParamDto getByIdParamDto;
+    GetByListIdParamDto getByListIdParamDto;
+    GetAllParamDto getAllParamDto;
+    OrderDto orderDto;
+    PutOrderParamDto putOrderParamDto;
+    //ProductItemDto productItemDto;
 
 
     @BeforeAll
     static void setup() {
         TestSuite.INSTANCE.init();
         rest = RestFactory.getRest(true, true);
+        rest.setCustomHeader("token", TOKEN);
+    }
+
+
+    @SuppressWarnings("Duplicates")
+    @BeforeEach
+    void beforeEach() {
+
+        objectMapper = context.getBean(ObjectMapper.class);
+        jrpcRequest = context.getBean(JrpcRequest.class);
+        getByIdParamDto = context.getBean(GetByIdParamDto.class);
+        getByListIdParamDto = context.getBean(GetByListIdParamDto.class);
+        getAllParamDto = context.getBean(GetAllParamDto.class);
+        orderDto  = context.getBean(OrderDto.class);
+        putOrderParamDto = context.getBean(PutOrderParamDto.class);
     }
 
 
     @Test
     void getById() throws JsonProcessingException {
 
+        getByIdParamDto.setId(1L);
+        jrpcRequest.setId(22L);
 
-        ConfigProperties configProperties = context.getBean(ConfigProperties.class);
+        String methodName = GetByIdParamDto.METHOD_NAME;
+        jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
+        jrpcRequest.setParams(getByIdParamDto);
+
+        String json = objectMapper.writeValueAsString(jrpcRequest);
+        log.info(json);
 
 
-        System.out.println(configProperties.getHostName());
+        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //System.out.println(response);
+    }
 
+
+    @Test
+    void put() throws JsonProcessingException {
+
+        OrderItemDto oiDto = new OrderItemDto();
+        oiDto.setCount(3);
+        oiDto.setProductId(1L);
+        orderDto.addProductItemDto(oiDto);
+
+        // определяем параметры запроса
+        putOrderParamDto.setOrder(orderDto);
+
+        jrpcRequest.setId(22L);
+        String methodName = PutOrderParamDto.METHOD_NAME;
+        jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
+        jrpcRequest.setParams(putOrderParamDto);
+
+        String json = objectMapper.writeValueAsString(jrpcRequest);
+        log.info(json);
+
+        //json = String.format(json, id);
+
+        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //System.out.println(response);
+    }
+}
+
+/*
+
+    @Test
+    void getById() throws JsonProcessingException {
 
 
         Long id = 33L;
-
         ObjectMapper objectMapper = context.getBean(ObjectMapper.class);
         //ModelMapper mapper = context.getBean(ModelMapper.class);
 
@@ -119,19 +170,19 @@ class OrderHandlerTest {
         JrpcRequest jrpcRequest = context.getBean(JrpcRequest.class);
 
         // Создаем запрос
-        GetById getById = context.getBean(GetById.class);
+        GetByIdParam getByIdParam = context.getBean(GetByIdParam.class);
 
         GetByIdMapper getByIdMapper = context.getBean(GetByIdMapper.class);
 
         // определяем параметры запроса
-        getById.setId(id);
+        getByIdParam.setId(id);
         jrpcRequest.setId(22L);
         //jrpcRequest.setToken("f229fbea-a4b9-40a8-b8ee-e2b47bc1391d");
-        
-        String methodName = GetById.class.getSimpleName();
+
+        String methodName = GetByIdParam.class.getSimpleName();
         methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
         jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
-        jrpcRequest.setParams(getByIdMapper.toDto(getById));
+        jrpcRequest.setParams(getByIdMapper.toDto(getByIdParam));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
 
@@ -157,28 +208,27 @@ class OrderHandlerTest {
         // Создаем запрос-обертку
         JrpcRequest jrpcRequest = context.getBean(JrpcRequest.class);
 
-        // Создаем запрос
-        Order order = context.getBean(Order.class);
 
-        OrderMapper orderMapper = context.getBean(OrderMapper.class);
+        // Создаем запрос
+        // определяем параметры запроса
+        OrderDto orderDto = context.getBean(OrderDto.class);
+
+        ProductItemDto piDto = context.getBean(ProductItemDto.class);
+        piDto.setCount(3);
+        piDto.setProductId(1L);
+        orderDto.addProductItemDto(piDto);
 
         // определяем параметры запроса
-        OrderItem oi = new OrderItem();
-        oi.setOrder(order);
-        Product p = new Product();
-        Utils.idSetter(p, 1L);
-        oi.setProduct(p);
-        oi.setCount(4);
-        order.addItem(oi);
-
+        PutOrderParamDto putOrderParamDto = context.getBean(PutOrderParamDto.class);
+        putOrderParamDto.setOrderDto(orderDto);
 
         jrpcRequest.setId(22L);
         //jrpcRequest.setToken("f229fbea-a4b9-40a8-b8ee-e2b47bc1391d");
 
-        String methodName = "put";
+        String methodName = PutOrderParamDto.METHOD_NAME;
         methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
         jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
-        jrpcRequest.setParams(orderMapper.toDto(order));
+        jrpcRequest.setParams(putOrderParamDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
 
@@ -193,3 +243,4 @@ class OrderHandlerTest {
         //System.out.println(response);
     }
 }
+ */

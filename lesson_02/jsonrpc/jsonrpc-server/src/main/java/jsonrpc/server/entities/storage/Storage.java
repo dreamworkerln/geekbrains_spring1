@@ -9,10 +9,8 @@ import javax.persistence.Table;
 
 
 /**
- * represents available goodies in shop
+ * Represents available goodies in shop
  */
 @Entity
 @Table(name="storage")
-public class Storage extends ProductItem {
-
-}
+public class Storage extends ProductItem {}

@@ -9,10 +9,9 @@ import jsonrpc.protocol.dto.storage.StorageDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.configuration.SpringConfiguration;
-import jsonrpc.server.entities.base.param.GetById;
+import jsonrpc.server.entities.base.param.GetByIdParam;
 import jsonrpc.server.entities.base.param.GetByIdMapper;
 import jsonrpc.server.entities.base.param.GetByIdMapperImpl;
-import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.utils.Rest;
 import jsonrpc.server.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
@@ -30,7 +29,7 @@ import java.lang.invoke.MethodHandles;
 @EnableConfigurationProperties
 @SpringBootTest(classes = {
         SpringConfiguration.class,
-        GetById.class,
+        GetByIdParam.class,
         ProductDto.class,
         StorageDto.class,
         JrpcRequest.class,
@@ -69,15 +68,15 @@ public class StorageHandlerTest {
 
 
         JrpcRequest jrpcRequest = context.getBean(JrpcRequest.class);
-        GetById getById = context.getBean(GetById.class);
+        GetByIdParam getByIdParam = context.getBean(GetByIdParam.class);
 
         GetByIdMapper getByIdMapper = context.getBean(GetByIdMapper.class);
-        getById.setId(id);
+        getByIdParam.setId(id);
         jrpcRequest.setId(22L);
-        String methodName = GetById.class.getSimpleName();
+        String methodName = GetByIdParam.class.getSimpleName();
         methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
         jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.STORAGE + "." + methodName);
-        jrpcRequest.setParams(getByIdMapper.toDto(getById));
+        jrpcRequest.setParams(getByIdMapper.toDto(getByIdParam));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info(json);

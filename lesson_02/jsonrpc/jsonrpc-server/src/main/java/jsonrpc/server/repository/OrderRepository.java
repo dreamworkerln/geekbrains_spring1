@@ -13,7 +13,7 @@ import java.util.List;
 // emulation
 public interface OrderRepository {
 
-    void add(Order order);
+    void put(Order order);
     Order getById(Long id);
     void delete(Long id);
 }

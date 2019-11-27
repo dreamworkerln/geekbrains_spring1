@@ -43,4 +43,11 @@ public class OrderDto extends AbstractDtoPersisted {
         this.manager = manager;
     }
 
+    // --------------------------------------------------------------------
+
+    public void addProductItemDto(OrderItemDto productItemDto) {
+
+        itemList.add(productItemDto);
+    }
+
 }

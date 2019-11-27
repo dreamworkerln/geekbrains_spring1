@@ -6,7 +6,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class GetByIdDto extends AbstractDto {
+public class GetByIdParamDto extends AbstractParamDto {
+
+    public static String METHOD_NAME = "getById";
 
     private Long id;
 

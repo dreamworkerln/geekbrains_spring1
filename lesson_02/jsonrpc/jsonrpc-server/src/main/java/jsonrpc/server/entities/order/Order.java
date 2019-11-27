@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+// Заказ пользователя
 @Entity
 @Table(name="order")  // Ambiguous with hsql keyword 'order'
 public class Order extends AbstractEntityPersisted {
@@ -75,6 +77,12 @@ public class Order extends AbstractEntityPersisted {
     }
 
 
-
-
+    @Override
+    public String toString() {
+        return "Order{" +
+               "itemList=" + itemList +
+               ", client=" + client +
+               ", manager=" + manager +
+               '}';
+    }
 }

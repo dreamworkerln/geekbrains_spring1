@@ -2,10 +2,11 @@ package jsonrpc.server.entities.product;
 
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.entities.base.mapper.InstantLongMapper;
-import org.mapstruct.Mapper;
+import jsonrpc.server.utils.Utils;
+import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
-        //unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {InstantLongMapper.class})
 public interface ProductMapper {
 
@@ -15,6 +16,15 @@ public interface ProductMapper {
     //@Mapping(source = "address.houseNo", target = "houseNumber")
     ProductDto toDto(Product product);
     Product toEntity(ProductDto productDto);
+
+    // у Product protected setId(), и делать его public я не хочу,
+    // а MapStruct не умеет работать через отражения с protected членами
+    // поэтому делаем это вручную
+    @AfterMapping
+    default void setId(ProductDto source, @MappingTarget Product target) {
+        Utils.idSetter(target, source.getId());
+    }
+
 }
 
 

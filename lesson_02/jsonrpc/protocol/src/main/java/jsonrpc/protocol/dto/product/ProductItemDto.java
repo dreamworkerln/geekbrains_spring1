@@ -8,16 +8,20 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class ProductItemDto extends AbstractDtoPersisted {
 
-    private ProductDto product;
+    // lazy
+    // только ссылка на продукт (by id)
+    // нужно описание и поля продукта - иди в productHandler и получай подробную информацию
+    // о интересующих тебя продуктах
+    protected Long productId;
 
-    private Integer count;
+    protected Integer count;
 
-    public ProductDto getProduct() {
-        return product;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProduct(ProductDto product) {
-        this.product = product;
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public Integer getCount() {

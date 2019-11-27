@@ -10,6 +10,7 @@ public interface ProductRepository {
 
     void add(Product product);
     Product getById(Long id);
+    List<Product> getByListId(List<Long> list);
     List<Product> getAll();
     void delete(Long id);
 }
