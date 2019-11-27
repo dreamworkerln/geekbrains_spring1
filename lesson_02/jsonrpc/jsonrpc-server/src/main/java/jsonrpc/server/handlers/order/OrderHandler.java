@@ -88,11 +88,8 @@ public class OrderHandler extends HandlerBase {
 
         PutOrderParam request = putOrderRequest(params);
         Long oId = orderRepository.put(request.getOrder());
+        result.reCreateWithId(oId);
 
-
-        result.setId(oId);
-        result.toCreate();
-        result.toUpdate();
 
         return result;
     }

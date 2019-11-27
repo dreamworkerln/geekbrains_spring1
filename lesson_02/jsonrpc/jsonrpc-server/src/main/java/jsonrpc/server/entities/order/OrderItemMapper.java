@@ -17,25 +17,15 @@ public interface OrderItemMapper {
 
 
     @Mapping(source = "productId", target = "product", qualifiedByName = "toProduct")
+
+    // хрена, в OrderItemDto не будет ссылки на OrderDto, задолбал stackOverflow
+    // https://github.com/mapstruct/mapstruct/issues/469
+    // https://github.com/mapstruct/mapstruct/pull/911
+    // (вроде как mapStruct графы с циклами может как-то разруливать, но хз как)
     @Mapping(target = "order", ignore = true)
     OrderItem toEntity(OrderItemDto orderItemDto);
 
 
-//    default Long toProductDto(Product product) {
-//        return product.getId();
-//    }
-//
-//    default Product toProduct(Long productId) {
-//        //ToDo: Залезть в ProductRepository, загрузить продукт по id
-//        // Если его там нету, то в данном случае - брость исключение
-//        // Сделать то же самое для всех методов Mapper.toEntity в остальныз Mapper'ах
-//
-//        Product result = new Product();
-//        Utils.idSetter(result, productId);
-//        return result;
-//    }
-
-    
 
 //    default Product toProduct(ProductDto productDto) {
 //        Product result = new Product();

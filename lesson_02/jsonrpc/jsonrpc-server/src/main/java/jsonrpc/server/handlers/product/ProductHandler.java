@@ -3,6 +3,7 @@ package jsonrpc.server.handlers.product;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.protocol.dto.base.result.IdResultDto;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.product.lists.ProductListDto;
@@ -106,7 +107,6 @@ public class ProductHandler extends HandlerBase {
 
     @JrpcHandler(method = "getAll")
     public AbstractDto getAll(JsonNode params) {
-        //throw new NotImplementedException("getByListId not implemented");
 
         ProductListDto result;
         List<Product> list = productRepository.getAll();
@@ -120,8 +120,47 @@ public class ProductHandler extends HandlerBase {
 
         return result;
 
+    }
 
+
+    @JrpcHandler(method = "put")
+    public AbstractDto put(JsonNode params) {
+
+        IdResultDto result = new IdResultDto();
+        List<Product> list = productRepository.getAll();
+
+        PutProductParam request = putProductRequest(params);
+        Long oId = orderRepository.put(request.getOrder());
+        result.reCreateWithId(oId);
+
+        return result;
 
     }
+
+
+
+    // ==============================================================================
+
+
+
+
+
+
+    private PutProductParam putOrderRequest(JsonNode params) {
+
+        // parsing request
+        PutOrderParam result;
+        try {
+            PutOrderParamDto requestDto = objectMapper.treeToValue(params, PutOrderParamDto.class);
+            result = putOrderMapper.toEntity(requestDto);
+            PutOrderParam.validate(result);
+        }
+        catch (Exception e) {
+            throw new IllegalArgumentException("Jackson parse error", e);
+        }
+        return result;
+    }
+
+
 }
 

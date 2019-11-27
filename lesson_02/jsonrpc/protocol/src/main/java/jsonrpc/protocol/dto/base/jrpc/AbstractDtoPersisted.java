@@ -42,6 +42,17 @@ public abstract class AbstractDtoPersisted extends AbstractDto {
         // Truncating to seconds
         updated = Instant.now().truncatedTo(ChronoUnit.SECONDS).getEpochSecond();
     }
+
+    /**
+     * Set id, refresh created and updated
+     * @param id
+     */
+    public void reCreateWithId(Long id) {
+
+        this.id = id;
+        this.toCreate();
+        this.toUpdate();
+    }
 }
 
 
