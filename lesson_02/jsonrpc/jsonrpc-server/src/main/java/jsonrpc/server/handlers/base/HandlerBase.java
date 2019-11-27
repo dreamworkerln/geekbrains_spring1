@@ -2,45 +2,33 @@ package jsonrpc.server.handlers.base;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jsonrpc.protocol.dto.base.param.GetByIdParamDto;
-import jsonrpc.protocol.dto.base.param.GetByListIdParamDto;
-import jsonrpc.server.entities.base.param.GetByIdParam;
-import jsonrpc.server.entities.base.param.GetByIdMapper;
-import jsonrpc.server.entities.base.param.GetByListIdMapper;
-import jsonrpc.server.entities.base.param.GetByListIdParam;
+import jsonrpc.protocol.dto.base.param.IdDto;
+import jsonrpc.protocol.dto.base.param.IdListDto;
+
+import java.util.List;
 
 public abstract class HandlerBase {
 
     protected final ObjectMapper objectMapper;
-    private final GetByIdMapper getByIdMapper;
-    private final GetByListIdMapper getByListIdMapper;
 
 
-    protected HandlerBase(ObjectMapper objectMapper,
-                          GetByIdMapper getByIdMapper,
-                          GetByListIdMapper getByListIdMapper) {
+    protected HandlerBase(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
-        this.getByIdMapper = getByIdMapper;
-        this.getByListIdMapper = getByListIdMapper;
     }
 
 
-    protected GetByIdParam getByIdRequest(JsonNode params) {
+    protected Long getId(JsonNode params) {
+
+        Long result;
 
         // parsing request
-        GetByIdParam result;
         try {
-            GetByIdParamDto requestDto = objectMapper.treeToValue(params, GetByIdParamDto.class);
-            result = getByIdMapper.toEntity(requestDto);
-
-            // validate request
-            GetByIdParam.validate(result);
-
-            //request = objectMapper.treeToValue(params, GetById.class);
+            IdDto idDto = objectMapper.treeToValue(params, IdDto.class);
+            // validate ... end
+            result = idDto.getId();
         }
-        // All parse/deserialize errors interpret as 400 error
+        // All parse/deserialize errors interpreted as 400 error - do not remove this try/catch
         catch (Exception e) {
-            //log.error("json parse error: " + params.toPrettyString(), e);
             throw new IllegalArgumentException("Jackson parse error", e);
         }
 
@@ -48,16 +36,14 @@ public abstract class HandlerBase {
     }
 
 
-    protected GetByListIdParam getByListIdRequest(JsonNode params) {
+    protected List<Long> getIdList(JsonNode params) {
 
-        // parsing request
-        GetByListIdParam result;
+        List<Long> result;
         try {
-            GetByListIdParamDto requestDto = objectMapper.treeToValue(params, GetByListIdParamDto.class);
-            result = getByListIdMapper.toEntity(requestDto);
 
-            // validate request
-            GetByListIdParam.validate(result);
+            IdListDto idListDto = objectMapper.treeToValue(params, IdListDto.class);
+            IdListDto.validate(idListDto);
+            result = idListDto.getList();
         }
         catch (Exception e) {
             throw new IllegalArgumentException("Jackson parse error", e);

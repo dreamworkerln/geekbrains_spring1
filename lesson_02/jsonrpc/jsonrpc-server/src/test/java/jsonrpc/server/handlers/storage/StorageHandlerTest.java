@@ -3,21 +3,14 @@ package jsonrpc.server.handlers.storage;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.param.GetAllParamDto;
-import jsonrpc.protocol.dto.base.param.GetByIdParamDto;
-import jsonrpc.protocol.dto.base.param.GetByListIdParamDto;
-import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.protocol.dto.order.request.PutOrderParamDto;
-import jsonrpc.protocol.dto.product.ProductDto;
-import jsonrpc.protocol.dto.storage.StorageDto;
+import jsonrpc.protocol.dto.base.param.IdDto;
+import jsonrpc.protocol.dto.base.param.IdListDto;
+import jsonrpc.protocol.dto.product.ProductItemDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.configuration.SpringConfiguration;
-import jsonrpc.server.entities.base.param.GetByIdParam;
-import jsonrpc.server.entities.base.param.GetByIdMapper;
-import jsonrpc.server.entities.base.param.GetByIdMapperImpl;
-import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.utils.Rest;
 import jsonrpc.server.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,11 +33,10 @@ import static jsonrpc.server.TestSuite.TOKEN;
 @EnableConfigurationProperties
 @SpringBootTest(classes = {
         SpringConfiguration.class,
-        GetByIdParamDto.class,
-        GetByListIdParamDto.class,
-        GetAllParamDto.class,
         JrpcRequest.class,
-        GetByIdMapperImpl.class,
+        ProductItemDto.class,
+        IdDto.class,
+        IdListDto.class,
         ConfigProperties.class})
 
 
@@ -57,11 +49,10 @@ public class StorageHandlerTest {
     private ApplicationContext context;
 
 
-    ObjectMapper objectMapper;
-    JrpcRequest jrpcRequest;
-    GetByIdParamDto getByIdParamDto;
-    GetByListIdParamDto getByListIdParamDto;
-    GetAllParamDto getAllParamDto;
+    private ObjectMapper objectMapper;
+    private JrpcRequest jrpcRequest;
+    private IdDto idDto;
+    private IdListDto idListDto;
 
     @BeforeAll
     static void setup() {
@@ -76,9 +67,8 @@ public class StorageHandlerTest {
 
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = context.getBean(JrpcRequest.class);
-        getByIdParamDto = context.getBean(GetByIdParamDto.class);
-        getByListIdParamDto = context.getBean(GetByListIdParamDto.class);
-        getAllParamDto = context.getBean(GetAllParamDto.class);
+        idDto = context.getBean(IdDto.class);
+        idListDto = context.getBean(IdListDto.class);
     }
 
 
@@ -87,10 +77,9 @@ public class StorageHandlerTest {
 
         jrpcRequest.setId(22L);
 
-        getByIdParamDto.setId(1L);
-        String methodName = GetByIdParamDto.METHOD_NAME;
-        jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.STORAGE + "." + methodName);
-        jrpcRequest.setParams(getByIdParamDto);
+        idDto.setId(1L);
+        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.getById);
+        jrpcRequest.setParams(idDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST\n" + json);
@@ -102,13 +91,12 @@ public class StorageHandlerTest {
     @Test
     void getByListId() throws JsonProcessingException {
 
-
-        getByListIdParamDto.setIdList(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L)));
         jrpcRequest.setId(22L);
 
-        String methodName = GetByListIdParamDto.METHOD_NAME;
-        jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.STORAGE + "." + methodName);
-        jrpcRequest.setParams(getByListIdParamDto);
+        idListDto.setList(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L)));
+
+        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.getByListId);
+        jrpcRequest.setParams(idListDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("POST:\n" + json);
@@ -125,8 +113,7 @@ public class StorageHandlerTest {
 
         jrpcRequest.setId(22L);
 
-        String methodName = GetAllParamDto.METHOD_NAME;
-        jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.STORAGE + "." + methodName);
+        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.getAll);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("POST:\n" + json);
@@ -141,15 +128,18 @@ public class StorageHandlerTest {
 
         jrpcRequest.setId(22L);
 
-        String methodName = GetAllParamDto.METHOD_NAME;
-        jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.STORAGE + "." + methodName);
+        ProductItemDto productItemDto = context.getBean("productItemDto", ProductItemDto.class);
+        productItemDto.setProductId(2L);
+        productItemDto.setCount(200);
+
+        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.put);
+        jrpcRequest.setParams(productItemDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("POST:\n" + json);
 
         ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
         log.info(response.getStatusCode().toString() + "\n" + response.getBody());
-
     }
 
 }

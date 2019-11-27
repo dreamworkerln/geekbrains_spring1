@@ -1,27 +1,15 @@
 package jsonrpc.server.handlers.order;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.param.GetAllParamDto;
-import jsonrpc.protocol.dto.base.param.GetByIdParamDto;
-import jsonrpc.protocol.dto.base.param.GetByListIdParamDto;
+import jsonrpc.protocol.dto.base.param.IdDto;
+import jsonrpc.protocol.dto.base.param.IdListDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
-import jsonrpc.protocol.dto.order.request.PutOrderParamDto;
-import jsonrpc.protocol.dto.product.ProductItemDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.configuration.SpringConfiguration;
-import jsonrpc.server.entities.base.mapper.InstantLongMapper;
-import jsonrpc.server.entities.base.param.GetByIdParam;
-import jsonrpc.server.entities.base.param.GetByIdMapper;
-import jsonrpc.server.entities.base.param.GetByIdMapperImpl;
-import jsonrpc.server.entities.order.*;
-import jsonrpc.server.entities.order.request.PutOrderParam;
-import jsonrpc.server.entities.order.request.PutOrderMapperImpl;
-import jsonrpc.server.entities.product.ProductItemMapperImpl;
-import jsonrpc.server.entities.product.ProductMapperImpl;
 import jsonrpc.server.utils.Rest;
 import jsonrpc.server.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
@@ -49,14 +37,11 @@ import static jsonrpc.server.TestSuite.TOKEN;
 // (транзистивная зависимость автоматически не разрешается)
 @SpringBootTest(classes = {
         SpringConfiguration.class,
-        GetByIdParamDto.class,
-        GetByListIdParamDto.class,
-        GetAllParamDto.class,
         OrderDto.class,
-        Order.class,
-        PutOrderParamDto.class,
+        OrderItemDto.class,
         JrpcRequest.class,
-        GetByIdMapperImpl.class,
+        IdDto.class,
+        IdListDto.class,
         ConfigProperties.class})
 // Так можно догрузить/переопределить базовые настройки
 //@TestPropertySource("classpath:configprops.properties")
@@ -65,27 +50,22 @@ class OrderHandlerTest {
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
     private static Rest rest; // Wrapper of RestTemplate
 
+    private static Long id;
+
     @Autowired
     private ApplicationContext context;
 
 
-    ObjectMapper objectMapper;
-    JrpcRequest jrpcRequest;
-    GetByIdParamDto getByIdParamDto;
-    GetByListIdParamDto getByListIdParamDto;
-    GetAllParamDto getAllParamDto;
-    OrderDto orderDto;
-    PutOrderParamDto putOrderParamDto;
-
-    static Long iddqd;
-
+    private ObjectMapper objectMapper;
+    private JrpcRequest jrpcRequest;
+    private IdDto idDto;
 
     @BeforeAll
     static void setup() {
         TestSuite.INSTANCE.init();
         rest = RestFactory.getRest(true, true);
         rest.setCustomHeader("token", TOKEN);
-        iddqd = 1L;
+        id = 1L;
     }
 
 
@@ -95,32 +75,31 @@ class OrderHandlerTest {
 
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = context.getBean(JrpcRequest.class);
-        getByIdParamDto = context.getBean(GetByIdParamDto.class);
-        getByListIdParamDto = context.getBean(GetByListIdParamDto.class);
-        getAllParamDto = context.getBean(GetAllParamDto.class);
-        orderDto  = context.getBean(OrderDto.class);
-        putOrderParamDto = context.getBean(PutOrderParamDto.class);
+        idDto = context.getBean(IdDto.class);
+        IdListDto idListDto = context.getBean(IdListDto.class);
     }
 
 
     @Test
     void getById() throws Exception {
 
+        // jrpc id
         jrpcRequest.setId(22L);
 
-        getByIdParamDto.setId(iddqd);
+        // request params
+        idDto.setId(id);
 
-        String methodName = GetByIdParamDto.METHOD_NAME;
-        jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
-        jrpcRequest.setParams(getByIdParamDto);
+        // specify handler and method name
+        jrpcRequest.setMethod(HandlerName.Order.path + "." + HandlerName.Order.getById);
+        jrpcRequest.setParams(idDto);
 
+        // producing json
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST\n" + json);
 
-
+        // perform request
         ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
         log.info(response.getStatusCode().toString() + "\n" + response.getBody());
-        //System.out.println(response);
     }
 
 
@@ -129,18 +108,14 @@ class OrderHandlerTest {
 
         jrpcRequest.setId(22L);
 
-        OrderItemDto oiDto = new OrderItemDto();
-        oiDto.setCount(3);
-        oiDto.setProductId(3L);
-        orderDto.addProductItemDto(oiDto);
+        OrderItemDto orderItemDto = context.getBean(OrderItemDto.class);
+        orderItemDto.setCount(3);
+        orderItemDto.setProductId(3L);
+        OrderDto orderDto = context.getBean(OrderDto.class);
+        orderDto.addProductItemDto(orderItemDto);
 
-        // определяем параметры запроса
-        putOrderParamDto.setOrder(orderDto);
-
-
-        String methodName = PutOrderParamDto.METHOD_NAME;
-        jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
-        jrpcRequest.setParams(putOrderParamDto);
+        jrpcRequest.setMethod(HandlerName.Order.path + "." + HandlerName.Order.put);
+        jrpcRequest.setParams(orderDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST\n" + json);
@@ -149,20 +124,19 @@ class OrderHandlerTest {
 
         ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
         log.info(response.getStatusCode().toString() + "\n" + response.getBody());
-        //System.out.println(response);
     }
 
     @Test
     void multi() throws Exception{
 
-        iddqd = 1L;
+        id = 1L;
         getById();
         put();
-        iddqd = 1L;
+        id = 1L;
         getById();
         Thread.sleep(2000);
         put();
-        iddqd = 2L;
+        id = 2L;
         getById();
     }
 

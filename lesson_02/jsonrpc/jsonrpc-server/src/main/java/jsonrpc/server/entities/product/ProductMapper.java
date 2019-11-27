@@ -1,14 +1,13 @@
 package jsonrpc.server.entities.product;
 
 import jsonrpc.protocol.dto.product.ProductDto;
-import jsonrpc.server.entities.base.mapper.InstantLongMapper;
-import jsonrpc.server.repository.ProductRepository;
+import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.utils.Utils;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {InstantLongMapper.class})
+        uses = {InstantMapper.class})
 public interface ProductMapper {
 
     //ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
@@ -24,8 +23,6 @@ public interface ProductMapper {
     }
 
     default Product toProduct(Long productId) {
-        //ToDo: Залезть в ProductRepository, загрузить продукт по id
-        // Сделать то же самое для всех методов Mapper.toEntity в остальныз Mapper'ах
 
         Product result = new Product();
         Utils.idSetter(result, productId);
@@ -38,9 +35,6 @@ public interface ProductMapper {
     // (или я не знаю как), поэтому делаем это вручную
     @AfterMapping
     default void setId(ProductDto source, @MappingTarget Product target) {
-
-        System.out.println("ХЕГЕЙ!!!!!!!!!!!!!!!!!!!!");
-
         Utils.idSetter(target, source.getId());
     }
 

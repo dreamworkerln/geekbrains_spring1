@@ -3,7 +3,7 @@ package jsonrpc.server.entities.order.request;
 
 
 import jsonrpc.protocol.dto.order.request.PutOrderParamDto;
-import jsonrpc.server.entities.base.mapper.InstantLongMapper;
+import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.entities.order.OrderMapper;
 import jsonrpc.server.entities.product.ProductItemMapper;
 import jsonrpc.server.entities.product.ProductMapper;

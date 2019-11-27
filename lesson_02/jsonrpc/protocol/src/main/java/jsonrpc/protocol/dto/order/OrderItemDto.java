@@ -20,4 +20,13 @@ public class OrderItemDto extends ProductItemDto {
 //    public void setOrder(OrderDto order) {
 //        this.order = order;
 //    }
+
+
+    public static void validate(OrderItemDto productDto) {
+
+        if (productDto == null) {
+            throw new IllegalArgumentException("productDto == null");
+        }
+    }
+
 }

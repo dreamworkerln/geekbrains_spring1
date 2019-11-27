@@ -3,140 +3,117 @@ package jsonrpc.server.handlers.product;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jsonrpc.protocol.dto.base.result.IdResultDto;
+import jsonrpc.protocol.dto.base.HandlerName;
+import jsonrpc.protocol.dto.base.param.IdDto;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.product.lists.ProductListDto;
-import jsonrpc.server.entities.base.param.GetByIdParam;
-import jsonrpc.server.entities.base.param.GetByIdMapper;
-import jsonrpc.server.entities.base.param.GetByListIdMapper;
-import jsonrpc.server.entities.base.param.GetByListIdParam;
 import jsonrpc.server.entities.product.Product;
-import jsonrpc.server.entities.product.lists.ProductList;
 import jsonrpc.server.entities.product.lists.ProductListMapper;
 import jsonrpc.server.entities.product.ProductMapper;
 import jsonrpc.server.handlers.base.HandlerBase;
 import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
 import jsonrpc.server.repository.ProductRepository;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 
-import static jsonrpc.server.configuration.SpringConfiguration.MAIN_ENTITIES_PATH;
-
-
 
 @Service
-@JrpcController(path = MAIN_ENTITIES_PATH + "." + "product")
+@JrpcController(path = HandlerName.Product.path)
 public class ProductHandler extends HandlerBase {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final ProductRepository productRepository;
+    private final ProductListDto productListDto;
     private final ProductListMapper productListMapper;
-    //private final GetByIdMapper getByIdMapper;
     private final ProductMapper productMapper;
+    private final IdDto idDto;
+
+
+
+
 
     @Autowired
     public ProductHandler(
             ObjectMapper objectMapper,
-            GetByIdMapper getByIdMapper,
-            GetByListIdMapper getByListIdMapper,
             ProductRepository productRepository,
+            ProductListDto productListDto,
             ProductListMapper productListMapper,
-            ProductMapper productMapper) {
+            ProductMapper productMapper, IdDto idDto) {
 
-        super(objectMapper, getByIdMapper, getByListIdMapper);
-        
+        super(objectMapper);
+
         this.productRepository = productRepository;
+        this.productListDto = productListDto;
         this.productListMapper = productListMapper;
         this.productMapper = productMapper;
+        this.idDto = idDto;
     }
 
+    // -----------------------------------------------------------------------------
 
-    @JrpcHandler(method = "getById")
+
+    @JrpcHandler(method = HandlerName.Product.getById)
     public AbstractDto getById(JsonNode params) {
 
-        ProductDto result;
-        GetByIdParam request = getByIdRequest(params);
+        // request id
+        long id = getId(params);
 
-        // Getting from repository product by "id"
+        // Getting from repository product by id
+        Product product = productRepository.getById(id);
 
-        Product product = productRepository.getById(request.getId());
-
-        try {
-            result = productMapper.toDto(product);
-
-        } catch (Exception e) {
-            throw new IllegalArgumentException("MapStruct error", e);
-        }
-
-        return result;
+        return productMapper.toDto(product);
     }
 
 
-    
 
-    @JrpcHandler(method = "getByListId")
+
+    @JrpcHandler(method = HandlerName.Product.getByListId)
     public AbstractDto getByListId(JsonNode params) {
 
-        ProductListDto result;
-        GetByListIdParam request = getByListIdRequest(params);
+        List<Long> idList = getIdList(params);
 
         // Getting from repository product by "id"
+        List<Product> list = productRepository.getByListId(idList);
 
-        List<Product> list = productRepository.getByListId(request.getIdList());
-
-        try {
-            // Оборачиваем List<Product> в ProductList, т.к. MapStrict не будет мапить List<Object> в Object
-            // (либо я не знаю как его настроить)
-            result = productListMapper.toDto(new ProductList(list));
-
-        } catch (Exception e) {
-            throw new IllegalArgumentException("MapStruct error", e);
-        }
-
-        return result;
+        // Оборачиваем List<ProductDto> в ProductListDto
+        return new ProductListDto(productListMapper.toDto(list));
     }
 
-    @JrpcHandler(method = "getAll")
+
+
+    @JrpcHandler(method = HandlerName.Product.getAll)
     public AbstractDto getAll(JsonNode params) {
 
         ProductListDto result;
         List<Product> list = productRepository.getAll();
 
-        try {
-            result = productListMapper.toDto(new ProductList(list));
-
-        } catch (Exception e) {
-            throw new IllegalArgumentException("MapStruct error", e);
-        }
-
-        return result;
-
+        return new ProductListDto(productListMapper.toDto(list));
     }
+    
 
 
-    @JrpcHandler(method = "put")
+    @JrpcHandler(method = HandlerName.Product.put)
     public AbstractDto put(JsonNode params) {
 
-        IdResultDto result = new IdResultDto();
-        List<Product> list = productRepository.getAll();
-
-        PutProductParam request = putProductRequest(params);
-        Long oId = orderRepository.put(request.getOrder());
-        result.reCreateWithId(oId);
-
-        return result;
-
+        Product product = getProduct(params);
+        productRepository.put(product);
+        return new IdDto(product.getId());
     }
 
+    @JrpcHandler(method = HandlerName.Product.delete)
+    public AbstractDto delete(JsonNode params) {
+
+        throw new NotImplementedException("ProductHandler.delete");
+    }
 
 
     // ==============================================================================
@@ -146,14 +123,14 @@ public class ProductHandler extends HandlerBase {
 
 
 
-    private PutProductParam putOrderRequest(JsonNode params) {
+    private Product getProduct(JsonNode params) {
 
         // parsing request
-        PutOrderParam result;
+        Product result;
         try {
-            PutOrderParamDto requestDto = objectMapper.treeToValue(params, PutOrderParamDto.class);
-            result = putOrderMapper.toEntity(requestDto);
-            PutOrderParam.validate(result);
+            ProductDto productDto = objectMapper.treeToValue(params, ProductDto.class);
+            ProductDto.validate(productDto);
+            result = productMapper.toEntity(productDto);
         }
         catch (Exception e) {
             throw new IllegalArgumentException("Jackson parse error", e);

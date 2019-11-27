@@ -34,7 +34,7 @@ public class OrderRepositoryImpl implements OrderRepository {
      * SaveOrUpdate Order
      */
     @Override
-    public Long put(Order order) {
+    public void put(Order order) {
 
         // assign id if not persisted yet
         if (order.getId() == null) {
@@ -61,8 +61,6 @@ public class OrderRepositoryImpl implements OrderRepository {
 
         // Adding clone not to allow to mess up
         orderList.put(order.getId(), Order.clone(order));
-
-        return order.getId();
     }
 
     @Override

@@ -8,7 +8,7 @@ import java.util.List;
 // emulation
 public interface ProductRepository {
 
-    void add(Product product);
+    void put(Product product);
     Product getById(Long id);
     List<Product> getByListId(List<Long> list);
     List<Product> getAll();

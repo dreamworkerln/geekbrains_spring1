@@ -13,7 +13,7 @@ import java.util.List;
 // emulation
 public interface OrderRepository {
 
-    Long put(Order order);
+    void put(Order order); // return persisted Order (with id, created, updated if was transient)
     Order getById(Long id);
     void delete(Long id);
 }

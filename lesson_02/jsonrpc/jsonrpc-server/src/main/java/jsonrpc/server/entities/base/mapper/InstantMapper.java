@@ -13,7 +13,7 @@ import java.util.Objects;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public class InstantLongMapper {
+public class InstantMapper {
 
     public Long map(Instant i) {
 

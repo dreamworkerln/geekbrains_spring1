@@ -2,21 +2,17 @@ package jsonrpc.server.handlers.order;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
-import jsonrpc.protocol.dto.base.result.IdResultDto;
+import jsonrpc.protocol.dto.base.param.IdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.protocol.dto.order.request.PutOrderParamDto;
-import jsonrpc.server.entities.base.param.GetByIdParam;
-import jsonrpc.server.entities.base.param.GetByIdMapper;
-import jsonrpc.server.entities.base.param.GetByListIdMapper;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderMapper;
-import jsonrpc.server.entities.order.request.PutOrderMapper;
-import jsonrpc.server.entities.order.request.PutOrderParam;
 import jsonrpc.server.handlers.base.HandlerBase;
 import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
 import jsonrpc.server.repository.OrderRepository;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,74 +20,63 @@ import org.springframework.stereotype.Service;
 
 import java.lang.invoke.MethodHandles;
 
-import static jsonrpc.server.configuration.SpringConfiguration.MAIN_ENTITIES_PATH;
-
-
 /**
  * Выдает информацию о товарах.<br>
  * Какие типы товаров есть, их описание, артикул и т.д.
  * (За количеством на складе обращайтесь в сервис Storage)
  */
 @Service
-@JrpcController(path = MAIN_ENTITIES_PATH + "." + "order")
+@JrpcController(path = HandlerName.Order.path)
 public class OrderHandler extends HandlerBase {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final OrderRepository orderRepository;
     private final OrderMapper orderMapper;
-    private final PutOrderMapper putOrderMapper;
 
 
     @Autowired
     protected OrderHandler(ObjectMapper objectMapper,
-                           GetByIdMapper getByIdMapper,
-                           GetByListIdMapper getByListIdMapper,
                            OrderRepository orderRepository,
-                           OrderMapper orderMapper, PutOrderMapper putOrderMapper) {
+                           OrderMapper orderMapper) {
 
-        super(objectMapper, getByIdMapper, getByListIdMapper);
+        super(objectMapper);
 
         this.orderRepository = orderRepository;
         this.orderMapper = orderMapper;
-        this.putOrderMapper = putOrderMapper;
     }
 
+    
+    // -----------------------------------------------------------------------------
 
-    @JrpcHandler(method = "getById")
+
+
+    @JrpcHandler(method = HandlerName.Order.getById)
     public AbstractDto getById(JsonNode params) {
 
-        OrderDto result;
+        // request id
+        long id = getId(params);
 
-        // parsing request
-        GetByIdParam request = getByIdRequest(params);
+        // Getting from repository product by id
+        Order order = orderRepository.getById(id);
 
-
-        // Getting from repository order by id
-        Order order = orderRepository.getById(request.getId());
-
-        try {
-
-            result = orderMapper.toDto(order);
-
-        } catch (Exception e) {
-            throw new RuntimeException("MapStruct error", e);
-        }
-        return result;
+        return orderMapper.toDto(order);
     }
 
 
-    @JrpcHandler(method = "put")
+    @JrpcHandler(method = HandlerName.Order.put)
     public AbstractDto put(JsonNode params) {
 
-        IdResultDto result = new IdResultDto();
+        Order order = getOrder(params);
+        orderRepository.put(order);
+        return new IdDto(order.getId());
+    }
 
-        PutOrderParam request = putOrderRequest(params);
-        Long oId = orderRepository.put(request.getOrder());
-        result.reCreateWithId(oId);
 
+    @JrpcHandler(method = HandlerName.Order.delete)
+    public AbstractDto delete(JsonNode params) {
 
-        return result;
+        throw new NotImplementedException("ProductHandler.delete");
     }
 
 
@@ -103,14 +88,14 @@ public class OrderHandler extends HandlerBase {
 
 
 
-    private PutOrderParam putOrderRequest(JsonNode params) {
+    private Order getOrder(JsonNode params) {
 
         // parsing request
-        PutOrderParam result;
+        Order result;
         try {
-            PutOrderParamDto requestDto = objectMapper.treeToValue(params, PutOrderParamDto.class);
-            result = putOrderMapper.toEntity(requestDto);
-            PutOrderParam.validate(result);
+            OrderDto orderDto = objectMapper.treeToValue(params, OrderDto.class);
+            OrderDto.validate(orderDto);
+            result = orderMapper.toEntity(orderDto);
         }
         catch (Exception e) {
             throw new IllegalArgumentException("Jackson parse error", e);

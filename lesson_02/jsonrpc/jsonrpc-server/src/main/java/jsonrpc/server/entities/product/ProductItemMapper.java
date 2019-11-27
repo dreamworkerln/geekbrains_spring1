@@ -1,16 +1,13 @@
 package jsonrpc.server.entities.product;
 
-import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.protocol.dto.product.ProductItemDto;
-import jsonrpc.server.entities.base.mapper.InstantLongMapper;
-import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.utils.Utils;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {InstantLongMapper.class, ProductMapper.class})
+        uses = {InstantMapper.class, ProductMapper.class})
 public interface ProductItemMapper {
 
     @Mapping(source = "product", target = "productId", qualifiedByName = "toProductDto")

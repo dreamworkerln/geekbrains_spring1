@@ -5,12 +5,14 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ComponentScan("jsonrpc.protocol")  // scan components from protocol module
 public class SpringConfiguration {
 
-    public static final String MAIN_ENTITIES_PATH = "shop.entities";
+    //public static final String MAIN_ENTITIES_PATH = "shop.entities";
 
     @Bean
     // ObjectMapper is threadsafe
@@ -51,19 +53,4 @@ public class SpringConfiguration {
 
 
     // ----------------------------------------------------------
-
-
-    public static class Controller {
-
-        public static class Handlers {
-
-            public static class Shop {
-
-                public static final String ORDER = "shop.entities.order";
-                public static final String PRODUCT = "shop.entities.product";
-                public static final String STORAGE = "shop.entities.storage";
-            }
-
-        }
-    }
 }

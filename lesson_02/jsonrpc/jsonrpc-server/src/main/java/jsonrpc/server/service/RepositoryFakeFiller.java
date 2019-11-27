@@ -56,8 +56,7 @@ public class RepositoryFakeFiller {
             //Utils.idSetter(p, i);
 
 
-            productRepository.add(p);
-
+            productRepository.put(p);
             storageRepository.put(p, faker.number().numberBetween(1, 50));
         }
     }

@@ -1,16 +1,16 @@
 package jsonrpc.server.entities.base.param;
 
+
 import jsonrpc.protocol.dto.base.param.GetByIdParamDto;
-import jsonrpc.protocol.dto.base.param.GetByListIdParamDto;
-import jsonrpc.server.entities.base.mapper.InstantLongMapper;
+import jsonrpc.server.entities.base.mapper.InstantMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {InstantLongMapper.class})
-public interface GetByListIdMapper {
+public interface GetByIdMapper {
 
-    GetByListIdParamDto toDto(GetByListIdParam getByListIdParam);
-    GetByListIdParam toEntity(GetByListIdParamDto getByListIdParamDto);
+    GetByIdParamDto toDto(GetByIdParam order);
+    GetByIdParam toEntity(GetByIdParamDto orderDto);
 }

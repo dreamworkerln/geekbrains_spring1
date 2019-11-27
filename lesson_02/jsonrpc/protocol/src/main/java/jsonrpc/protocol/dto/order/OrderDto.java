@@ -3,6 +3,7 @@ package jsonrpc.protocol.dto.order;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
 import jsonrpc.protocol.dto.client.ClientDto;
 import jsonrpc.protocol.dto.manager.ManagerDto;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ public class OrderDto extends AbstractDtoPersisted {
     private ClientDto client;
 
     private ManagerDto manager;
+
 
     public List<OrderItemDto> getItemList() {
         return itemList;
@@ -48,6 +50,24 @@ public class OrderDto extends AbstractDtoPersisted {
     public void addProductItemDto(OrderItemDto productItemDto) {
 
         itemList.add(productItemDto);
+    }
+
+
+
+
+
+    public static void validate(OrderDto orderDto) {
+
+        if (orderDto == null) {
+            throw new IllegalArgumentException("orderDto == null");
+        }
+
+        if (orderDto.itemList == null) {
+            throw new IllegalArgumentException("orderDto.itemList is empty");
+        }
+
+        //ToDo implement etc checks ...
+
     }
 
 }

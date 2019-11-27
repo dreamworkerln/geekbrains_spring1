@@ -27,7 +27,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     private AtomicLong identity = new AtomicLong(1);
 
     @Override
-    public void add(Product product) {
+    public void put(Product product) {
 
         // assign id if not persisted yet (new product)
         if (product.getId() == null) {

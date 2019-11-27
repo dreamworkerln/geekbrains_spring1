@@ -3,11 +3,9 @@ package jsonrpc.server.entities.order;
 import jsonrpc.protocol.dto.client.ClientDto;
 import jsonrpc.protocol.dto.manager.ManagerDto;
 import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.protocol.dto.order.OrderItemDto;
-import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.entities.Client;
 import jsonrpc.server.entities.Manager;
-import jsonrpc.server.entities.base.mapper.InstantLongMapper;
+import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.ProductItemMapper;
 import jsonrpc.server.entities.product.ProductMapper;
@@ -15,14 +13,10 @@ import jsonrpc.server.repository.ProductRepository;
 import jsonrpc.server.utils.Utils;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
-        uses = {InstantLongMapper.class, OrderItemMapper.class, ProductMapper.class, ProductItemMapper.class})
+        uses = {InstantMapper.class, OrderItemMapper.class, ProductMapper.class, ProductItemMapper.class})
         // ProductMapper.class, ProductItemMapper.class, OrderItemMapper.class
 
 public abstract class OrderMapper {

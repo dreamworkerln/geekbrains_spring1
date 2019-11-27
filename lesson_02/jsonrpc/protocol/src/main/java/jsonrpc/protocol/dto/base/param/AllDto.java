@@ -1,11 +1,11 @@
 package jsonrpc.protocol.dto.base.param;
 
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component
 @Scope("prototype")
-public class GetAllParamDto extends AbstractParamDto {
+public class AllDto extends AbstractDto {
 
-    public static String METHOD_NAME = "getAll";
 }
