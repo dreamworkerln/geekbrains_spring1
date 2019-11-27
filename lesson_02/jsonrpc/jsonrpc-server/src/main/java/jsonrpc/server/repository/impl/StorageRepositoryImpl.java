@@ -7,6 +7,7 @@ import jsonrpc.server.utils.Utils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -19,10 +20,45 @@ public class StorageRepositoryImpl implements StorageRepository {
     // In-memory DB emulation
     // <product.id, ProductItem>
     private ConcurrentMap<Long, ProductItem> productItemList = new ConcurrentSkipListMap<>();
-    private AtomicLong identity = new AtomicLong();
+    private AtomicLong identity = new AtomicLong(1);
+
+
+
 
     @Override
-    public void add(Product product, int count) {
+    public ProductItem getById(Long id) {
+
+        return ProductItem.clone(productItemList.get(id));
+    }
+
+    @Override
+    public List<ProductItem> getByListId(List<Long> list) {
+
+        List<ProductItem> result = new ArrayList<>();
+
+        list.forEach(i -> {
+
+            if (productItemList.containsKey(i)) {
+                result.add(ProductItem.clone(productItemList.get(i)));
+
+            }
+        });
+
+        return result;
+
+    }
+
+
+    @Override
+    public List<ProductItem> getAll() {
+
+        return productItemList.values().stream().map(ProductItem::clone).collect(Collectors.toList());
+
+    }
+
+
+    @Override
+    public void put(Product product, int count) {
 
         if (product.getId() == null) {
             throw new IllegalArgumentException("product not persisted yet");
@@ -61,6 +97,8 @@ public class StorageRepositoryImpl implements StorageRepository {
 
         tmp = productItemList.get(product.getId());
 
+        // тут нужна синхронизация / транзацкия с блокировкой строки таблицы
+
         // Decrement existing ProductItem
         if(tmp != null && tmp.getCount() >= count) {
 
@@ -74,25 +112,12 @@ public class StorageRepositoryImpl implements StorageRepository {
     }
 
 
-
-
-
-
-
     @Override
-    public ProductItem getById(Long id) {
+    public void delete(Product product) {
 
-        return productItemList.get(id);
+        productItemList.remove(product.getId());
+
     }
 
-
-
-
-    @Override
-    public List<ProductItem> getAll() {
-
-        return productItemList.values().stream().map(ProductItem::clone).collect(Collectors.toList());
-
-    }
 
 }

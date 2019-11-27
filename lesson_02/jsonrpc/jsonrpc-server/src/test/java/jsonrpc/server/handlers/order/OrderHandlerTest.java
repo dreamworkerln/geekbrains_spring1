@@ -76,7 +76,8 @@ class OrderHandlerTest {
     GetAllParamDto getAllParamDto;
     OrderDto orderDto;
     PutOrderParamDto putOrderParamDto;
-    //ProductItemDto productItemDto;
+
+    static Long iddqd;
 
 
     @BeforeAll
@@ -84,6 +85,7 @@ class OrderHandlerTest {
         TestSuite.INSTANCE.init();
         rest = RestFactory.getRest(true, true);
         rest.setCustomHeader("token", TOKEN);
+        iddqd = 1L;
     }
 
 
@@ -102,17 +104,18 @@ class OrderHandlerTest {
 
 
     @Test
-    void getById() throws JsonProcessingException {
+    void getById() throws Exception {
 
-        getByIdParamDto.setId(1L);
         jrpcRequest.setId(22L);
+
+        getByIdParamDto.setId(iddqd);
 
         String methodName = GetByIdParamDto.METHOD_NAME;
         jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
         jrpcRequest.setParams(getByIdParamDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
-        log.info(json);
+        log.info("REQUEST\n" + json);
 
 
         ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
@@ -122,23 +125,25 @@ class OrderHandlerTest {
 
 
     @Test
-    void put() throws JsonProcessingException {
+    void put() throws Exception {
+
+        jrpcRequest.setId(22L);
 
         OrderItemDto oiDto = new OrderItemDto();
         oiDto.setCount(3);
-        oiDto.setProductId(1L);
+        oiDto.setProductId(3L);
         orderDto.addProductItemDto(oiDto);
 
         // определяем параметры запроса
         putOrderParamDto.setOrder(orderDto);
 
-        jrpcRequest.setId(22L);
+
         String methodName = PutOrderParamDto.METHOD_NAME;
         jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
         jrpcRequest.setParams(putOrderParamDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
-        log.info(json);
+        log.info("REQUEST\n" + json);
 
         //json = String.format(json, id);
 
@@ -146,6 +151,21 @@ class OrderHandlerTest {
         log.info(response.getStatusCode().toString() + "\n" + response.getBody());
         //System.out.println(response);
     }
+
+    @Test
+    void multi() throws Exception{
+
+        iddqd = 1L;
+        getById();
+        put();
+        iddqd = 1L;
+        getById();
+        Thread.sleep(2000);
+        put();
+        iddqd = 2L;
+        getById();
+    }
+
 }
 
 /*

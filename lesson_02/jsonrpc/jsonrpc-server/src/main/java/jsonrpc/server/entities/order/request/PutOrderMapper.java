@@ -8,9 +8,10 @@ import jsonrpc.server.entities.order.OrderMapper;
 import jsonrpc.server.entities.product.ProductItemMapper;
 import jsonrpc.server.entities.product.ProductMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 @Mapper(componentModel = "spring",
-        //unmappedTargetPolicy = ReportingPolicy.IGNORE,
+        unmappedTargetPolicy = ReportingPolicy.IGNORE,
         uses = {InstantLongMapper.class, OrderMapper.class})
         // OrderMapper.class, OrderItemMapper.class, ProductMapper.class, ProductItemMapper.class
 

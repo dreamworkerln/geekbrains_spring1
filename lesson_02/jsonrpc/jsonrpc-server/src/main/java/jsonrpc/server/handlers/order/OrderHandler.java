@@ -3,6 +3,7 @@ package jsonrpc.server.handlers.order;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.result.IdResultDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.request.PutOrderParamDto;
 import jsonrpc.server.entities.base.param.GetByIdParam;
@@ -83,14 +84,17 @@ public class OrderHandler extends HandlerBase {
     @JrpcHandler(method = "put")
     public AbstractDto put(JsonNode params) {
 
+        IdResultDto result = new IdResultDto();
+
         PutOrderParam request = putOrderRequest(params);
+        Long oId = orderRepository.put(request.getOrder());
 
-        orderRepository.put(request.getOrder());
 
-        System.out.println(orderRepository.getById(1L));
+        result.setId(oId);
+        result.toCreate();
+        result.toUpdate();
 
-        // nothing to return (result = null)
-        return null;
+        return result;
     }
 
 

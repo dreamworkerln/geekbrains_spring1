@@ -3,6 +3,7 @@ package jsonrpc.server.repository.impl;
 
 import com.github.javafaker.Faker;
 import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.entities.order.OrderItem;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.repository.OrderRepository;
 import jsonrpc.server.utils.Utils;
@@ -25,14 +26,15 @@ public class OrderRepositoryImpl implements OrderRepository {
     // In-memory DB emulation
     private ConcurrentMap<Long, Order> orderList = new ConcurrentSkipListMap<>();
 
-    private AtomicLong identity = new AtomicLong();
+    private AtomicLong identity = new AtomicLong(1);
+    private AtomicLong oiIdentity = new AtomicLong(1);
 
 
     /**
      * SaveOrUpdate Order
      */
     @Override
-    public void put(Order order) {
+    public Long put(Order order) {
 
         // assign id if not persisted yet
         if (order.getId() == null) {
@@ -41,13 +43,32 @@ public class OrderRepositoryImpl implements OrderRepository {
         }
         order.toUpdate();
 
-        // Adding clone
-        orderList.put(identity.getAndIncrement(), order.clone());
+
+        // тут дрочь, проще грохнуть весь заказ и переоформить заново,
+        // чем пытаться определить  - какой из элементов заказа
+        // поменяли а какой нет, пускай этим hibernate занимается
+        // (хоть также перезаписывет все элементы заказа)
+        //
+        // Пускай не редактируют заказы задним числом .....
+        for (OrderItem oi : order.getItemList()) {
+
+            if (oi.getId() == null) {
+                Utils.idSetter(oi, oiIdentity.getAndIncrement());
+                oi.toCreate();
+            }
+            oi.toUpdate();
+        }
+
+        // Adding clone not to allow to mess up
+        orderList.put(order.getId(), Order.clone(order));
+
+        return order.getId();
     }
 
     @Override
     public Order getById(Long id) {
-        return orderList.get(id);
+
+        return Order.clone(orderList.get(id));
     }
 
     @Override

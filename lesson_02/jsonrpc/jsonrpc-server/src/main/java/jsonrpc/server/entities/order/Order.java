@@ -71,9 +71,14 @@ public class Order extends AbstractEntityPersisted {
     }
 
 
-    public Order clone() {
+    public static Order clone(Order order) {
 
-        return SerializationUtils.clone(this);
+        Order result = null;
+
+        if (order != null) {
+            result = SerializationUtils.clone(order);
+        }
+        return result;
     }
 
 

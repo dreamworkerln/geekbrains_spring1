@@ -5,8 +5,11 @@ import jsonrpc.server.entities.base.mapper.InstantLongMapper;
 import jsonrpc.server.entities.product.ProductItemMapper;
 import jsonrpc.server.entities.product.ProductMapper;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring", uses = {InstantLongMapper.class, ProductMapper.class, ProductItemMapper.class})
+@Mapper(componentModel = "spring",
+        unmappedTargetPolicy = ReportingPolicy.ERROR,
+        uses = {InstantLongMapper.class, ProductMapper.class, ProductItemMapper.class})
 public interface ProductItemListMapper {
 
     ProductItemListDto toDto(ProductItemList productItem);

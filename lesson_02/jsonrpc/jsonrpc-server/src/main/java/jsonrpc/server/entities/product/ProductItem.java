@@ -49,9 +49,14 @@ public class ProductItem extends AbstractEntityPersisted {
     }
 
 
-    public ProductItem clone() {
+    public static ProductItem clone(ProductItem productItem) {
 
-        return SerializationUtils.clone(this);
+        ProductItem result = null;
+
+        if (productItem != null) {
+            result = SerializationUtils.clone(productItem);
+        }
+        return result;
     }
 
 //    public Order getOrder() {

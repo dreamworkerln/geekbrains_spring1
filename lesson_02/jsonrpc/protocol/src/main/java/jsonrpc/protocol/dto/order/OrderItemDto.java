@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class OrderItemDto extends ProductItemDto {
 
-    private OrderDto order;
-
-    public OrderDto getOrder() {
-        return order;
-    }
-
-    public void setOrder(OrderDto order) {
-        this.order = order;
-    }
+//    private OrderDto order;
+//
+//    public OrderDto getOrder() {
+//        return order;
+//    }
+//
+//    public void setOrder(OrderDto order) {
+//        this.order = order;
+//    }
 }

@@ -30,8 +30,8 @@ public class GetByIdParam extends AbstractParam {
     @Override
     public void validate() {
 
-        if (id <= 0) {
-            throw new IllegalArgumentException("Error parsing request: id <= 0");
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Error parsing request: id: " + id);
         }
     }
 }

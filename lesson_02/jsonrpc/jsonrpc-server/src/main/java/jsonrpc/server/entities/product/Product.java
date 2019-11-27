@@ -4,6 +4,7 @@ import jsonrpc.server.entities.base.AbstractEntityPersisted;
 
 import javax.persistence.*;
 import java.time.Instant;
+
 import org.apache.commons.lang3.SerializationUtils;
 
 @Entity
@@ -41,9 +42,14 @@ public class Product extends AbstractEntityPersisted {
         this.testDate = testDate;
     }
 
-    public Product clone() {
+    public static Product clone(Product product) {
 
-        return SerializationUtils.clone(this);
+        Product result = null;
+
+        if (product != null) {
+            result = SerializationUtils.clone(product);
+        }
+        return result;
     }
 
 

@@ -14,6 +14,12 @@ public class ProductItemList extends AbstractEntity {
 
     private List<ProductItem> list = new ArrayList<>();
 
+    public ProductItemList() {}
+
+    public ProductItemList(List<ProductItem> list) {
+        this.list = list;
+    }
+
     public List<ProductItem> getList() {
         return list;
     }

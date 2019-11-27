@@ -24,7 +24,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     // In-memory DB emulation
     private ConcurrentMap<Long, Product> productList = new ConcurrentSkipListMap<>();
 
-    private AtomicLong identity = new AtomicLong();
+    private AtomicLong identity = new AtomicLong(1);
 
     @Override
     public void add(Product product) {
@@ -42,7 +42,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product getById(Long id) {
 
         // will return clone of product to not to end up with messed up repository data
-        return productList.get(id).clone();
+        return Product.clone(productList.get(id));
     }
 
 
@@ -54,7 +54,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         list.forEach(i -> {
 
             if (productList.containsKey(i)) {
-                result.add(productList.get(i));
+                result.add(Product.clone(productList.get(i)));
 
             }
         });

@@ -1,5 +1,8 @@
 package jsonrpc.protocol.dto.base.jrpc;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 public abstract class AbstractDtoPersisted extends AbstractDto {
 
     protected Long id;
@@ -28,6 +31,16 @@ public abstract class AbstractDtoPersisted extends AbstractDto {
 
     public void setUpdated(Long updated) {
         this.updated = updated;
+    }
+
+    public void toCreate() {
+        // Truncating to seconds
+        created = Instant.now().truncatedTo(ChronoUnit.SECONDS).getEpochSecond();
+    }
+
+    public void toUpdate() {
+        // Truncating to seconds
+        updated = Instant.now().truncatedTo(ChronoUnit.SECONDS).getEpochSecond();
     }
 }
 
