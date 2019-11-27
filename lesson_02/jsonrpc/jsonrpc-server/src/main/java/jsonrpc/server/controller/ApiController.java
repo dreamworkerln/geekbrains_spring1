@@ -96,7 +96,7 @@ public class ApiController {
         // ssh -f -L 8084:localhost:8084 -L 5005:localhost:5005 -L 9001:localhost:9001 remote-alias sleep 100;
         //
         //
-        // 8084 порт можно не пробрасывать
+        // 8084 порт можно не пробрасывать (как и 9001)
         //
         // -f run in background
         // -N no command execution
