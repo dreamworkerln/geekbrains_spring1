@@ -158,9 +158,9 @@ public class ProductHandlerTest {
 
         ProductDto productDto = context.getBean(ProductDto.class);
 
-        productDto.setName("Балалайка");
+        productDto.setName("Самогон домашний");
         productDto.setTestDate(Instant.EPOCH);
-        productDto.setVcode("AAAAAAA123AAAAAAA");
+        productDto.setVcode("123");
 
         jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.put);
         jrpcRequest.setParams(productDto);
