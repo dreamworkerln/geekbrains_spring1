@@ -10,16 +10,13 @@ import javax.validation.constraints.NotBlank;
 
 @Component
 @Scope("prototype")
-@Validated
 public class IdDto extends AbstractDto {
 
-    @NotBlank
-    @Min(0)
     private Long id;
 
     public IdDto(){}
 
-    public IdDto(@Min(0) long id) {
+    public IdDto(long id) {
         this.id = id;
     }
 
@@ -27,7 +24,19 @@ public class IdDto extends AbstractDto {
         return id;
     }
 
-    public void setId(@Min(0) long id) {
+    public void setId(long id) {
         this.id = id;
+    }
+
+    public static void validate(IdDto idDto) {
+
+        if (idDto == null) {
+            throw new IllegalArgumentException("IdDto.id == null");
+        }
+
+        if (idDto.id == null || idDto.id <0) {
+            throw new IllegalArgumentException("Iid == null < 0");
+        }
+
     }
 }

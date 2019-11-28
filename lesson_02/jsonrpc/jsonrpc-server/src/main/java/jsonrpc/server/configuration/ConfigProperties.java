@@ -21,6 +21,8 @@ import javax.validation.constraints.Pattern;
 @Configuration
 @PropertySource("classpath:configprops.properties")
 @ConfigurationProperties(prefix = "mail")
+// Калечит исходные классы, заворачивая их в прокси, потом вся логика, построенная на .getClass()
+// и отладчик(просмотр значений) идет лесом
 @Validated
 public class ConfigProperties {
 
@@ -79,6 +81,7 @@ public class ConfigProperties {
         private String authMethod;
         private String username;
         private String password;
+        private String token;
 
 
 
@@ -105,6 +108,10 @@ public class ConfigProperties {
         public void setPassword(String password) {
             this.password = password;
         }
+
+        public String getToken() {return token;}
+
+        public void setToken(String token) {this.token = token;}
     }
 
 }

@@ -1,5 +1,6 @@
 package jsonrpc.server.repository.impl;
 
+import jdk.nashorn.internal.lookup.MethodHandleFactory;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.ProductItem;
 import jsonrpc.server.repository.StorageRepository;
@@ -96,7 +97,8 @@ public class StorageRepositoryImpl implements StorageRepository {
 
         tmp = productItemList.get(product.getId());
 
-        // тут нужна синхронизация / транзацкия с блокировкой строки таблицы
+
+        // ToDO: тут нужна синхронизация / транзацкия с блокировкой строки таблицы
 
         // Decrement existing ProductItem
         if(tmp != null && tmp.getCount() >= count) {
@@ -106,7 +108,7 @@ public class StorageRepositoryImpl implements StorageRepository {
             tmp.toUpdate();
         }
         else {
-            throw new IllegalArgumentException("product doesn't exists/ not enough count in storage to remove");
+            throw new IllegalArgumentException("product doesn't exists/not enough amount in storage to remove");
         }
     }
 

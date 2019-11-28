@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 
 /**
  * Represent json-rpc execution error response
+ * (У них там должны быть по RFC свои коды ошибок)
  */
 public class JrpcError {
 

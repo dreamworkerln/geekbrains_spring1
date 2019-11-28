@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -230,13 +231,39 @@ public class ApiController {
 
                                 // выбрасываем наверх причину InvocationTargetException -
                                 // Что-то там упало в обработчике метода jrpc upcast into unchecked exception
-                                if (e.getCause() != null) {
+
+                                // ToDo: этот кусок кода надо улучшать
+
+                                // ToDo: checked exception(OOM, SO) не удастся завернуть в RuntimeException
+
+                                Throwable exception = e.getCause();
+
+                                // Если это исключение из репозитория spring
+                                if (exception instanceof InvalidDataAccessApiUsageException) {
+
+                                    // Чем вызвано исключение в репозитории spring?
+                                    Throwable inner = exception.getCause();
+
+                                    // Надо завести свой тип для исключения -
+                                    // "Недозволенное действие пользоваетля" вместо IllegalArgumentException
+
+                                    // если оно вызвано некорректным действием пользователя
+                                    if (inner instanceof IllegalArgumentException) {
+                                        // вернем 400
+                                        IllegalArgumentException newInner =
+                                                new IllegalArgumentException(inner.getMessage(), e);
+                                        throw newInner;
+                                    }
+
+                                    // Это исключения репозитория spring,
+                                    // но хз что это конктретно - мож это не мы, оно само
                                     throw (RuntimeException) e.getCause();
                                 }
-                                else {
-                                    throw new RuntimeException(e);
-                                }
+
+                                // Внутреннего исключения нет (или там не InvalidDataAccessApiUsageException)
+                                throw new RuntimeException(e);
                             }
+
                         };
 
                         handlers.put(jrpcController.path() + "." + jrpcHandler.method(), handler);

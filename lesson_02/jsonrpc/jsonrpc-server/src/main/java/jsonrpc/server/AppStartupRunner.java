@@ -1,5 +1,6 @@
 package jsonrpc.server;
 
+import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.service.RepositoryFakeFiller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;

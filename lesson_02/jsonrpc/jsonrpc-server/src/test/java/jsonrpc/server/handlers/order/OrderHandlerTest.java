@@ -4,14 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
 import jsonrpc.protocol.dto.base.param.IdDto;
-import jsonrpc.protocol.dto.base.param.IdListDto;
+import jsonrpc.protocol.dto.base.param.ListIdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.configuration.SpringConfiguration;
 import jsonrpc.utils.Rest;
-import jsonrpc.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -38,7 +37,7 @@ import java.lang.invoke.MethodHandles;
         OrderItemDto.class,
         JrpcRequest.class,
         IdDto.class,
-        IdListDto.class,
+        ListIdDto.class,
         ConfigProperties.class})
 // Так можно догрузить/переопределить базовые настройки
 //@TestPropertySource("classpath:configprops.properties")
@@ -72,7 +71,7 @@ class OrderHandlerTest {
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = context.getBean(JrpcRequest.class);
         idDto = context.getBean(IdDto.class);
-        IdListDto idListDto = context.getBean(IdListDto.class);
+        ListIdDto listIdDto = context.getBean(ListIdDto.class);
     }
 
 

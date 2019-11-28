@@ -10,8 +10,7 @@ import java.util.List;
 
 @Component
 @Scope("prototype")
-@Validated
-public class IdListDto extends AbstractDto {
+public class ListIdDto extends AbstractDto {
 
     private List<Long> list = new ArrayList<>();
 
@@ -23,18 +22,18 @@ public class IdListDto extends AbstractDto {
         this.list = list;
     }
 
-    public static void validate(IdListDto idListDto) {
+    public static void validate(ListIdDto listIdDto) {
 
-        if (idListDto == null) {
+        if (listIdDto == null) {
             throw new IllegalArgumentException("longListDto == null");
         }
 
-        if (idListDto.list == null) {
+        if (listIdDto.list == null) {
             throw new IllegalArgumentException("longListDto.list == null");
         }
 
 
-        idListDto.list.forEach(l -> {
+        listIdDto.list.forEach(l -> {
 
             if (l == null) {
                 throw new IllegalArgumentException("longListDto.list contains null element");

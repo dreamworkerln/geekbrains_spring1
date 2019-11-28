@@ -3,7 +3,7 @@ package jsonrpc.server.handlers.base;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.param.IdDto;
-import jsonrpc.protocol.dto.base.param.IdListDto;
+import jsonrpc.protocol.dto.base.param.ListIdDto;
 
 import java.util.List;
 
@@ -41,9 +41,9 @@ public abstract class HandlerBase {
         List<Long> result;
         try {
 
-            IdListDto idListDto = objectMapper.treeToValue(params, IdListDto.class);
-            IdListDto.validate(idListDto);
-            result = idListDto.getList();
+            ListIdDto listIdDto = objectMapper.treeToValue(params, ListIdDto.class);
+            ListIdDto.validate(listIdDto);
+            result = listIdDto.getList();
         }
         catch (Exception e) {
             throw new IllegalArgumentException("Jackson parse error", e);

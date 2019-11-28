@@ -6,13 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
 import jsonrpc.protocol.dto.base.param.IdDto;
-import jsonrpc.protocol.dto.base.param.IdListDto;
+import jsonrpc.protocol.dto.base.param.ListIdDto;
 import jsonrpc.protocol.dto.product.ProductItemDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.configuration.SpringConfiguration;
 import jsonrpc.utils.Rest;
-import jsonrpc.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ import java.util.Arrays;
         JrpcRequest.class,
         ProductItemDto.class,
         IdDto.class,
-        IdListDto.class,
+        ListIdDto.class,
         ConfigProperties.class})
 
 
@@ -49,7 +48,7 @@ public class StorageHandlerTest {
     private ObjectMapper objectMapper;
     private JrpcRequest jrpcRequest;
     private IdDto idDto;
-    private IdListDto idListDto;
+    private ListIdDto listIdDto;
     private Rest rest;
 
     @BeforeAll
@@ -65,7 +64,7 @@ public class StorageHandlerTest {
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = context.getBean(JrpcRequest.class);
         idDto = context.getBean(IdDto.class);
-        idListDto = context.getBean(IdListDto.class);
+        listIdDto = context.getBean(ListIdDto.class);
     }
 
 
@@ -90,10 +89,10 @@ public class StorageHandlerTest {
 
         jrpcRequest.setId(22L);
 
-        idListDto.setList(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L)));
+        listIdDto.setList(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L)));
 
         jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.getByListId);
-        jrpcRequest.setParams(idListDto);
+        jrpcRequest.setParams(listIdDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);

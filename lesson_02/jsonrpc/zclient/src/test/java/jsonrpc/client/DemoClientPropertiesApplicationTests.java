@@ -1,10 +1,10 @@
-package jsonrpc.democlient;
+package jsonrpc.client;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class DemoClientApplicationTests {
+class DemoClientPropertiesApplicationTests {
 
 	@Test
 	void contextLoads() {

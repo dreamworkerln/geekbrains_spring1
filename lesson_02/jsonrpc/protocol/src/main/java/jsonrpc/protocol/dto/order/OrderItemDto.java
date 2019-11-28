@@ -11,6 +11,9 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class OrderItemDto extends ProductItemDto {
 
+// не надо нам циклических зависимостей
+// OrderDto -> OrderDto.itemList -> OrderItemDto -> OrderDto -> ...
+//
 //    private OrderDto order;
 //
 //    public OrderDto getOrder() {

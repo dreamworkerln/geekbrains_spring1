@@ -7,7 +7,6 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @MappedSuperclass
-@Validated
 public abstract class AbstractEntityPersisted extends AbstractEntity {
 
     private Instant created;
