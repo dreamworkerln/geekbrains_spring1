@@ -1,4 +1,4 @@
-HOW TO compile & run
+HOW TO compile & run  
 (java 1.8)
 
 Собрать:  
