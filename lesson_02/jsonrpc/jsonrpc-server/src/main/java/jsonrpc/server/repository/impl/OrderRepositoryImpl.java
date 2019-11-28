@@ -1,22 +1,16 @@
 package jsonrpc.server.repository.impl;
 
 
-import com.github.javafaker.Faker;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderItem;
-import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.repository.OrderRepository;
-import jsonrpc.server.utils.Utils;
+import jsonrpc.utils.Utils;
 import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicLong;
-
-import static jsonrpc.server.utils.Utils.idSetter;
-import static jsonrpc.server.utils.Utils.toLong;
 
 // Fake repository
 

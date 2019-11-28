@@ -1,4 +1,4 @@
-package jsonrpc.server.utils;
+package jsonrpc.utils;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class RestFactory {

@@ -20,8 +20,6 @@ public enum TestSuite {
 
     private Logger log;
 
-    public static final String TOKEN = "f229fbea-a4b9-40a8-b8ee-e2b47bc1391d";
-
     //private String jrpcHeader = "\"id\":\"22\", \"token\":\"f229fbea-a4b9-40a8-b8ee-e2b47bc1391d\"";
 
 

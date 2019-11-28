@@ -10,8 +10,8 @@ import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.configuration.SpringConfiguration;
-import jsonrpc.server.utils.Rest;
-import jsonrpc.server.utils.RestFactory;
+import jsonrpc.utils.Rest;
+import jsonrpc.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,9 +24,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 
 import java.lang.invoke.MethodHandles;
-
-import static jsonrpc.server.TestSuite.TOKEN;
-
 
 // Не включишь - не будут прогружаться конфиги из кастомных .properties файлов
 // Эту аннотацию надо включать только для тестов
@@ -48,7 +45,6 @@ import static jsonrpc.server.TestSuite.TOKEN;
 class OrderHandlerTest {
 
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static Rest rest; // Wrapper of RestTemplate
 
     private static Long id;
 
@@ -59,12 +55,11 @@ class OrderHandlerTest {
     private ObjectMapper objectMapper;
     private JrpcRequest jrpcRequest;
     private IdDto idDto;
+    private Rest rest;
 
     @BeforeAll
     static void setup() {
         TestSuite.INSTANCE.init();
-        rest = RestFactory.getRest(true, true);
-        rest.setCustomHeader("token", TOKEN);
         id = 1L;
     }
 
@@ -73,6 +68,7 @@ class OrderHandlerTest {
     @BeforeEach
     void beforeEach() {
 
+        rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = context.getBean(JrpcRequest.class);
         idDto = context.getBean(IdDto.class);

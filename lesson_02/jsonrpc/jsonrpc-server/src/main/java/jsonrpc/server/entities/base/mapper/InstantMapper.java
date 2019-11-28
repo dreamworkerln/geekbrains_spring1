@@ -1,11 +1,6 @@
 package jsonrpc.server.entities.base.mapper;
 
-import jsonrpc.protocol.dto.product.ProductDto;
-import jsonrpc.server.entities.product.Product;
-import jsonrpc.server.utils.Utils;
-import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import java.time.Instant;

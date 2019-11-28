@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>jsonrpc</artifactId>
+        <groupId>ru.geekbrains.spring1.lesson02</groupId>
+        <version>0.1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>zclient</artifactId>
+
+
+    <dependencies>
+
+        <!--junit5-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.3.2</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!--junit5-->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.3.2</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <!--module -->
+        <dependency>
+            <groupId>ru.geekbrains.spring1.lesson02</groupId>
+            <artifactId>protocol</artifactId>
+            <version>${jrpc.protocol.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!--module -->
+        <dependency>
+            <groupId>ru.geekbrains.spring1.lesson02</groupId>
+            <artifactId>utils</artifactId>
+             <version>0.1.0</version>
+            <scope>compile</scope>
+        </dependency>        
+
+    </dependencies>
+
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+        <finalName>client-0.1</finalName>
+    </build>
+
+</project>

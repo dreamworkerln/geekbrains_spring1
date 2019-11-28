@@ -2,7 +2,7 @@ package jsonrpc.server.entities.product;
 
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.entities.base.mapper.InstantMapper;
-import jsonrpc.server.utils.Utils;
+import jsonrpc.utils.Utils;
 import org.mapstruct.*;
 
 @Mapper(componentModel = "spring",

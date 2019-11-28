@@ -1,4 +1,4 @@
-package jsonrpc.server.utils;
+package jsonrpc.utils;
 
 //import org.apache.commons.codec.binary.Base64;
 //import org.apache.http.auth.Credentials;

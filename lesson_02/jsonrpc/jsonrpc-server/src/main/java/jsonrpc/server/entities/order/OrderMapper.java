@@ -10,7 +10,7 @@ import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.ProductItemMapper;
 import jsonrpc.server.entities.product.ProductMapper;
 import jsonrpc.server.repository.ProductRepository;
-import jsonrpc.server.utils.Utils;
+import jsonrpc.utils.Utils;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 

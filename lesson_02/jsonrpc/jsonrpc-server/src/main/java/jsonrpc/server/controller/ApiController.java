@@ -11,7 +11,7 @@ import jsonrpc.protocol.dto.base.http.HttpResponseJRPC;
 import jsonrpc.server.handlers.base.JrpcController;
 import jsonrpc.server.handlers.base.JrpcHandler;
 import jsonrpc.server.handlers.base.JrpcMethodHandler;
-import jsonrpc.server.utils.Utils;
+import jsonrpc.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -21,8 +21,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

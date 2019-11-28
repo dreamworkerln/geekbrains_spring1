@@ -11,8 +11,8 @@ import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
 import jsonrpc.server.configuration.SpringConfiguration;
-import jsonrpc.server.utils.Rest;
-import jsonrpc.server.utils.RestFactory;
+import jsonrpc.utils.Rest;
+import jsonrpc.utils.RestFactory;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,9 +29,6 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static jsonrpc.server.TestSuite.TOKEN;
-
-
 @EnableConfigurationProperties
 @SpringBootTest(classes = {
         SpringConfiguration.class,
@@ -44,7 +41,6 @@ import static jsonrpc.server.TestSuite.TOKEN;
 public class ProductHandlerTest {
 
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static Rest rest; // Wrapper of RestTemplate
 
     @Autowired
     private ApplicationContext context;
@@ -54,18 +50,18 @@ public class ProductHandlerTest {
     private JrpcRequest jrpcRequest;
     private IdDto idDto;
     private IdListDto idListDto;
+    private Rest rest;
 
     @BeforeAll
     static void setup() {
         TestSuite.INSTANCE.init();
-        rest = RestFactory.getRest(true, true);
-        rest.setCustomHeader("token", TOKEN);
     }
 
     @SuppressWarnings("Duplicates")
     @BeforeEach
     void beforeEach() {
 
+        rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = context.getBean(JrpcRequest.class);
         idDto = context.getBean(IdDto.class);
@@ -100,7 +96,7 @@ public class ProductHandlerTest {
 
         // producing json
         String json = objectMapper.writeValueAsString(jrpcRequest);
-        log.info("POST:\n" + json);
+        log.info("REQUEST:\n" + json);
 
         // perform request
         ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
@@ -121,7 +117,7 @@ public class ProductHandlerTest {
         jrpcRequest.setParams(idListDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
-        log.info("POST:\n" + json);
+        log.info("REQUEST:\n" + json);
 
         ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
         log.info(response.getStatusCode().toString() + "\n" + response.getBody());
@@ -142,7 +138,7 @@ public class ProductHandlerTest {
 
         jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.getAll);
         String json = objectMapper.writeValueAsString(jrpcRequest);
-        log.info("POST:\n" + json);
+        log.info("REQUEST:\n" + json);
 
         ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
         log.info(response.getStatusCode().toString() + "\n" + response.getBody());
@@ -166,7 +162,7 @@ public class ProductHandlerTest {
         jrpcRequest.setParams(productDto);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
-        log.info("POST:\n" + json);
+        log.info("REQUEST:\n" + json);
 
         ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
         log.info(response.getStatusCode().toString() + "\n" + response.getBody());

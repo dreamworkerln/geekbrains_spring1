@@ -1,4 +1,4 @@
-package jsonrpc.server.utils;
+package jsonrpc.utils;
 
 import java.lang.reflect.Field;
 

@@ -1,17 +1,13 @@
 package jsonrpc.server.repository.impl;
 
-import com.github.javafaker.Faker;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.repository.ProductRepository;
-import jsonrpc.server.utils.Utils;
+import jsonrpc.utils.Utils;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.atomic.AtomicLong;
