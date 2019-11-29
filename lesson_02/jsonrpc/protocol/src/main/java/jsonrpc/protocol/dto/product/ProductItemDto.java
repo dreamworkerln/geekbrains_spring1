@@ -12,8 +12,8 @@ public class ProductItemDto extends AbstractDtoPersisted {
     // только ссылка на продукт (by id)
     // нужно описание и поля продукта - иди в productHandler и получай подробную информацию
     // о интересующих тебя продуктах
-    private Long productId;
-    private Integer count;
+    protected Long productId;
+    protected Integer count;
 
 
     public Long getProductId() {

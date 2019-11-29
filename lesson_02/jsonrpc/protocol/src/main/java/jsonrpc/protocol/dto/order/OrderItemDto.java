@@ -36,7 +36,11 @@ public class OrderItemDto extends ProductItemDto {
     @Override
     public String toString() {
         return "OrderItemDto{" +
-                "id=" + id +
-                '}';
+               "id=" + id +
+               ", productId=" + productId +
+               ", count=" + count +
+               ", created=" + created +
+               ", updated=" + updated +
+               '}';
     }
 }

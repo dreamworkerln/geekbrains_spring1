@@ -28,8 +28,9 @@ import java.util.Arrays;
 @EnableConfigurationProperties
 @SpringBootTest(classes = {
         SpringConfiguration.class,
-        JrpcRequest.class,
-        ConfigProperties.class})
+        ConfigProperties.class
+})
+//        JrpcRequest.class
 
 
 public class ProductHandlerTest {
@@ -39,9 +40,11 @@ public class ProductHandlerTest {
     @Autowired
     private ApplicationContext context;
 
-
+    @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
     private JrpcRequest jrpcRequest;
+    @Autowired
     private Rest rest;
 
     @BeforeAll
