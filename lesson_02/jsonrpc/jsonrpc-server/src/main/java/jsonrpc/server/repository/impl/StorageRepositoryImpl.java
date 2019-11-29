@@ -58,11 +58,15 @@ public class StorageRepositoryImpl implements StorageRepository {
 
 
     @Override
-    public void put(Product product, int count) {
+    public Long put(Product product, int count) {
+
+        Long result;
 
         if (product.getId() == null) {
             throw new IllegalArgumentException("product not persisted yet");
         }
+        // У persisted ProductItem и Product id совпадают
+        result = product.getId();
 
         // find ProductItem by product.id
         ProductItem tmp;
@@ -78,24 +82,26 @@ public class StorageRepositoryImpl implements StorageRepository {
             // create new ProductItem
 
             tmp = new ProductItem(product, count);
-            Utils.idSetter(tmp, identity.getAndIncrement());
+            Utils.idSetter(tmp, product.getId());
             tmp.toCreate();
             tmp.toUpdate();
             productItemList.put(tmp.getProduct().getId(), tmp);
         }
+
+        return result;
     }
 
     @Override
-    public void remove(Product product, int count) {
+    public Long remove(Product product, int count) {
 
-        // find ProductItem by product.id
-        ProductItem tmp;
+        Long result;
 
         if (product.getId() == null) {
             throw new IllegalArgumentException("product not persisted yet");
         }
 
-        tmp = productItemList.get(product.getId());
+        // find ProductItem by product.id
+        ProductItem tmp = productItemList.get(product.getId());
 
 
         // ToDO: тут нужна синхронизация / транзацкия с блокировкой строки таблицы
@@ -106,10 +112,14 @@ public class StorageRepositoryImpl implements StorageRepository {
             tmp = productItemList.get(product.getId());
             tmp.setCount(tmp.getCount() - count);
             tmp.toUpdate();
+
+            result = tmp.getId();
         }
         else {
             throw new IllegalArgumentException("product doesn't exists/not enough amount in storage to remove");
         }
+
+        return result;
     }
 
 

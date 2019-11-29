@@ -5,8 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.param.IdDto;
-import jsonrpc.protocol.dto.base.param.ListIdDto;
 import jsonrpc.protocol.dto.product.ProductItemDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
@@ -32,8 +30,6 @@ import java.util.Arrays;
         SpringConfiguration.class,
         JrpcRequest.class,
         ProductItemDto.class,
-        IdDto.class,
-        ListIdDto.class,
         ConfigProperties.class})
 
 
@@ -47,8 +43,6 @@ public class StorageHandlerTest {
 
     private ObjectMapper objectMapper;
     private JrpcRequest jrpcRequest;
-    private IdDto idDto;
-    private ListIdDto listIdDto;
     private Rest rest;
 
     @BeforeAll
@@ -63,8 +57,6 @@ public class StorageHandlerTest {
         rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = context.getBean(JrpcRequest.class);
-        idDto = context.getBean(IdDto.class);
-        listIdDto = context.getBean(ListIdDto.class);
     }
 
 
@@ -73,9 +65,8 @@ public class StorageHandlerTest {
 
         jrpcRequest.setId(22L);
 
-        idDto.setId(1L);
         jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.getById);
-        jrpcRequest.setParams(idDto);
+        jrpcRequest.setParams(objectMapper.valueToTree(1L));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST\n" + json);
@@ -88,11 +79,8 @@ public class StorageHandlerTest {
     void getByListId() throws JsonProcessingException {
 
         jrpcRequest.setId(22L);
-
-        listIdDto.setList(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L)));
-
         jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.getByListId);
-        jrpcRequest.setParams(listIdDto);
+        jrpcRequest.setParams(objectMapper.valueToTree(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L))));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
@@ -129,7 +117,7 @@ public class StorageHandlerTest {
         productItemDto.setCount(200);
 
         jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.put);
-        jrpcRequest.setParams(productItemDto);
+        jrpcRequest.setParams(objectMapper.valueToTree(productItemDto));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);

@@ -5,11 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.protocol.dto.base.HandlerName;
-import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.param.IdDto;
-import jsonrpc.protocol.dto.base.param.ListIdDto;
 import jsonrpc.protocol.dto.product.ProductDto;
-import jsonrpc.utils.Rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,39 +38,29 @@ public class ProductRequest extends RequestBase {
     public ProductDto getById(long id) throws JsonProcessingException {
 
         String uri = HandlerName.Product.path + "." + HandlerName.Product.getById;
-        IdDto idDto = context.getBean(IdDto.class);
-        idDto.setId(id);
-        ResponseEntity<String> response = performRequest(1000L, uri, idDto);
-        log.warn(response.getStatusCode().toString() + "\n" + response.getBody());
-
-        JsonNode result = objectMapper.readTree(response.getBody()).get("result");
-        return objectMapper.treeToValue(result, ProductDto.class);
+        JsonNode response = performRequest(1000L, uri, id);
+        return objectMapper.treeToValue(response, ProductDto.class);
     }
 
 
-    public List<ProductDto> getByListId(long id) throws JsonProcessingException {
+    public List<ProductDto> getByListId(List<Long> list) throws JsonProcessingException {
 
         String uri = HandlerName.Product.path + "." + HandlerName.Product.getByListId;
 
-        ListIdDto listIdDto = context.getBean(ListIdDto.class);
-        listIdDto.setList(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L)));
+        // ASAP EDC !!!! CHECK
+        // Arrays.asList(1L, 2L, 3L, 999L)
+        // new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L))
 
-        ResponseEntity<String> response = performRequest(1000L, uri, listIdDto);
-        log.warn(response.getStatusCode().toString() + "\n" + response.getBody());
-
+        JsonNode response = performRequest(1000L, uri, list);
         // https://stackoverflow.com/questions/6349421/how-to-use-jackson-to-deserialise-an-array-of-objects
-        JsonNode result = objectMapper.readTree(response.getBody()).get("result").get("productList");
-        return Arrays.asList(objectMapper.treeToValue(result, ProductDto[].class));
+        return Arrays.asList(objectMapper.treeToValue(response, ProductDto[].class));
     }
 
 
     public List<ProductDto> getAll() throws JsonProcessingException {
 
         String uri = HandlerName.Product.path + "." + HandlerName.Product.getAll;
-        ResponseEntity<String> response = performRequest(1000L, uri, null);
-        log.warn(response.getStatusCode().toString() + "\n" + response.getBody());
-
-        JsonNode result = objectMapper.readTree(response.getBody()).get("result").get("productList");
-        return Arrays.asList(objectMapper.treeToValue(result, ProductDto[].class));
+        JsonNode response = performRequest(1000L, uri, null);
+        return Arrays.asList(objectMapper.treeToValue(response, ProductDto[].class));
     }
 }

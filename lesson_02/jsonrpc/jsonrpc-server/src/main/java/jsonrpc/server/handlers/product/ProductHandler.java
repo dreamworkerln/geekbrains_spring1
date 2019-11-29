@@ -4,10 +4,7 @@ package jsonrpc.server.handlers.product;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
-import jsonrpc.protocol.dto.base.param.IdDto;
 import jsonrpc.protocol.dto.product.ProductDto;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
-import jsonrpc.protocol.dto.product.lists.ProductListDto;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.lists.ProductListMapper;
 import jsonrpc.server.entities.product.ProductMapper;
@@ -32,10 +29,8 @@ public class ProductHandler extends HandlerBase {
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final ProductRepository productRepository;
-    private final ProductListDto productListDto;
     private final ProductListMapper productListMapper;
     private final ProductMapper productMapper;
-    private final IdDto idDto;
 
 
 
@@ -45,72 +40,67 @@ public class ProductHandler extends HandlerBase {
     public ProductHandler(
             ObjectMapper objectMapper,
             ProductRepository productRepository,
-            ProductListDto productListDto,
             ProductListMapper productListMapper,
-            ProductMapper productMapper, IdDto idDto) {
+            ProductMapper productMapper) {
 
         super(objectMapper);
 
         this.productRepository = productRepository;
-        this.productListDto = productListDto;
         this.productListMapper = productListMapper;
         this.productMapper = productMapper;
-        this.idDto = idDto;
     }
 
     // -----------------------------------------------------------------------------
 
 
     @JrpcHandler(method = HandlerName.Product.getById)
-    public AbstractDto getById(JsonNode params) {
+    public JsonNode getById(JsonNode params) {
 
         // request id
         long id = getId(params);
 
         // Getting from repository product by id
         Product product = productRepository.getById(id);
-
-        return productMapper.toDto(product);
+        ProductDto productDto = productMapper.toDto(product);
+        return objectMapper.valueToTree(productDto);
     }
 
 
 
 
     @JrpcHandler(method = HandlerName.Product.getByListId)
-    public AbstractDto getByListId(JsonNode params) {
+    public JsonNode getByListId(JsonNode params) {
 
         List<Long> idList = getIdList(params);
 
         // Getting from repository product by "id"
         List<Product> list = productRepository.getByListId(idList);
-
-        // Оборачиваем List<ProductDto> в ProductListDto
-        return new ProductListDto(productListMapper.toDto(list));
+        List<ProductDto> listDto = productListMapper.toDto(list);
+        return objectMapper.valueToTree(listDto);
     }
 
 
 
     @JrpcHandler(method = HandlerName.Product.getAll)
-    public AbstractDto getAll(JsonNode params) {
+    public JsonNode getAll(JsonNode params) {
 
-        ProductListDto result;
         List<Product> list = productRepository.getAll();
-
-        return new ProductListDto(productListMapper.toDto(list));
+        List<ProductDto> listDto = productListMapper.toDto(list);
+        return objectMapper.valueToTree(listDto);
     }
     
 
 
     @JrpcHandler(method = HandlerName.Product.put)
-    public AbstractDto put(JsonNode params) {
+    public JsonNode put(JsonNode params) {
 
         Product product = getProduct(params);
         productRepository.put(product);
-        return new IdDto(product.getId());
+        return objectMapper.valueToTree(product.getId());
     }
 
     @JrpcHandler(method = HandlerName.Product.delete)
-    public AbstractDto delete(JsonNode params) {
+    public JsonNode delete(JsonNode params) {
 
         throw new NotImplementedException("ProductHandler.delete");
     }

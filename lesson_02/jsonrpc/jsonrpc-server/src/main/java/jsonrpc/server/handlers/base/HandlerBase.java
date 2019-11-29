@@ -2,9 +2,9 @@ package jsonrpc.server.handlers.base;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jsonrpc.protocol.dto.base.param.IdDto;
-import jsonrpc.protocol.dto.base.param.ListIdDto;
+import jsonrpc.protocol.dto.product.ProductDto;
 
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class HandlerBase {
@@ -23,15 +23,17 @@ public abstract class HandlerBase {
 
         // parsing request
         try {
-            IdDto idDto = objectMapper.treeToValue(params, IdDto.class);
-            // validate ... end
-            result = idDto.getId();
+            result = objectMapper.treeToValue(params, Long.class);
+
+            // validate
+            if (result == null || result < 0) {
+                throw new IllegalArgumentException("Iid == null < 0");
+            }
         }
         // All parse/deserialize errors interpreted as 400 error - do not remove this try/catch
         catch (Exception e) {
-            throw new IllegalArgumentException("Jackson parse error", e);
+            throw new IllegalArgumentException("Jackson param parse error", e);
         }
-
         return result;
     }
 
@@ -41,12 +43,23 @@ public abstract class HandlerBase {
         List<Long> result;
         try {
 
-            ListIdDto listIdDto = objectMapper.treeToValue(params, ListIdDto.class);
-            ListIdDto.validate(listIdDto);
-            result = listIdDto.getList();
+            if (params == null) {
+                throw new IllegalArgumentException("ListId == null");
+            }
+
+
+            // https://stackoverflow.com/questions/6349421/how-to-use-jackson-to-deserialise-an-array-of-objects
+            result = Arrays.asList(objectMapper.treeToValue(params, Long[].class));
+
+            result.forEach(l -> {
+
+                if (l == null) {
+                    throw new IllegalArgumentException("ListId contains null element");
+                }
+            });
         }
         catch (Exception e) {
-            throw new IllegalArgumentException("Jackson parse error", e);
+            throw new IllegalArgumentException("Jackson param parse error", e);
         }
 
         return result;

@@ -1,14 +1,12 @@
 package jsonrpc.client.request;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.protocol.dto.base.HandlerName;
-import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.param.IdDto;
-import jsonrpc.protocol.dto.base.param.ListIdDto;
-import jsonrpc.protocol.dto.order.OrderItemDto;
+import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.protocol.dto.product.ProductItemDto;
-import jsonrpc.utils.Rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 @Service
@@ -31,56 +30,57 @@ public class StorageRequest extends RequestBase{
     }
 
 
-    public void getById(long id) {
+    public ProductItemDto getById(long id) throws JsonProcessingException {
 
         String uri = HandlerName.Storage.path + "." + HandlerName.Storage.getById;
-        IdDto idDto = context.getBean(IdDto.class);
 
-        idDto.setId(id);
-        ResponseEntity<String> response = performRequest(1000L, uri, idDto);
-        System.out.println(response.getStatusCode().toString() + "\n" + response.getBody());
+        JsonNode response = performRequest(1000L, uri, id);
+        return objectMapper.treeToValue(response, ProductItemDto.class);
+
     }
 
 
-    public void getByListId(long id) {
+    public List<ProductItemDto> getByListId(List<Long> list) throws JsonProcessingException {
 
         String uri = HandlerName.Storage.path + "." + HandlerName.Storage.getByListId;
 
-        ListIdDto listIdDto = context.getBean(ListIdDto.class);
-        listIdDto.setList(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L)));
-
-        ResponseEntity<String> response = performRequest(1000L, uri, listIdDto);
-        System.out.println(response.getStatusCode().toString() + "\n" + response.getBody());
+        // ASAP EDC !!! CHECK
+        //Arrays.asList(1L, 2L, 3L, 999L)
+        //new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L))
+        JsonNode response = performRequest(1000L, uri, list);
+        return Arrays.asList(objectMapper.treeToValue(response, ProductItemDto[].class));
     }
 
 
-    public void getAll() {
+    public List<ProductItemDto> getAll() throws JsonProcessingException {
 
         String uri = HandlerName.Storage.path + "." + HandlerName.Storage.getAll;
-        ResponseEntity<String> response = performRequest(1000L, uri, null);
-        System.out.println(response.getStatusCode().toString() + "\n" + response.getBody());
+        JsonNode response = performRequest(1000L, uri, null);
+        return Arrays.asList(objectMapper.treeToValue(response, ProductItemDto[].class));
     }
 
 
-    public void put(Long productId, int count) {
+    public Long put(Long productId, int count) throws JsonProcessingException {
 
         String uri = HandlerName.Storage.path + "." + HandlerName.Storage.put;
         ProductItemDto productItemDto = context.getBean("productItemDto", ProductItemDto.class);
         productItemDto.setProductId(productId);
         productItemDto.setCount(count);
-        ResponseEntity<String> response = performRequest(1000L, uri, productItemDto);
-        System.out.println(response.getStatusCode().toString() + "\n" + response.getBody());
+
+        JsonNode response = performRequest(1000L, uri, productItemDto);
+        return objectMapper.treeToValue(response, Long.class);
     }
 
 
-    public void remove(Long productId, int count) {
+    public Long remove(Long productId, int count) throws JsonProcessingException {
 
         String uri = HandlerName.Storage.path + "." + HandlerName.Storage.remove;
         ProductItemDto productItemDto = context.getBean("productItemDto", ProductItemDto.class);
         productItemDto.setProductId(productId);
         productItemDto.setCount(count);
-        ResponseEntity<String> response = performRequest(1000L, uri, productItemDto);
-        System.out.println(response.getStatusCode().toString() + "\n" + response.getBody());
+
+        JsonNode response = performRequest(1000L, uri, productItemDto);
+        return objectMapper.treeToValue(response, Long.class);
     }
 
 

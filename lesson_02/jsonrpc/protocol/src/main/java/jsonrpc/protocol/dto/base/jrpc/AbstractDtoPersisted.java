@@ -6,8 +6,8 @@ import java.time.temporal.ChronoUnit;
 public abstract class AbstractDtoPersisted extends AbstractDto {
 
     protected Long id;
-    protected Long created;
-    protected Long updated;
+    protected Instant created; // Можно поменять на Long
+    protected Instant updated; // Можно поменять на Long
 
     public Long getId() {
         return id;
@@ -17,30 +17,30 @@ public abstract class AbstractDtoPersisted extends AbstractDto {
         this.id = id;
     }
 
-    public Long getCreated() {
+    public Instant getCreated() {
         return created;
     }
 
-    public void setCreated(Long created) {
+    public void setCreated(Instant created) {
         this.created = created;
     }
 
-    public Long getUpdated() {
+    public Instant getUpdated() {
         return updated;
     }
 
-    public void setUpdated(Long updated) {
+    public void setUpdated(Instant updated) {
         this.updated = updated;
     }
 
     public void toCreate() {
         // Truncating to seconds
-        created = Instant.now().truncatedTo(ChronoUnit.SECONDS).getEpochSecond();
+        created = Instant.now().truncatedTo(ChronoUnit.SECONDS);/*.getEpochSecond();*/
     }
 
     public void toUpdate() {
         // Truncating to seconds
-        updated = Instant.now().truncatedTo(ChronoUnit.SECONDS).getEpochSecond();
+        updated = Instant.now().truncatedTo(ChronoUnit.SECONDS);/*.getEpochSecond();*/
     }
 
     /**

@@ -3,8 +3,6 @@ package jsonrpc.server.handlers.order;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.param.IdDto;
-import jsonrpc.protocol.dto.base.param.ListIdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.server.TestSuite;
@@ -36,8 +34,6 @@ import java.lang.invoke.MethodHandles;
         OrderDto.class,
         OrderItemDto.class,
         JrpcRequest.class,
-        IdDto.class,
-        ListIdDto.class,
         ConfigProperties.class})
 // Так можно догрузить/переопределить базовые настройки
 //@TestPropertySource("classpath:configprops.properties")
@@ -53,7 +49,6 @@ class OrderHandlerTest {
 
     private ObjectMapper objectMapper;
     private JrpcRequest jrpcRequest;
-    private IdDto idDto;
     private Rest rest;
 
     @BeforeAll
@@ -70,8 +65,6 @@ class OrderHandlerTest {
         rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = context.getBean(JrpcRequest.class);
-        idDto = context.getBean(IdDto.class);
-        ListIdDto listIdDto = context.getBean(ListIdDto.class);
     }
 
 
@@ -81,12 +74,9 @@ class OrderHandlerTest {
         // jrpc id
         jrpcRequest.setId(22L);
 
-        // request params
-        idDto.setId(id);
-
-        // specify handler and method name
+        // specify handler and method name, params
         jrpcRequest.setMethod(HandlerName.Order.path + "." + HandlerName.Order.getById);
-        jrpcRequest.setParams(idDto);
+        jrpcRequest.setParams(objectMapper.valueToTree(id));
 
         // producing json
         String json = objectMapper.writeValueAsString(jrpcRequest);
@@ -107,10 +97,10 @@ class OrderHandlerTest {
         orderItemDto.setCount(3);
         orderItemDto.setProductId(3L);
         OrderDto orderDto = context.getBean(OrderDto.class);
-        orderDto.addProductItemDto(orderItemDto);
+        orderDto.addOrderItemDto(orderItemDto);
 
         jrpcRequest.setMethod(HandlerName.Order.path + "." + HandlerName.Order.put);
-        jrpcRequest.setParams(orderDto);
+        jrpcRequest.setParams(objectMapper.valueToTree(orderDto));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST\n" + json);

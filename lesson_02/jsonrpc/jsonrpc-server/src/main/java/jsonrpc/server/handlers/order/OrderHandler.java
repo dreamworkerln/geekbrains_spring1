@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
-import jsonrpc.protocol.dto.base.param.IdDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderMapper;
@@ -52,29 +51,29 @@ public class OrderHandler extends HandlerBase {
 
 
     @JrpcHandler(method = HandlerName.Order.getById)
-    public AbstractDto getById(JsonNode params) {
+    public JsonNode getById(JsonNode params) {
 
         // request id
         long id = getId(params);
 
         // Getting from repository product by id
         Order order = orderRepository.getById(id);
-
-        return orderMapper.toDto(order);
+        OrderDto orderdto = orderMapper.toDto(order);
+        return objectMapper.valueToTree(orderdto);
     }
 
 
     @JrpcHandler(method = HandlerName.Order.put)
-    public AbstractDto put(JsonNode params) {
+    public JsonNode put(JsonNode params) {
 
         Order order = getOrder(params);
         orderRepository.put(order);
-        return new IdDto(order.getId());
+        return objectMapper.valueToTree(order.getId());
     }
 
 
     @JrpcHandler(method = HandlerName.Order.delete)
-    public AbstractDto delete(JsonNode params) {
+    public JsonNode delete(JsonNode params) {
 
         throw new NotImplementedException("ProductHandler.delete");
     }

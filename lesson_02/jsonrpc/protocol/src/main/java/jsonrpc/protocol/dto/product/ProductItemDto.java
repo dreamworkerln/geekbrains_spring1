@@ -39,4 +39,15 @@ public class ProductItemDto extends AbstractDtoPersisted {
             throw new IllegalArgumentException("productDto == null");
         }
     }
+
+    @Override
+    public String toString() {
+        return "ProductItemDto{" +
+                "id=" + id +
+                ",productId=" + productId +
+                ", count=" + count +
+                ", created=" + created +
+                ", updated=" + updated +
+                '}';
+    }
 }

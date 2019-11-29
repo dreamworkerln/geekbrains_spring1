@@ -5,8 +5,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.param.IdDto;
-import jsonrpc.protocol.dto.base.param.ListIdDto;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
@@ -25,15 +23,12 @@ import org.springframework.http.ResponseEntity;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @EnableConfigurationProperties
 @SpringBootTest(classes = {
         SpringConfiguration.class,
         JrpcRequest.class,
-        IdDto.class,
-        ListIdDto.class,
         ConfigProperties.class})
 
 
@@ -47,8 +42,6 @@ public class ProductHandlerTest {
 
     private ObjectMapper objectMapper;
     private JrpcRequest jrpcRequest;
-    private IdDto idDto;
-    private ListIdDto listIdDto;
     private Rest rest;
 
     @BeforeAll
@@ -63,8 +56,6 @@ public class ProductHandlerTest {
         rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = context.getBean(JrpcRequest.class);
-        idDto = context.getBean(IdDto.class);
-        listIdDto = context.getBean(ListIdDto.class);
     }
 
     @Test
@@ -86,12 +77,9 @@ public class ProductHandlerTest {
         // jrpc id
         jrpcRequest.setId(22L);
 
-        // request params
-        idDto.setId(1L);
-
-        // specify handler and method name
+        // specify handler and method name, params
         jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.getById);
-        jrpcRequest.setParams(idDto);
+        jrpcRequest.setParams(objectMapper.valueToTree(1L));
 
         // producing json
         String json = objectMapper.writeValueAsString(jrpcRequest);
@@ -110,10 +98,9 @@ public class ProductHandlerTest {
     void getByListId() throws JsonProcessingException {
 
         jrpcRequest.setId(22L);
-        listIdDto.setList(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L)));
 
         jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.getByListId);
-        jrpcRequest.setParams(listIdDto);
+        jrpcRequest.setParams(objectMapper.valueToTree(Arrays.asList(1L, 2L, 3L, 999L)));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
@@ -158,7 +145,7 @@ public class ProductHandlerTest {
         productDto.setVcode("123");
 
         jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.put);
-        jrpcRequest.setParams(productDto);
+        jrpcRequest.setParams(objectMapper.valueToTree(productDto));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);

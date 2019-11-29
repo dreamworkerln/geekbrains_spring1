@@ -3,10 +3,8 @@ package jsonrpc.server.handlers.storage;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
-import jsonrpc.protocol.dto.order.OrderItemDto;
+import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.protocol.dto.product.ProductItemDto;
-import jsonrpc.protocol.dto.product.lists.ProductItemListDto;
 import jsonrpc.server.entities.product.ProductItem;
 import jsonrpc.server.entities.product.ProductItemMapper;
 import jsonrpc.server.entities.product.lists.ProductItemListMapper;
@@ -52,54 +50,58 @@ public class StorageHandler extends HandlerBase {
 
 
     @JrpcHandler(method = HandlerName.Storage.getById)
-    public AbstractDto getById(JsonNode params) {
+    public JsonNode getById(JsonNode params) {
 
         // request id
         long id = getId(params);
         ProductItem productItem = storageRepository.getById(id);
-        return productItemMapper.toDto(productItem);
+        ProductItemDto productItemDto = productItemMapper.toDto(productItem);
+        return objectMapper.valueToTree(productItemDto);
     }
 
     @JrpcHandler(method = HandlerName.Storage.getByListId)
-    public AbstractDto getByListId(JsonNode params) {
+    public JsonNode getByListId(JsonNode params) {
 
         List<Long> idList = getIdList(params);
         List<ProductItem> list = storageRepository.getByListId(idList);
-        return new ProductItemListDto(productItemListMapper.toDto(list));
+        List<ProductItemDto> listDto = productItemListMapper.toDto(list);
+        return objectMapper.valueToTree(listDto);
     }
 
 
 
 
     @JrpcHandler(method = HandlerName.Storage.getAll)
-    public AbstractDto getAll(JsonNode params) {
+    public JsonNode getAll(JsonNode params) {
 
         List<ProductItem> list = storageRepository.getAll();
-        return new ProductItemListDto(productItemListMapper.toDto(list));
+        List<ProductItemDto> listDto = productItemListMapper.toDto(list);
+        return objectMapper.valueToTree(listDto);
     }
 
 
 
     @JrpcHandler(method = HandlerName.Storage.put)
-    public AbstractDto put(JsonNode params) {
+    public JsonNode put(JsonNode params) {
 
         ProductItem productItem = getProductItem(params);
-        storageRepository.put(productItem.getProduct(), productItem.getCount());
-        return null;
+        Long id = storageRepository.put(productItem.getProduct(), productItem.getCount());
+        // У persisted ProductItem и Product id совпадают
+        return objectMapper.valueToTree(id);
     }
 
 
     @JrpcHandler(method = HandlerName.Storage.remove)
-    public AbstractDto remove(JsonNode params) {
+    public JsonNode remove(JsonNode params) {
 
         ProductItem productItem = getProductItem(params);
-        storageRepository.remove(productItem.getProduct(), productItem.getCount());
-        return null;
+        Long id = storageRepository.remove(productItem.getProduct(), productItem.getCount());
+        return objectMapper.valueToTree(id);
     }
 
 
     @JrpcHandler(method = HandlerName.Storage.delete)
-    public AbstractDto delete(JsonNode params) {
+    public JsonNode delete(JsonNode params) {
 
         throw new NotImplementedException("StorageHandler.delete");
     }

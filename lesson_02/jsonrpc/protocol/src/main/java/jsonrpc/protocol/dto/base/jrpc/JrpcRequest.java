@@ -1,5 +1,6 @@
 package jsonrpc.protocol.dto.base.jrpc;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -13,13 +14,13 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class JrpcRequest extends JrpcRequestHeader {
 
-    private AbstractDto params;
+    private JsonNode params;
 
-    public AbstractDto getParams() {
+    public JsonNode getParams() {
         return params;
     }
 
-    public void setParams(AbstractDto param) {
+    public void setParams(JsonNode param) {
         this.params = param;
     }
 }

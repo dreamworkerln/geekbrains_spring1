@@ -3,7 +3,6 @@ package jsonrpc.server.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequestHeader;
 import jsonrpc.protocol.dto.base.http.HttpResponse;
 import jsonrpc.protocol.dto.base.http.HttpResponseError;
@@ -105,7 +104,7 @@ public class ApiController {
         Long id = null;
 
         // jrpc response
-        AbstractDto jrpcResult;
+        JsonNode jrpcResult;
 
         // http response
         HttpResponse httpResponse;
@@ -189,22 +188,35 @@ public class ApiController {
         // add request id (if have one)
         httpResponse.setId(id);
 
+        // Фокус - внутри httpResponse(HttpResponseJRPC)
+        // есть поле JsonNode result;
+        // Так ObjectMapper, который серализует ResponseEntity<> в json
+        // при возврате результата ResponseEntity<>
+        // (если написать ResponseEntity<String> то не будет сериализовать, вернет String)
+        // для поля JsonNode вызовет просто JsonNode.toPrettyString()
+        //
+        // Т.е. поле JsonNode result играет роль типа var(C#)
+        // И туда можно толкать как одиночные объекты, так и их коллекции, массивы
+        // без оборачивания в классы-обертки, так как все возвращается все равно в
+        // объекте JsonNode
+
         return new ResponseEntity<>(httpResponse, httpResponse.getStatus());
     }
+
+
 
     // =================================================================================================
 
     /**
-     * Fill handlers based on classes located in entities.message.request.*
+     * Fill handlers based on beans annotated with @JrpcController
      * <br>
-     * Using reflection get all classes in package that handle clients requests
+     * Using reflection to get all classes and theirs methods that handle clients requests
      */
     private void loadHandlers() {
 
         try {
-
-
-            // Ask spring to load and find all beans with
+            
+            // Ask spring to find (and load if not loaded?) all beans annotated with @JrpcController
             Map<String,Object> beans = context.getBeansWithAnnotation(JrpcController.class);
             //beans.keySet().forEach(System.out::println);
 
@@ -226,15 +238,18 @@ public class ApiController {
 
                         JrpcMethodHandler handler = jsonNode -> {
                             try {
-                                return (AbstractDto) method.invoke(bean, jsonNode);
+                                return (JsonNode) method.invoke(bean, jsonNode);
                             } catch (IllegalAccessException | InvocationTargetException e) {
 
                                 // выбрасываем наверх причину InvocationTargetException -
                                 // Что-то там упало в обработчике метода jrpc upcast into unchecked exception
 
-                                // ToDo: этот кусок кода надо улучшать
 
-                                // ToDo: checked exception(OOM, SO) не удастся завернуть в RuntimeException
+
+                                // ToDo: этот кусок кода надо улучшать
+                                // https://www.baeldung.com/java-lambda-exceptions
+                                // https://github.com/pivovarit/throwing-function
+
 
                                 Throwable exception = e.getCause();
 
@@ -250,9 +265,7 @@ public class ApiController {
                                     // если оно вызвано некорректным действием пользователя
                                     if (inner instanceof IllegalArgumentException) {
                                         // вернем 400
-                                        IllegalArgumentException newInner =
-                                                new IllegalArgumentException(inner.getMessage(), e);
-                                        throw newInner;
+                                        throw new IllegalArgumentException(inner.getMessage(), e);
                                     }
 
                                     // Это исключения репозитория spring,

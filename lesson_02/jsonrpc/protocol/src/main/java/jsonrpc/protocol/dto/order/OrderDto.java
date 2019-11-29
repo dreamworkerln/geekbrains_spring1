@@ -47,9 +47,9 @@ public class OrderDto extends AbstractDtoPersisted {
 
     // --------------------------------------------------------------------
 
-    public void addProductItemDto(OrderItemDto productItemDto) {
+    public void addOrderItemDto(OrderItemDto orderItemDto) {
 
-        itemList.add(productItemDto);
+        itemList.add(orderItemDto);
     }
 
 
@@ -67,7 +67,18 @@ public class OrderDto extends AbstractDtoPersisted {
         }
 
         //ToDo implement etc checks ...
-
     }
 
+
+    @Override
+    public String toString() {
+        return "OrderDto{" +
+                "id=" + id +
+                ", client=" + client +
+                ", manager=" + manager +
+                ", created=" + created +
+                ", updated=" + updated +
+                ", itemList=" + itemList +
+                '}';
+    }
 }

@@ -1,12 +1,10 @@
 package jsonrpc.client.request;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.client.configuration.ClientProperties;
-import jsonrpc.protocol.dto.base.HandlerName;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.protocol.dto.base.param.IdDto;
 import jsonrpc.utils.Rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,11 +22,11 @@ public abstract class RequestBase {
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
-    protected final ApplicationContext context;
-    protected final ObjectMapper objectMapper;
-    protected final ClientProperties clientProperties;
+    final ApplicationContext context;
+    final ObjectMapper objectMapper;
+    final ClientProperties clientProperties;
 
-    protected final String apiURL;
+    final String apiURL;
 
     public RequestBase(ApplicationContext context, ObjectMapper objectMapper, ClientProperties clientProperties) {
 
@@ -42,12 +40,14 @@ public abstract class RequestBase {
     }
 
 
-    ResponseEntity<String> performRequest(long id, String uri, AbstractDto params) {
+    JsonNode performRequest(long id, String uri, Object params) {
+
+        JsonNode result;
 
         JrpcRequest jrpcRequest = context.getBean(JrpcRequest.class);
         jrpcRequest.setMethod(uri);
         jrpcRequest.setId(id);
-        jrpcRequest.setParams(params);
+        jrpcRequest.setParams(objectMapper.valueToTree(params));
 
         String json;
         try {
@@ -57,7 +57,15 @@ public abstract class RequestBase {
         }
         log.warn("REQUEST\n" + json);
         Rest rest = context.getBean(Rest.class);
-        return rest.post(apiURL, json);
+        ResponseEntity<String> response = rest.post(apiURL, json);
+
+        log.warn("HTTP " + response.getStatusCode().toString() + "\n" + response.getBody());
+        try {
+            result = objectMapper.readTree(response.getBody()).get("result");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 
 
