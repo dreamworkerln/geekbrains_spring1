@@ -3,6 +3,7 @@ package jsonrpc.client;
 import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.client.request.ProductRequest;
 import jsonrpc.client.request.StorageRequest;
+import jsonrpc.protocol.dto.product.ProductDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.lang.invoke.MethodHandles;
+import java.util.List;
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
@@ -35,6 +37,11 @@ public class AppStartupRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
+        List<ProductDto> productDto = productRequest.getAll();
+        System.out.println(productDto);
+
+        /*
 
         System.out.println("Using client config: " + clientProperties.getServer());
         System.out.println("\n");
@@ -64,6 +71,8 @@ public class AppStartupRunner implements ApplicationRunner {
             System.out.println(e.getMessage());
             System.out.println(e.getResponseBodyAsString());
         }
+
+        */
 
 
     }

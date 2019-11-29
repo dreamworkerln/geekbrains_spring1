@@ -57,4 +57,16 @@ public class ProductDto extends AbstractDtoPersisted {
         //ToDo implement etc checks ...
     }
 
+
+    @Override
+    public String toString() {
+        return "ProductDto{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", vcode='" + vcode + '\'' +
+                ", testDate=" + testDate +
+                ", created=" + created +
+                ", updated=" + updated +
+                '}';
+    }
 }
