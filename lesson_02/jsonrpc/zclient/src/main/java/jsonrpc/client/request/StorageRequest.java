@@ -12,9 +12,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 
 @Service
@@ -64,8 +69,13 @@ public class StorageRequest extends RequestBase{
 
         String uri = HandlerName.Storage.path + "." + HandlerName.Storage.put;
         ProductItemDto productItemDto = context.getBean("productItemDto", ProductItemDto.class);
+
         productItemDto.setProductId(productId);
         productItemDto.setCount(count);
+
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        Validator validator = factory.getValidator();
+        Set<ConstraintViolation<ProductItemDto>> violations = validator.validate(productItemDto);
 
         JsonNode response = performRequest(1000L, uri, productItemDto);
         return objectMapper.treeToValue(response, Long.class);

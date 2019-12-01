@@ -57,6 +57,18 @@
             <artifactId>spring-boot-starter-log4j2</artifactId>
         </dependency>
 
+        <!--add spring boot mvc, fix slf4j class duplicate -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!--add spring boot, fix slf4j class duplicate -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -81,21 +93,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-
-
     </dependencies>
 
     <build>

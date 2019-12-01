@@ -33,26 +33,26 @@ public abstract class AbstractDtoPersisted extends AbstractDto {
         this.updated = updated;
     }
 
-    public void toCreate() {
-        // Truncating to seconds
-        created = Instant.now().truncatedTo(ChronoUnit.SECONDS);/*.getEpochSecond();*/
-    }
+//    public void toCreate() {
+//        // Truncating to seconds
+//        created = Instant.now().truncatedTo(ChronoUnit.SECONDS);/*.getEpochSecond();*/
+//    }
 
-    public void toUpdate() {
-        // Truncating to seconds
-        updated = Instant.now().truncatedTo(ChronoUnit.SECONDS);/*.getEpochSecond();*/
-    }
+//    public void toUpdate() {
+//        // Truncating to seconds
+//        updated = Instant.now().truncatedTo(ChronoUnit.SECONDS);/*.getEpochSecond();*/
+//    }
 
-    /**
-     * Set id, refresh created and updated
-     * @param id
-     */
-    public void reCreateWithId(Long id) {
-
-        this.id = id;
-        this.toCreate();
-        this.toUpdate();
-    }
+//    /**
+//     * Set id, refresh created and updated
+//     * @param id
+//     */
+//    public void reCreateWithId(Long id) {
+//
+//        this.id = id;
+//        this.toCreate();
+//        this.toUpdate();
+//    }
 }
 
 

@@ -24,6 +24,7 @@ public class SpringConfiguration {
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         //mapper.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 
         //mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);

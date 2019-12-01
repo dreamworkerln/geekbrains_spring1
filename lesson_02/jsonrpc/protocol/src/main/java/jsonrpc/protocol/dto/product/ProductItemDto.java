@@ -4,6 +4,9 @@ import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+
 @Component("productItemDto") // need qualifier due to inheritance issue
 @Scope("prototype")
 public class ProductItemDto extends AbstractDtoPersisted {
@@ -12,7 +15,12 @@ public class ProductItemDto extends AbstractDtoPersisted {
     // только ссылка на продукт (by id)
     // нужно описание и поля продукта - иди в productHandler и получай подробную информацию
     // о интересующих тебя продуктах
+
+    //@NotBlank(message = "Name is mandatory")
+    @Min(10)
     protected Long productId;
+
+    @Min(10)
     protected Integer count;
 
 

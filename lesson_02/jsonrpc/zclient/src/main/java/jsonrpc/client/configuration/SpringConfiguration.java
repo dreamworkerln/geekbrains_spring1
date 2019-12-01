@@ -1,5 +1,6 @@
 package jsonrpc.client.configuration;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -27,7 +28,7 @@ public class SpringConfiguration {
     public ObjectMapper objectMapper() {
 
         ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
-
+        mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
         return mapper;
     }

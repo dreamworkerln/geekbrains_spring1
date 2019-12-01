@@ -47,7 +47,10 @@ public class RepositoryFakeFiller {
 
             p = new Product();
 
-            p.setName(faker.beer().name());
+
+            //faker.overwatch().hero()
+
+            p.setName(faker.commerce().productName());
             p.setVcode(faker.number().digits(7));
             p.setTestDate(Instant.EPOCH);
 
