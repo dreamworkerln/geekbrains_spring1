@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -68,6 +69,7 @@ public class OrderServiceDefault implements OrderService {
         });
 
         orderRepository.save(order);
+        orderRepository.toUpdate(order, Instant.EPOCH);
 
         return order.getId();
     }
