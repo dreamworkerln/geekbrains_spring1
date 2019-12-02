@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -26,28 +27,87 @@ import java.util.Locale;
 @Component
 public class AppStartupRunner implements ApplicationRunner {
 
-    private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
     private final ClientProperties clientProperties;
     private final ProductRequest productRequest;
     private final StorageRequest storageRequest;
     private final OrderRequest orderRequest;
-    private final ObjectMapper objectMapper;
+    //private final ObjectMapper objectMapper;
 
 
     @Autowired
-    public AppStartupRunner(ClientProperties clientProperties, ProductRequest productRequest, StorageRequest storageRequest, OrderRequest orderRequest, ObjectMapper objectMapper) {
+    public AppStartupRunner(ClientProperties clientProperties,
+                            ProductRequest productRequest,
+                            StorageRequest storageRequest,
+                            OrderRequest orderRequest) {
 
         this.clientProperties = clientProperties;
         this.productRequest = productRequest;
         this.storageRequest = storageRequest;
         this.orderRequest = orderRequest;
-        this.objectMapper = objectMapper;
+        //this.objectMapper = objectMapper;
     }
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
+
+        /*
+
+        ProductDto p = new ProductDto();
+        p.setVcode("@@@@@@@@@@@");
+        p.setName("ЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯ");
+        p.setPrice(BigDecimal.valueOf(1000));
+        productRequest.save(p);
+
+
+        p.setId(1L);
+        p.setVcode("@@@@@@@@@@@");
+        p.setName("ЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙ");
+        p.setPrice(BigDecimal.valueOf(1000));
+        productRequest.save(p);
+
+
+        p.setId(1L);
+        p.setVcode("@@@@@@@@@@@");
+        p.setName("ХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХ");
+        p.setPrice(BigDecimal.valueOf(1000));
+        productRequest.save(p);
+
+
+
+        p = productRequest.findById(1L);
+        System.out.println(p);
+        System.out.println("\n");
+
+        */
+
+        try {
+            System.out.println("Попытаемся забрать со склада 900 единиц товара с id=1:\n");
+            storageRequest.remove(1L, 900);
+        } catch (HttpStatusCodeException e) {
+            log.error("HTTP " + e.getStatusCode().toString() +"\n" +
+                      new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
+            //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
+        }
+
+
+
+
+
+
+
+/*
+
+
+
+
+
+
+
+
 
         System.out.println("Using client config: " + clientProperties.getServer());
         System.out.println("\n");
@@ -103,6 +163,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n");
 
 
+        */
     }
 
 }

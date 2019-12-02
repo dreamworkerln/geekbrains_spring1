@@ -35,7 +35,7 @@ public class StorageRequest extends AbstractRequest {
 
     public ProductItemDto getById(long id) throws JsonProcessingException {
 
-        String uri = HandlerName.Storage.path + "." + HandlerName.Storage.findById;
+        String uri = HandlerName.Storage.path + "." + HandlerName.Storage.findByProductId;
 
         JsonNode response = performRequest(1000L, uri, id);
         return objectMapper.treeToValue(response, ProductItemDto.class);
@@ -45,7 +45,7 @@ public class StorageRequest extends AbstractRequest {
 
     public List<ProductItemDto> getByIdList(List<Long> list) throws JsonProcessingException {
 
-        String uri = HandlerName.Storage.path + "." + HandlerName.Storage.findAllById;
+        String uri = HandlerName.Storage.path + "." + HandlerName.Storage.findAllByProductId;
 
         // ASAP EDC !!! CHECK
         //Arrays.asList(1L, 2L, 3L, 999L)

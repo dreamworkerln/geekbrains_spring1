@@ -1,21 +1,21 @@
 package jsonrpc.server.service;
 
 import jsonrpc.server.entities.product.Product;
+import jsonrpc.server.entities.storage.StorageItem;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductService {
+public interface ProductService extends AbstractService {
 
     Optional<Product> findById(Long id);
     List<Product> findAllById(List<Long> listId);
     List<Product> findAll();
 
-    Long save(Product product);
+    Product save(Product product);
 
     void delete(Product product);
 
     void validate(Product product);
-
 
 }

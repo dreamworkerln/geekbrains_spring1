@@ -35,7 +35,7 @@ import java.util.Arrays;
 
 public class ProductHandlerTest {
 
-    private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Autowired
     private ApplicationContext context;

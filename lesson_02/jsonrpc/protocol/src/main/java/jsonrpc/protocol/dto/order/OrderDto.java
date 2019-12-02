@@ -76,10 +76,10 @@ public class OrderDto extends AbstractDtoPersisted {
     public String toString() {
         return "OrderDto{" +
                 "id=" + id +
-                ", client=" + client +
-                ", manager=" + manager +
                 ", created=" + created +
                 ", updated=" + updated +
+                ", client=" + client +
+                ", manager=" + manager +
                 ", itemList=" + itemList +
                 '}';
     }

@@ -39,7 +39,7 @@ import java.lang.invoke.MethodHandles;
 //@TestPropertySource("classpath:configprops.properties")
 class OrderControllerTest {
 
-    private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private static Long id;
 

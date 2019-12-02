@@ -36,26 +36,49 @@ public class Utils {
 
 
 
-    public static void idSetter(Object o, Long id) {
+//    public static void idSetter(Object o, Long id) {
+//
+//        try {
+//            Class<?> clazz = o.getClass();
+//            Field field = null;
+//            do {
+//                try {
+//                    field = clazz.getDeclaredField("id");
+//                } catch(Exception ignore) {}
+//            }
+//            while((clazz = clazz.getSuperclass()) != null);
+//
+//            assert field != null;
+//            field.setAccessible(true);
+//            field.set(o, id);
+//        }
+//        catch (Exception e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+
+    public static void fieldSetter(String fieldName, Object o, Object value) {
 
         try {
             Class<?> clazz = o.getClass();
             Field field = null;
             do {
                 try {
-                    field = clazz.getDeclaredField("id");
+                    field = clazz.getDeclaredField(fieldName);
                 } catch(Exception ignore) {}
             }
             while((clazz = clazz.getSuperclass()) != null);
 
             assert field != null;
             field.setAccessible(true);
-            field.set(o, id);
+            field.set(o, value);
         }
         catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
+
 
     public static long toLong(String s) {
 

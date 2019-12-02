@@ -28,9 +28,6 @@ public enum TestSuite {
         setupLog4j();
     }
 
-    public void init() {}
-
-
     private void setupLog4j() {
 
 
@@ -63,6 +60,10 @@ public enum TestSuite {
             }
             catch (IOException ignore) {}
         }
+    }
+
+    @SuppressWarnings("EmptyMethod")
+    public void init() {
     }
 
 //    public String getJrpcHeader() {

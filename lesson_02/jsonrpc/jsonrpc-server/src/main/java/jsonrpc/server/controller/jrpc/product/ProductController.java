@@ -93,7 +93,7 @@ public class ProductController extends AbstractJrpcController {
     public JsonNode save(JsonNode params) {
 
         Product product = getProduct(params);
-        productService.save(product);
+        product = productService.save(product);
         return objectMapper.valueToTree(product.getId());
     }
 

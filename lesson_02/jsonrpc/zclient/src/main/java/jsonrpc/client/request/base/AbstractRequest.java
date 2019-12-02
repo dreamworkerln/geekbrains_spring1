@@ -19,7 +19,7 @@ import java.lang.invoke.MethodHandles;
 @Scope("prototype")
 public abstract class AbstractRequest {
 
-    private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
     protected final ApplicationContext context;

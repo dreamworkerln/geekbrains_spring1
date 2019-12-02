@@ -2,17 +2,21 @@ package jsonrpc.server.service;
 
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.ProductItem;
+import jsonrpc.server.entities.storage.StorageItem;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public interface StorageService {
+public interface StorageService extends AbstractService {
 
+    //@Override
+    //Optional<ProductItem> findById(Long id);
+    
+    //Optional<? extends ProductItem> findByProductId(Long id);
+    Optional<? extends ProductItem> findByProductId(Long id);
 
-    Optional<? extends ProductItem> findById(Long id);
-
-    List<ProductItem> findAllById(List<Long> listId);
+    List<ProductItem> findAllByProductId(List<Long> listId);
 
     List<ProductItem> findAll();
 
@@ -31,7 +35,12 @@ public interface StorageService {
     /**
      * Завести новый тип товара на складе
      */
-    Long save(ProductItem productItem);
+    ProductItem save(ProductItem productItem);
+
+    /**
+     * Завести новый тип товара на складе
+     */
+    StorageItem save(StorageItem storageItem);
 
     /**
      * Удалить тип товара со склада по продукту

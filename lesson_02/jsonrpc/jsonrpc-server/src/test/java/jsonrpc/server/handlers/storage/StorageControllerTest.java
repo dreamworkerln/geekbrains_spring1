@@ -35,7 +35,7 @@ import java.util.Arrays;
 
 public class StorageControllerTest {
 
-    private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
+    private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     @Autowired
     private ApplicationContext context;
@@ -69,7 +69,7 @@ public class StorageControllerTest {
 
         jrpcRequest.setId(22L);
 
-        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.findById);
+        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.findByProductId);
         jrpcRequest.setParams(objectMapper.valueToTree(1L));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
@@ -83,7 +83,7 @@ public class StorageControllerTest {
     void getByIdList() throws JsonProcessingException {
 
         jrpcRequest.setId(22L);
-        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.findAllById);
+        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.findAllByProductId);
         jrpcRequest.setParams(objectMapper.valueToTree(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L))));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);

@@ -23,7 +23,7 @@ public class RepositoryFakeFiller {
     private final ProductService productService;
     private final StorageService storageService;
 
-    private Faker faker = new Faker();
+    private final Faker faker = new Faker();
 
     @Autowired
     public RepositoryFakeFiller(ProductService productService,
@@ -46,21 +46,21 @@ public class RepositoryFakeFiller {
         System.out.println(faker.commerce().price());
 
 
-        Product p;
+        Product p = null;
 
 
         DecimalFormatSymbols dfs = new DecimalFormatSymbols( Locale.getDefault());
         System.out.println(Locale.getDefault());
         System.out.println( dfs.getDecimalSeparator() );
 
-        for (long i = 0; i < 5; i++) {
+        for (long i = 0; i < 1; i++) {
 
             p = new Product();
 
             p.setName(faker.commerce().productName());
             p.setVcode(faker.number().digits(7));
-            //p.setPrice(BigDecimal.valueOf(Double.valueOf(faker.commerce().price())));
-            p.setPrice(BigDecimal.valueOf(67));
+            p.setPrice(BigDecimal.valueOf(Double.valueOf(faker.commerce().price())));
+            //p.setPrice(BigDecimal.valueOf(67));
             p.setTestDate(Instant.EPOCH);
 
             productService.save(p);
@@ -74,6 +74,10 @@ public class RepositoryFakeFiller {
             //productRepository.save(p);
             //storageRepository.save(p, faker.number().numberBetween(1, 50));
         }
+
+        storageService.put(p, 1000);
+
+        System.out.println(storageService.findByProductId(1L).get().toString());
 
     }
 }

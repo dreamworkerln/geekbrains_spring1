@@ -26,7 +26,7 @@ public interface ProductMapper {
     default Product toProduct(Long productId) {
 
         Product result = new Product();
-        Utils.idSetter(result, productId);
+        Utils.fieldSetter("id", result, productId);
         return result;
     }
 
@@ -36,7 +36,10 @@ public interface ProductMapper {
     // (или я не знаю как), поэтому делаем это вручную
     @AfterMapping
     default void setId(ProductDto source, @MappingTarget Product target) {
-        Utils.idSetter(target, source.getId());
+
+        Utils.fieldSetter("id", target, source.getId());
+
+        // Do not map created & updated - only server produce this values
     }
 
 }

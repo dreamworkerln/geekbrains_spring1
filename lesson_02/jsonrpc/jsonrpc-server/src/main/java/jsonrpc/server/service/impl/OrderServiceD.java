@@ -1,10 +1,9 @@
 package jsonrpc.server.service.impl;
 
-import jsonrpc.server.entities.product.Product;
+import jsonrpc.server.entities.storage.StorageItem;
 import jsonrpc.server.repository.OrderRepository;
 import jsonrpc.server.service.OrderService;
 import jsonrpc.server.entities.order.Order;
-import jsonrpc.server.service.ProductService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,22 +11,23 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.time.Instant;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
 @Transactional
-public class OrderServiceDefault implements OrderService {
+public class OrderServiceD implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final ProductService productService;
+    //private final ProductService productService;
     private final Validator validator;
 
-    public OrderServiceDefault(OrderRepository orderRepository, ProductService productService, Validator validator) {
+
+    public OrderServiceD(OrderRepository orderRepository,
+                         Validator validator) {
+
         this.orderRepository = orderRepository;
-        this.productService = productService;
+        //this.productService = productService;
         this.validator = validator;
     }
 
@@ -53,25 +53,8 @@ public class OrderServiceDefault implements OrderService {
 
 
     @Override
-    public Long save(Order order) {
-
-        // Fetch all persisted Products
-        order.getItemList().forEach(item -> {
-
-            Product p = item.getProduct();
-            Product persistedProduct = productService.findById(p.getId()).orElse(null);
-
-            if (persistedProduct == null) {
-                throw new IllegalArgumentException("Order Product not persisted");
-            }
-            item.setProduct(persistedProduct);
-            item.setOrder(order);  // Set owner to all OrderItems
-        });
-
-        orderRepository.save(order);
-        orderRepository.toUpdate(order, Instant.EPOCH);
-
-        return order.getId();
+    public Order save(Order order) {
+        return orderRepository.save(order);
     }
 
     @Override
@@ -91,6 +74,23 @@ public class OrderServiceDefault implements OrderService {
         if (violations.size() != 0) {
             throw new ConstraintViolationException("Order validation failed", violations);
         }
+    }
+
+
+    // ------------------------------------------------------------------------------
+
+    /**
+     * Обновляет Order.update
+     * Если был изменен к-л из Order.itemList (или добавлен/удален)
+     */
+    private List<Instant> getUList(Order order) {
+
+        List<Instant> result = new ArrayList<>();
+
+        if (order!= null) {
+            order.getItemList().forEach(oi -> result.add(oi.getUpdated()));
+        }
+        return result;
     }
 
 }

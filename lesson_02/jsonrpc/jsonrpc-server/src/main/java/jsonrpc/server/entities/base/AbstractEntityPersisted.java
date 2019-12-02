@@ -15,7 +15,7 @@ public abstract class AbstractEntityPersisted extends AbstractEntity {
     protected Instant created;
 
 
-    @Column(name = "updated", insertable = false)
+    @Column(name = "updated"/*, insertable = false*/)
     @UpdateTimestamp
     protected Instant updated;
 

@@ -13,7 +13,7 @@ import java.util.List;
 
 // Заказ пользователя
 @Entity
-@Table(name="\"order\"")  // Ambiguous with hsql keyword 'order'
+@Table(name="orderz")  // Ambiguous with hsql keyword 'order'
 public class Order extends AbstractEntityPersisted {
 
     @NotNull
@@ -86,9 +86,12 @@ public class Order extends AbstractEntityPersisted {
     @Override
     public String toString() {
         return "Order{" +
-               "itemList=" + itemList +
+               "id=" + id +
+               ", created=" + created +
+               ", updated=" + updated +
                ", client=" + client +
                ", manager=" + manager +
+               ", itemList=" + itemList +
                '}';
     }
 }

@@ -18,16 +18,16 @@ import java.util.Set;
 
 @Service
 @Transactional
-public class ProductServiceDefault implements ProductService {
+public class ProductServiceD implements ProductService {
 
     private final ProductRepository productRepository;
     private final StorageService storageService;
     private final Validator validator;
 
     @Autowired
-    public ProductServiceDefault(ProductRepository productRepository,
-                                 StorageService storageService,
-                                 Validator validator) {
+    public ProductServiceD(ProductRepository productRepository,
+                           StorageService storageService,
+                           Validator validator) {
 
         this.productRepository = productRepository;
         this.storageService = storageService;
@@ -52,16 +52,19 @@ public class ProductServiceDefault implements ProductService {
     }
 
     @Override
-    public Long save(Product product) {
+    public Product save(Product product) {
 
 
-        productRepository.save(product);
+        Product result = productRepository.save(product);
 
-        // Инициализируем товар на складе, с product.id и count == 0
-        StorageItem pi = new StorageItem(product , 0);
-        storageService.save(pi);
+        // Инициализируем товар на складе, с product.id и count == 0,
+        // если такого типа продукта нет на складе
+        if (!storageService.findByProductId(product.getId()).isPresent()) {
+            StorageItem pi = new StorageItem(product, 0);
+            storageService.save(pi);
+        }
 
-        return product.getId();
+        return result;
     }
 
 

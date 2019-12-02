@@ -62,4 +62,12 @@ public class ProductRequest extends AbstractRequest {
         JsonNode response = performRequest(1000L, uri, null);
         return Arrays.asList(objectMapper.treeToValue(response, ProductDto[].class));
     }
+
+
+    public Long save(ProductDto productDto) throws JsonProcessingException {
+
+        String uri = HandlerName.Product.path + "." + HandlerName.Product.save;
+        JsonNode response = performRequest(1000L, uri, productDto);
+        return objectMapper.treeToValue(response, Long.class);
+    }
 }

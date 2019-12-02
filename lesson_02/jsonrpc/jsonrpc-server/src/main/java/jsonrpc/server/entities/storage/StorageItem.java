@@ -23,5 +23,9 @@ public class StorageItem extends ProductItem {
         this.count = count;
     }
 
+    public static StorageItem from(ProductItem productItem) {
+        return new StorageItem(productItem.getProduct(), productItem.getCount());
+    }
+
 
 }

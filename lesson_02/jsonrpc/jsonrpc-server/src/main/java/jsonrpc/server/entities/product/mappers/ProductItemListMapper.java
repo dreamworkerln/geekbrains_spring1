@@ -15,7 +15,5 @@ import java.util.List;
 public interface ProductItemListMapper {
 
     List<ProductItemDto> toDto(List<ProductItem> itemList);
-    //List<ProductItemDto> toSDto(List<StorageItem> itemList);
     List<ProductItem> toEntity(List<ProductItemDto> itemDtoList);
-    //List<? extends ProductItem> toEntity(List<ProductItemDto> productItemDto);
 }

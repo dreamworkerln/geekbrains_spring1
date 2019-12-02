@@ -1,6 +1,7 @@
 package jsonrpc.server;
 
 
+import jsonrpc.server.entities.order.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,8 @@ import java.util.Locale;
 @SpringBootApplication
 @EnableScheduling
 public class Application {
+
+    public static Order orr;
 
     private static Logger log;
 
@@ -48,6 +51,7 @@ public class Application {
                  "**************************************************************************\n");
     }
 
+    @SuppressWarnings("Duplicates")
     private static void setupLog4j() {
 
         String path_tmp = System.getProperty("user.dir") + "/" + "log/";

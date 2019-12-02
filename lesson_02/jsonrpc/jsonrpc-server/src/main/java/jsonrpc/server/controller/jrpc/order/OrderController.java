@@ -68,7 +68,7 @@ public class OrderController extends AbstractJrpcController {
     public JsonNode save(JsonNode params) {
 
         Order order = getOrder(params);
-        orderService.save(order);
+        order = orderService.save(order);
         return objectMapper.valueToTree(order.getId());
     }
 

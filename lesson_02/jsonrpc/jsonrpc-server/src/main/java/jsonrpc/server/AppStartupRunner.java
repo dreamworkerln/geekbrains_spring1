@@ -12,14 +12,14 @@ public class AppStartupRunner implements ApplicationRunner {
 
     private final RepositoryFakeFiller repositoryFakeFiller;
 
-    private final JrpcRequest jrpcRequest;
+    //private final JrpcRequest jrpcRequest;
 
 
 
     @Autowired
-    public AppStartupRunner(RepositoryFakeFiller repositoryFakeFiller, JrpcRequest jrpcRequest) {
+    public AppStartupRunner(RepositoryFakeFiller repositoryFakeFiller) {
         this.repositoryFakeFiller = repositoryFakeFiller;
-        this.jrpcRequest = jrpcRequest;
+        /*this.jrpcRequest = jrpcRequest;*/
     }
 
 

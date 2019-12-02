@@ -35,7 +35,7 @@ public interface ProductItemMapper {
     // (или я не знаю как), поэтому делаем это вручную
     @AfterMapping
     default void setId(ProductItemDto source, @MappingTarget ProductItem target) {
-        Utils.idSetter(target, source.getId());
+        Utils.fieldSetter("id", target, source.getId());
     }
 
 

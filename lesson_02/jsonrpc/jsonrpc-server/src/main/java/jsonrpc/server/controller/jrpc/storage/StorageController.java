@@ -52,23 +52,23 @@ public class StorageController extends AbstractJrpcController {
 
 
 
-    @JrpcMethod(method = HandlerName.Storage.findById)
-    public JsonNode findById(JsonNode params) {
+    @JrpcMethod(method = HandlerName.Storage.findByProductId)
+    public JsonNode findByProductId(JsonNode params) {
 
 
         // request id
         long id = getId(params);
-        ProductItem productItem = storageService.findById(id).orElse(null);
+        ProductItem productItem = storageService.findByProductId(id).orElse(null);
         ProductItemDto productItemDto = productItemMapper.toDto(productItem);
         return objectMapper.valueToTree(productItemDto);
     }
 
-    @JrpcMethod(method = HandlerName.Storage.findAllById)
-    public JsonNode findAllById(JsonNode params) {
+    @JrpcMethod(method = HandlerName.Storage.findAllByProductId)
+    public JsonNode findAllByProductId(JsonNode params) {
 
         List<Long> idList = getIdList(params);
-        List<ProductItem> list = storageService.findAllById(idList);
-        List<ProductItemDto> listDto = productItemListMapper.toDto(list);
+        List<ProductItem> list = storageService.findAllByProductId(idList);
+         List<ProductItemDto> listDto = productItemListMapper.toDto(list);
         return objectMapper.valueToTree(listDto);
     }
 

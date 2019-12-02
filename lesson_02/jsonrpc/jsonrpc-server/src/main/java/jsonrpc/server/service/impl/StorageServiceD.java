@@ -3,10 +3,10 @@ package jsonrpc.server.service.impl;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.ProductItem;
 import jsonrpc.server.entities.storage.StorageItem;
-import jsonrpc.server.repository.ProductRepository;
 import jsonrpc.server.repository.StorageRepository;
 import jsonrpc.server.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jmx.access.InvalidInvocationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +14,7 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -21,16 +22,15 @@ import java.util.Set;
 
 @Service
 @Transactional
-public class StorageServiceDefault implements StorageService {
+public class StorageServiceD implements StorageService {
 
-    private final ProductRepository productRepository;
+    //private final ProductRepository productRepository;
     private final StorageRepository storageRepository;
     private final Validator validator;
 
 
     @Autowired
-    public StorageServiceDefault(ProductRepository productRepository, StorageRepository storageRepository, Validator validator) {
-        this.productRepository = productRepository;
+    public StorageServiceD(StorageRepository storageRepository, Validator validator) {
         this.storageRepository = storageRepository;
         this.validator = validator;
     }
@@ -38,30 +38,41 @@ public class StorageServiceDefault implements StorageService {
 
     // -----------------------------------------------------------------------------------------------
 
-    @Override
-    public Optional<StorageItem> findById(Long id) {
 
-         return storageRepository.findById(id);
+    @Override
+    public Optional<ProductItem> findById(Long id) {
+
+        throw new InvalidInvocationException("Нехер это вызывать, это не Product.id продукта, а ProductItem.id");
+        //return storageRepository.findById(id);
     }
 
     @Override
-    public List<ProductItem> findAllById(List<Long> listId) {
+    public Optional<? extends ProductItem> findByProductId(Long id) {
 
-        // ToDO: хакатон generic bounds
+         return storageRepository.findByProductId(id);
+    }
 
-        //List<SubClass> subs = ...;
-        //List<? extends BaseClass> bases = subs;
+    @Override
+    public List<ProductItem> findAllByProductId(List<Long> listId) {
 
-        //List<BaseClass> = (List<BaseClass>) (List<? extends BaseClass>)  List<Subclass>
 
-        // наоборот
+        // Cast List<SubClass> -> List<BaseClass>
+        //
+        // List<SubClass> subs = ...;
+        // List<? extends BaseClass> bases = subs;
+        //
+        // List<BaseClass> = (List<BaseClass>) (List<? extends BaseClass>)  List<Subclass>
+        //
+        //
+        // наоборот List<BaseClass> -> List<SubClass>
+        //
         // List<SubClass> = (List<SubClass>)(List<?>) List<BaseClass>;
 
-
+        // ToDO: хакатон generic bounds
         //noinspection unchecked
-        return (List<ProductItem>) (List<? extends ProductItem>) storageRepository.findAllById(listId);
+        return (List<ProductItem>) (List<? extends ProductItem>) storageRepository.findAllByProductIdList(listId);
 
-
+        //return storageRepository.findAllByProductId(listId);
     }
 
     @Override
@@ -69,14 +80,12 @@ public class StorageServiceDefault implements StorageService {
 
         //noinspection unchecked
         return (List<ProductItem>) (List<? extends ProductItem>) storageRepository.findAll();
+
+        //return storageRepository.findAll();
     }
 
 
-    //https://stackoverflow.com/questions/26387399/javax-transaction-transactional-vs-org-springframework-transaction-annotation-tr
     @Override
-    // ToDO: тут нужна синхронизация / транзацкия с блокировкой строки таблицы  SELECT FOR UPDATE
-    // ToDo: Нужен SELECT FOR UPDATE, чтобы при отработке метода блокировалась exclusive строка с ProductItem
-    @Transactional
     public void put(@NotNull Product product, int count) {
 
         changeCount(product, count);
@@ -84,7 +93,7 @@ public class StorageServiceDefault implements StorageService {
 
 
 
-    // ToDO: тут нужна синхронизация / транзацкия с блокировкой строки таблицы  SELECT FOR UPDATE
+
     @Override
     public void remove(Product product, int count) {
         
@@ -100,23 +109,24 @@ public class StorageServiceDefault implements StorageService {
         storageRepository.deleteByProductId(product.getId());
     }
 
-
     @Override
     public void delete(@NotNull Long id) {
 
         storageRepository.deleteByProductId(id);
     }
 
-
-
-    /**
-     * служебный метод
-     */
     @Override
-    public Long save(ProductItem productItem) {
+    public ProductItem save(ProductItem productItem) {
+        
+        // перепаковываемся
+        return storageRepository.save(StorageItem.from(productItem));
+    }
 
-        storageRepository.save((StorageItem) productItem);
-        return productItem.getId();
+
+    @Override
+    public StorageItem save(StorageItem storageItem) {
+
+        return storageRepository.save(storageItem);
     }
 
 
@@ -150,16 +160,37 @@ public class StorageServiceDefault implements StorageService {
             throw new IllegalArgumentException("Product.id == null");
         }
 
-        ProductItem pi = storageRepository.findByProductId(product.getId())
+        //ProductItem pi = storageRepository.findByProductIdLock(product.getId())
+        ProductItem pi = storageRepository.lockByProduct(product)
                 .orElseThrow(() -> new IllegalArgumentException("Product id==" + product.getId() + " not found"));
 
+
         if (pi.getCount() + count < 0) {
-            throw new IllegalArgumentException("Невозможно забрать со склада " + count + " единиц товара " +
+            throw new IllegalArgumentException("Невозможно забрать со склада " + -count + " единиц товара id==" +
                     product.getId() + " " + ", на складе в наличии " + pi.getCount());
         }
 
 
+
+        // ToDo: Для тестов тут спим для проверки LOCK SELECT FOR UPDATE на 1 строку с товаром:
+        try {
+
+            int l = 3000;
+
+            System.out.print("ДУМАЕМ .");
+            Thread.sleep(l);
+            System.out.print(".");
+            Thread.sleep(l);
+            System.out.println(".");
+            Thread.sleep(l);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         pi.setCount(pi.getCount() + count);
+
+        storageRepository.save((StorageItem) pi);
     }
 
 
