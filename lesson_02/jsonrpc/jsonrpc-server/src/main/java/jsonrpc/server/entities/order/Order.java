@@ -6,16 +6,18 @@ import jsonrpc.server.entities.base.AbstractEntityPersisted;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
 
 // Заказ пользователя
 @Entity
-@Table(name="order")  // Ambiguous with hsql keyword 'order'
+@Table(name="\"order\"")  // Ambiguous with hsql keyword 'order'
 public class Order extends AbstractEntityPersisted {
 
-    @OneToMany(mappedBy= "order", fetch=FetchType.LAZY)
+    @NotNull
+    @OneToMany(mappedBy= "order", cascade = CascadeType.ALL)
     @OrderBy("id ASC")
     private List<OrderItem> itemList = new ArrayList<>();
 
@@ -43,7 +45,6 @@ public class Order extends AbstractEntityPersisted {
 //            itemList.add(item);
 //            item.setOrder(this);
 //        });
-//    }
 
     public List<OrderItem> getItemList() {
         return itemList;

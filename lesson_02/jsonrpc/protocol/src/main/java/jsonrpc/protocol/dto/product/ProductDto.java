@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 
 
@@ -14,6 +15,8 @@ public class ProductDto extends AbstractDtoPersisted {
 
     private String name;
     private String vcode; // Артикул
+    private BigDecimal price;
+
 
     public String getName() {
         return name;
@@ -28,6 +31,10 @@ public class ProductDto extends AbstractDtoPersisted {
     public void setVcode(String vcode) {
         this.vcode = vcode;
     }
+
+    public BigDecimal getPrice() {return price;}
+
+    public void setPrice(BigDecimal price) {this.price = price;}
 
     // ----------------------------------------------------------------------
 
@@ -44,18 +51,18 @@ public class ProductDto extends AbstractDtoPersisted {
 
 
 
-    public static void validate(ProductDto productDto) {
-
-        if (productDto == null) {
-            throw new IllegalArgumentException("productDto == null");
-        }
-
-        if (StringUtils.isBlank(productDto.vcode)) {
-            throw new IllegalArgumentException("productDto.vcode is empty");
-        }
-
-        //ToDo implement etc checks ...
-    }
+//    public static void validate(ProductDto productDto) {
+//
+//        if (productDto == null) {
+//            throw new IllegalArgumentException("productDto == null");
+//        }
+//
+//        if (StringUtils.isBlank(productDto.vcode)) {
+//            throw new IllegalArgumentException("productDto.vcode is empty");
+//        }
+//
+//        //ToDo implement etc checks ...
+//    }
 
 
     @Override
@@ -64,9 +71,11 @@ public class ProductDto extends AbstractDtoPersisted {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", vcode='" + vcode + '\'' +
+                ", price=" + price +
                 ", testDate=" + testDate +
                 ", created=" + created +
                 ", updated=" + updated +
                 '}';
     }
+
 }

@@ -8,7 +8,7 @@ import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;
-import jsonrpc.server.configuration.SpringConfiguration;
+import jsonrpc.server.configuration.BeanConfiguration;
 import jsonrpc.utils.Rest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,7 +27,7 @@ import java.util.Arrays;
 
 @EnableConfigurationProperties
 @SpringBootTest(classes = {
-        SpringConfiguration.class,
+        BeanConfiguration.class,
         ConfigProperties.class
 })
 //        JrpcRequest.class
@@ -81,7 +81,7 @@ public class ProductHandlerTest {
         jrpcRequest.setId(22L);
 
         // specify handler and method name, params
-        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.getById);
+        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.findById);
         jrpcRequest.setParams(objectMapper.valueToTree(1L));
 
         // producing json
@@ -98,11 +98,11 @@ public class ProductHandlerTest {
 
 
     @Test
-    void getByListId() throws JsonProcessingException {
+    void getByIdList() throws JsonProcessingException {
 
         jrpcRequest.setId(22L);
 
-        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.getByListId);
+        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.findAllById);
         jrpcRequest.setParams(objectMapper.valueToTree(Arrays.asList(1L, 2L, 3L, 999L)));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
@@ -125,7 +125,7 @@ public class ProductHandlerTest {
 
         jrpcRequest.setId(22L);
 
-        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.getAll);
+        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.findAll);
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
 
@@ -147,7 +147,7 @@ public class ProductHandlerTest {
         productDto.setTestDate(Instant.EPOCH);
         productDto.setVcode("123");
 
-        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.put);
+        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.save);
         jrpcRequest.setParams(objectMapper.valueToTree(productDto));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);

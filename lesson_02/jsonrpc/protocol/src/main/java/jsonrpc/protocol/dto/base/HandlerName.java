@@ -2,19 +2,25 @@ package jsonrpc.protocol.dto.base;
 
 public class HandlerName {
 
-    private static final String getById = "getById";
-    private static final String getByListId = "getByListId";
-    private static final String getAll = "getAll";
+    // classic jpa CRUD
+    private static final String findById = "findById";
+    private static final String findAllById = "findAllById";
+    private static final String findAll = "findAll";
+    private static final String save = "save";
+    private static final String delete = "delete";
+
+    // Storage increase/decrease product count
     private static final String put = "put";
     private static final String remove = "remove";
-    private static final String delete = "delete";
+
+
 
 
     public static class Order {
         public static final String path = "shop.entities.order";
 
-        public static final String getById = HandlerName.getById;
-        public static final String put = HandlerName.put;
+        public static final String findById = HandlerName.findById;
+        public static final String save = HandlerName.save;
         public static final String delete = HandlerName.delete;
     }
 
@@ -22,10 +28,10 @@ public class HandlerName {
     public static class Product {
         public static final String path = "shop.entities.product";
 
-        public static final String getById = HandlerName.getById;
-        public static final String getByListId = HandlerName.getByListId;
-        public static final String getAll = HandlerName.getAll;
-        public static final String put = HandlerName.put;
+        public static final String findById = HandlerName.findById;
+        public static final String findAllById = HandlerName.findAllById;
+        public static final String findAll = HandlerName.findAll;
+        public static final String save = HandlerName.save;
         public static final String delete = HandlerName.delete;
     }
 
@@ -34,10 +40,11 @@ public class HandlerName {
     public static class Storage {
         public static final String path = "shop.entities.storage";
 
-        public static final String getById = HandlerName.getById;
-        public static final String getByListId = HandlerName.getByListId;
-        public static final String getAll = HandlerName.getAll;
-        public static final String put = HandlerName.put;
+        public static final String findById = HandlerName.findById;
+        public static final String findAllById = HandlerName.findAllById;
+        public static final String findAll = HandlerName.findAll;
+        public static final String save = HandlerName.save;     // сохранить значение ProductItem
+        public static final String put =    HandlerName.put;    // increase Product count
         public static final String remove = HandlerName.remove; // decrease Product count
         public static final String delete = HandlerName.delete; // remove self ProductItem
     }

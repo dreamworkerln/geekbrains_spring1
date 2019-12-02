@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Component("productItemDto") // need qualifier due to inheritance issue
 @Scope("prototype")
@@ -17,12 +18,21 @@ public class ProductItemDto extends AbstractDtoPersisted {
     // о интересующих тебя продуктах
 
     //@NotBlank(message = "Name is mandatory")
-    @Min(10)
+    @NotNull
     protected Long productId;
 
-    @Min(10)
+    @NotNull
+    @Min(0)
     protected Integer count;
 
+
+    public ProductItemDto() {
+    }
+
+    public ProductItemDto(@NotNull Long productId, @NotNull @Min(0) Integer count) {
+        this.productId = productId;
+        this.count = count;
+    }
 
     public Long getProductId() {
         return productId;
@@ -41,12 +51,12 @@ public class ProductItemDto extends AbstractDtoPersisted {
     }
 
 
-    public static void validate(ProductItemDto productDto) {
-
-        if (productDto == null) {
-            throw new IllegalArgumentException("productDto == null");
-        }
-    }
+//    public static void validate(ProductItemDto productDto) {
+//
+//        if (productDto == null) {
+//            throw new IllegalArgumentException("productDto == null");
+//        }
+//    }
 
     @Override
     public String toString() {

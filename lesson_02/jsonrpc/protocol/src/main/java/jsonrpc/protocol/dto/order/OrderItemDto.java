@@ -6,12 +6,22 @@ import jsonrpc.protocol.dto.product.ProductItemDto;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 
 @Component
 @Scope("prototype")
 public class OrderItemDto extends ProductItemDto {
 
-// не надо нам циклических зависимостей
+    public OrderItemDto() {
+    }
+
+    public OrderItemDto(@NotNull Long productId, @NotNull @Min(0) Integer count) {
+        super(productId, count);
+    }
+
+    // не надо нам циклических зависимостей
 // OrderDto -> OrderDto.itemList -> OrderItemDto -> OrderDto -> ...
 //
 //    private OrderDto order;
@@ -25,12 +35,12 @@ public class OrderItemDto extends ProductItemDto {
 //    }
 
 
-    public static void validate(OrderItemDto productDto) {
-
-        if (productDto == null) {
-            throw new IllegalArgumentException("productDto == null");
-        }
-    }
+//    public static void validate(OrderItemDto productDto) {
+//
+//        if (productDto == null) {
+//            throw new IllegalArgumentException("productDto == null");
+//        }
+//    }
 
 
     @Override

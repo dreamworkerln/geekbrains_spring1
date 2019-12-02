@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,13 +15,14 @@ import java.util.List;
 @Scope("prototype")
 public class OrderDto extends AbstractDtoPersisted {
 
+    @NotNull
     private List<OrderItemDto> itemList = new ArrayList<>();
 
     private ClientDto client;
 
     private ManagerDto manager;
 
-
+    @NotNull
     public List<OrderItemDto> getItemList() {
         return itemList;
     }
@@ -47,7 +49,7 @@ public class OrderDto extends AbstractDtoPersisted {
 
     // --------------------------------------------------------------------
 
-    public void addOrderItemDto(OrderItemDto orderItemDto) {
+    public void addItemDto(OrderItemDto orderItemDto) {
 
         itemList.add(orderItemDto);
     }
@@ -56,18 +58,18 @@ public class OrderDto extends AbstractDtoPersisted {
 
 
 
-    public static void validate(OrderDto orderDto) {
-
-        if (orderDto == null) {
-            throw new IllegalArgumentException("orderDto == null");
-        }
-
-        if (orderDto.itemList == null) {
-            throw new IllegalArgumentException("orderDto.itemList is empty");
-        }
-
-        //ToDo implement etc checks ...
-    }
+//    public static void validate(OrderDto orderDto) {
+//
+//        if (orderDto == null) {
+//            throw new IllegalArgumentException("orderDto == null");
+//        }
+//
+//        if (orderDto.itemList == null) {
+//            throw new IllegalArgumentException("orderDto.itemList is empty");
+//        }
+//
+//        //ToDo implement etc checks ...
+//    }
 
 
     @Override

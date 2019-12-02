@@ -40,7 +40,7 @@ public class SpringConfiguration {
 
         final String TOKEN = clientProperties.getCredentials().getToken();
 
-        Rest result = RestFactory.getRest(true, true);
+        Rest result = RestFactory.getRest(true, true, 1000000);
         result.setCustomHeader("token", TOKEN);
         return result;
     }

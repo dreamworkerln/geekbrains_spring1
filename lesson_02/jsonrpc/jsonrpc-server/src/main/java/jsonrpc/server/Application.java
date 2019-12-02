@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PreDestroy;
 import java.lang.invoke.MethodHandles;
+import java.util.Locale;
 
 @SpringBootApplication
 @EnableScheduling
@@ -17,6 +18,13 @@ public class Application {
     private static Logger log;
 
     public static void main(String[] args) {
+
+        Locale.setDefault(Locale.ROOT);
+
+        // SET DECIMAL SEPARATOR TO "."
+        //Locale.setDefault(new Locale("en", "US"));
+
+
 
 
         setupLog4j();

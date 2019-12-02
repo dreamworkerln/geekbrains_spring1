@@ -6,13 +6,14 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 
 @Entity
 @Table(name="orderItem")
 public class OrderItem extends ProductItem {
 
-
+    @NotNull
     @ManyToOne
     @JoinColumn(name="order_id", referencedColumnName="id")
     private Order order;

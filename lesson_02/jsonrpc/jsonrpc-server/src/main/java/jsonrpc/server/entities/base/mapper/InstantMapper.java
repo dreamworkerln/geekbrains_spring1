@@ -8,9 +8,9 @@ import java.util.Objects;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR)
-public class InstantMapper {
+public interface InstantMapper {
 
-    public Long map(Instant i) {
+    default Long map(Instant i) {
 
         Long result = null;
 
@@ -19,9 +19,9 @@ public class InstantMapper {
         }
         return result;
     }
-    
 
-    public Instant map(Long l) {
+
+    default Instant map(Long l) {
 
         Instant result = null;
 

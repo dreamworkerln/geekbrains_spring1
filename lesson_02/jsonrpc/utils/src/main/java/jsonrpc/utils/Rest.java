@@ -32,7 +32,9 @@ import static org.springframework.http.HttpStatus.Series.CLIENT_ERROR;
 import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 
 
-
+/**
+ * RestTemplate Error handler - by default only suppress exception (client and server)
+ */
 class RestTemplateResponseErrorHandler
         implements ResponseErrorHandler {
 
@@ -127,21 +129,15 @@ class RestTemplateFactory {
             httpRequestFactory.setConnectionRequestTimeout(timeout);
             httpRequestFactory.setConnectTimeout(timeout);
             httpRequestFactory.setReadTimeout(timeout);
-            //return new RestTemplate(httpRequestFactory);
 
             result = new RestTemplate(httpRequestFactory);
-
-
-
-
-
         }
 
-        // Forse using UTF-8 as default character encoding
+        // Force using UTF-8 as default character encoding
         result.getMessageConverters()
                 .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
 
-        // Add custom errorHandler
+        // Add custom errorHandler that suppress any exceptions
         if (!throwOnError) {
             result.setErrorHandler(new RestTemplateResponseErrorHandler());
         }
@@ -165,7 +161,7 @@ public class Rest {
 
     protected String userAgent = "ass-with-ears-2.0";
 
-    protected Credentials credentals = null;
+    protected Credentials credentials = null;
 
     protected boolean checkCert = true;
 
@@ -224,7 +220,7 @@ public class Rest {
 
         //Set the headers you need send
         final HttpHeaders headers = getHeaders();
-        headers.set("User-Agent", userAgent);
+        //headers.set("User-Agent", userAgent);
 
         //Create a new HttpEntity
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -244,7 +240,7 @@ public class Rest {
         ResponseEntity<byte[]> result;
 
         HttpHeaders headers = getHeaders();
-        headers.set("User-Agent", userAgent);
+        //headers.set("User-Agent", userAgent);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
 
         HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -294,12 +290,13 @@ public class Rest {
         // first apply custom headers
         customHeaders.forEach(result::set);
 
+        // then add User-Agent
         result.set("User-Agent", userAgent);
 
         //https://www.baeldung.com/how-to-use-resttemplate-with-basic-authentication-in-spring
-        if (credentals != null) {
+        if (credentials != null) {
 
-            String auth = credentals.getUserPrincipal().getName() + ":" + credentals.getPassword();
+            String auth = credentials.getUserPrincipal().getName() + ":" + credentials.getPassword();
             String encodedAuth = Base64.encodeBase64String(auth.getBytes(Charset.forName("US-ASCII")));
 
             String authHeader = "Basic " + encodedAuth;
@@ -325,11 +322,11 @@ public class Rest {
         this.userAgent = userAgent;
     }
 
-    public Credentials getCredentals() {
-        return credentals;
+    public Credentials getCredentials() {
+        return credentials;
     }
 
-    public void setCredentals(Credentials credentals) {
-        this.credentals = credentals;
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
     }
 }

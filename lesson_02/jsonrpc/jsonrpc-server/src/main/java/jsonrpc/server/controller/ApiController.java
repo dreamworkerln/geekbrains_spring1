@@ -7,9 +7,9 @@ import jsonrpc.protocol.dto.base.jrpc.JrpcRequestHeader;
 import jsonrpc.protocol.dto.base.http.HttpResponse;
 import jsonrpc.protocol.dto.base.http.HttpResponseError;
 import jsonrpc.protocol.dto.base.http.HttpResponseJRPC;
-import jsonrpc.server.handlers.base.JrpcController;
-import jsonrpc.server.handlers.base.JrpcHandler;
-import jsonrpc.server.handlers.base.JrpcMethodHandler;
+import jsonrpc.server.controller.jrpc.base.JrpcController;
+import jsonrpc.server.controller.jrpc.base.JrpcMethod;
+import jsonrpc.server.controller.jrpc.base.JrpcMethodHandler;
 import jsonrpc.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -228,12 +228,12 @@ public class ApiController {
 
                 JrpcController jrpcController = beanClass.getAnnotation(JrpcController.class);
 
-                // Ищем в бине метод, помеченный аннотацией @JrpcHandler
+                // Ищем в бине метод, помеченный аннотацией @JrpcMethod
                 for (Method method : beanClass.getDeclaredMethods()) {
-                    if (method.isAnnotationPresent(JrpcHandler.class)) {
+                    if (method.isAnnotationPresent(JrpcMethod.class)) {
 
                         //Should give you expected results
-                        JrpcHandler jrpcHandler = method.getAnnotation(JrpcHandler.class);
+                        JrpcMethod jrpcMethod = method.getAnnotation(JrpcMethod.class);
 
 
                         JrpcMethodHandler handler = jsonNode -> {
@@ -251,35 +251,42 @@ public class ApiController {
                                 // https://github.com/pivovarit/throwing-function
 
 
-                                Throwable exception = e.getCause();
+                                Throwable cause = e.getCause();
+
+                                // если это некорректный данные в запросе пользователя
+                                if (cause instanceof IllegalArgumentException) {
+                                    // вернем 400
+                                    throw new IllegalArgumentException(cause.getMessage(), e);
+                                }
 
                                 // Если это исключение из репозитория spring
-                                if (exception instanceof InvalidDataAccessApiUsageException) {
+                                if (cause instanceof InvalidDataAccessApiUsageException) {
 
                                     // Чем вызвано исключение в репозитории spring?
-                                    Throwable inner = exception.getCause();
+                                    Throwable dataEx = cause.getCause();
 
                                     // Надо завести свой тип для исключения -
                                     // "Недозволенное действие пользоваетля" вместо IllegalArgumentException
 
                                     // если оно вызвано некорректным действием пользователя
-                                    if (inner instanceof IllegalArgumentException) {
+                                    if (dataEx instanceof IllegalArgumentException) {
                                         // вернем 400
-                                        throw new IllegalArgumentException(inner.getMessage(), e);
+                                        throw new IllegalArgumentException(dataEx.getMessage(), e);
                                     }
 
                                     // Это исключения репозитория spring,
                                     // но хз что это конктретно - мож это не мы, оно само
-                                    throw (RuntimeException) e.getCause();
+                                    throw (RuntimeException) cause;
                                 }
 
-                                // Внутреннего исключения нет (или там не InvalidDataAccessApiUsageException)
+                                // Внутреннего исключения нет
+                                // (или там не IllegalArgumentException и не InvalidDataAccessApiUsageException)
                                 throw new RuntimeException(e);
                             }
 
                         };
 
-                        handlers.put(jrpcController.path() + "." + jrpcHandler.method(), handler);
+                        handlers.put(jrpcController.path() + "." + jrpcMethod.method(), handler);
                     }
                 }
 
@@ -345,7 +352,7 @@ public class ApiController {
                 //noinspection unchecked
                 Function<JsonNode,ResponseBase> handler = (Function<JsonNode, ResponseBase>) ctor.newInstance();
 
-                handlers.put(apiHandlerAnt.method(), handler);
+                handlers.save(apiHandlerAnt.method(), handler);
             }
 
         }

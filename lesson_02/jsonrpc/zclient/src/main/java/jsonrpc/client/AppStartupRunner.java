@@ -18,7 +18,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.lang.invoke.MethodHandles;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
@@ -46,12 +49,11 @@ public class AppStartupRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-
         System.out.println("Using client config: " + clientProperties.getServer());
         System.out.println("\n");
 
         System.out.println("Список товаров:\n");
-        List<ProductDto> productDtoList = productRequest.getAll();
+        List<ProductDto> productDtoList = productRequest.findAll();
         System.out.println(productDtoList);
         System.out.println("\n");
 
@@ -74,19 +76,33 @@ public class AppStartupRunner implements ApplicationRunner {
             System.out.println("Попытаемся забрать со склада 9999 единиц товара с id=2:\n");
             storageRequest.remove(2L, 9999);
         } catch (HttpStatusCodeException e) {
-            log.error("HTTP " + e.getStatusCode().toString() +"\n" + e.getResponseBodyAsString());
+            log.error("HTTP " + e.getStatusCode().toString() +"\n" +
+                    new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
             //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
         }
 
         System.out.println("Сделаем заказ:\n");
-        Long orderId = orderRequest.put(3L, 10);
+        Long orderId = orderRequest.save(3L, 10);
         System.out.println("orderId: " + orderId);
         System.out.println("\n");
 
         System.out.println("Проверим заказ:\n");
-        OrderDto orderDto = orderRequest.getById(orderId);
+        OrderDto orderDto = orderRequest.findById(orderId);
         System.out.println(orderDto);
         System.out.println("\n");
+
+
+        System.out.println("Изменим заказ:\n");
+        OrderItemDto itemDto = new OrderItemDto(4L, 2);
+        orderDto.addItemDto(itemDto);
+        orderRequest.save(orderDto);
+
+        System.out.println("Проверим заказ:\n");
+        orderDto = orderRequest.findById(orderId);
+        System.out.println(orderDto);
+        System.out.println("\n");
+
+
     }
 
 }

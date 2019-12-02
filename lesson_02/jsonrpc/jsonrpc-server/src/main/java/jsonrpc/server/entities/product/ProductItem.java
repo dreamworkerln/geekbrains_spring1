@@ -4,6 +4,8 @@ import jsonrpc.server.entities.base.AbstractEntityPersisted;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 
 /*
@@ -15,10 +17,13 @@ import javax.persistence.*;
 @MappedSuperclass
 public class ProductItem extends AbstractEntityPersisted {
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name="product_id", referencedColumnName="id")
     protected Product product;
 
+    @NotNull
+    @Min(0)
     protected Integer count;
 
     //@ManyToOne
