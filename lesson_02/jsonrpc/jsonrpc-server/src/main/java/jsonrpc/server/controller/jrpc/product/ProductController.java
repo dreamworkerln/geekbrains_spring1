@@ -4,17 +4,21 @@ package jsonrpc.server.controller.jrpc.product;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
+import jsonrpc.protocol.dto.base.filter.specification.PriceSpecificationDto;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.controller.jrpc.base.AbstractConverter;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
+import jsonrpc.server.controller.jrpc.zspecifications.PriceSpecification;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.mappers.ProductListMapper;
 import jsonrpc.server.entities.product.mappers.ProductMapper;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.service.ProductService;
+import jsonrpc.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +26,9 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -34,17 +40,18 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductConverter converter;
-
-
+    private final PriceSpecification priceSpecification;
 
 
     @Autowired
     public ProductController(
             ProductService productService,
-            ProductConverter converter) {
+            ProductConverter converter,
+            PriceSpecification priceSpecification) {
 
         this.productService = productService;
         this.converter = converter;
+        this.priceSpecification = priceSpecification;
     }
 
     // -----------------------------------------------------------------------------
@@ -74,10 +81,36 @@ public class ProductController {
     @JrpcMethod(method = HandlerName.Product.findAll)
     public JsonNode findAll(JsonNode params) {
 
-        List<Product> list = productService.findAll();
+        Specification<Product> spec = Specification.where(null);
+
+        Optional<PriceSpecificationDto> priceSpec = converter.toPriceSpecificationDto(params);
+
+
+        if (priceSpec.isPresent()) {
+
+            PriceSpecificationDto sp = priceSpec.get();
+
+            // Устанавливаем для спецификации имя поля цены
+            sp.setFieldName(Utils.getPriceFieldName(Product.class, BigDecimal.class));
+
+            // Выберется что-то одно
+            if (sp.validInterval()) {
+                spec = spec.and(priceSpecification.between(sp.getFieldName(), sp.getMin(), sp.getMax()));
+            }
+            if (sp.validFrom()) {
+                spec = spec.and(priceSpecification.from(sp.getFieldName(), sp.getMin()));
+            }
+            if (sp.validTo()) {
+                spec = spec.and(priceSpecification.to(sp.getFieldName(), sp.getMax()));
+            }
+        }
+
+        List<Product> list = productService.findAll(spec);
+
+        //List<Product> list = productService.findAll();
         return converter.toJsonProductListDto(list);
     }
-    
+
 
 
     @JrpcMethod(method = HandlerName.Product.save)
@@ -119,19 +152,29 @@ public class ProductController {
             this.productListMapper = productListMapper;
         }
 
+
         public Product toProduct(JsonNode params)  {
-            Product result;
             try {
                 ProductDto dto = objectMapper.treeToValue(params, ProductDto.class);
-                result = productMapper.toEntity(dto);
+                Product result = productMapper.toEntity(dto);
                 validate(result);
+                return result;
             }
             // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
             catch (Exception e) {
                 throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
             }
+        }
 
-            return result;
+        public Optional<PriceSpecificationDto> toPriceSpecificationDto(JsonNode params) {
+
+            try {
+                return Optional.ofNullable(objectMapper.treeToValue(params, PriceSpecificationDto.class));
+                // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
+            }
+            catch (Exception e) {
+                throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
+            }
         }
 
         public JsonNode toJsonProductDto(Product product) {
@@ -149,6 +192,8 @@ public class ProductController {
         public JsonNode toJsonId(Product product) {
             return objectMapper.valueToTree(product.getId());
         }
+
+
 
 
         public void validate(Product product) {

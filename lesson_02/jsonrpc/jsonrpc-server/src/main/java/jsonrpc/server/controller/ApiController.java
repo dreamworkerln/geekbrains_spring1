@@ -11,6 +11,7 @@ import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.controller.jrpc.base.JrpcMethodHandler;
 import jsonrpc.utils.Utils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -137,10 +138,13 @@ public class ApiController {
             if (id == null) {
                 throw new IllegalArgumentException("JRPC no id specified");
             }
-            if (Utils.isNullOrEmpty(token) || !token.equals(ACCESS_TOKEN)) {
+
+
+
+            if (StringUtils.isBlank(token) || !token.equals(ACCESS_TOKEN)) {
                 throw new IllegalAccessException("Forbidden");
             }
-            if (Utils.isNullOrEmpty(method)) {
+            if (StringUtils.isBlank(method)) {
                 throw new IllegalArgumentException("No JRPC method specified");
             }
             if (!handlers.containsKey(method)) {
@@ -171,7 +175,7 @@ public class ApiController {
             log.error("",e);
 
             String message = e.getMessage();
-            if(Utils.isNullOrEmpty(message)) {
+            if(StringUtils.isBlank(message)) {
                 message = HttpStatus.BAD_REQUEST.name();
             }
             httpResponse = new HttpResponseError(message, HttpStatus.BAD_REQUEST);

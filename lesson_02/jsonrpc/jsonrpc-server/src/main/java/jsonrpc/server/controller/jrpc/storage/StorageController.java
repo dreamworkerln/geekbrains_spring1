@@ -122,18 +122,16 @@ public class StorageController {
         }
 
         public ProductItem toProductItem(JsonNode params) {
-
-            ProductItem result;
             try {
                 ProductItemDto dto = objectMapper.treeToValue(params, ProductItemDto.class);
-                result = productItemMapper.toEntity(dto);
+                ProductItem result = productItemMapper.toEntity(dto);
                 validate(result);
+                return result;
             }
             // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
             catch (Exception e) {
                 throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
             }
-            return result;
         }
 
         public JsonNode toJsonProductItemDto(ProductItem productItem) {

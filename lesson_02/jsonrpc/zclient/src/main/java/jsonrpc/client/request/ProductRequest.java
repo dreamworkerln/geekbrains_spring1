@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.client.request.base.AbstractRequest;
 import jsonrpc.protocol.dto.base.HandlerName;
+import jsonrpc.protocol.dto.base.filter.specification.PriceSpecificationDto;
 import jsonrpc.protocol.dto.product.ProductDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,11 +57,19 @@ public class ProductRequest extends AbstractRequest {
     }
 
 
-    public List<ProductDto> findAll() throws JsonProcessingException {
+//    public List<ProductDto> findAll() throws JsonProcessingException {
+//
+//        String uri = HandlerName.Product.path + "." + HandlerName.Product.findAll;
+//        JsonNode response = performRequest(1000L, uri, null);
+//        return Arrays.asList(objectMapper.treeToValue(response, ProductDto[].class));
+//    }
+
+    public List<ProductDto> findAll(PriceSpecificationDto spec) throws JsonProcessingException {
 
         String uri = HandlerName.Product.path + "." + HandlerName.Product.findAll;
-        JsonNode response = performRequest(1000L, uri, null);
+        JsonNode response = performRequest(1000L, uri, spec);
         return Arrays.asList(objectMapper.treeToValue(response, ProductDto[].class));
+
     }
 
 
@@ -70,4 +79,6 @@ public class ProductRequest extends AbstractRequest {
         JsonNode response = performRequest(1000L, uri, productDto);
         return objectMapper.treeToValue(response, Long.class);
     }
+
+
 }

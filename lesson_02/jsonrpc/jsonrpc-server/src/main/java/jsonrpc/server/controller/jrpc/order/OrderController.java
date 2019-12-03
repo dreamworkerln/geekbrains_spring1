@@ -123,18 +123,17 @@ public class OrderController  {
         public Order toOrder(JsonNode params)  {
 
             // parsing request
-            Order result;
             try {
                 OrderDto dto = objectMapper.treeToValue(params, OrderDto.class);
-                result = orderMapper.toEntity(dto);
+                Order result = orderMapper.toEntity(dto);
                 // Проверяем на валидность
                 validate(result);
+                return result;
             }
             // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
             catch (Exception e) {
                 throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
             }
-            return result;
         }
 
         public JsonNode toJsonOrderDto(Order order) {

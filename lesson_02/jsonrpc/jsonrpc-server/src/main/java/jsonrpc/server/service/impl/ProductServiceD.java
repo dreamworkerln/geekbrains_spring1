@@ -6,6 +6,7 @@ import jsonrpc.server.repository.ProductRepository;
 import jsonrpc.server.service.ProductService;
 import jsonrpc.server.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +50,11 @@ public class ProductServiceD implements ProductService {
     @Override
     public List<Product> findAll() {
         return productRepository.findAll();
+    }
+
+    @Override
+    public List<Product> findAll(Specification<Product> spec) {
+        return productRepository.findAll(spec);
     }
 
     @Override

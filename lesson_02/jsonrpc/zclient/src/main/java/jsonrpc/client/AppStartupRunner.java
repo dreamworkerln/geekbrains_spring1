@@ -1,10 +1,10 @@
 package jsonrpc.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.client.request.OrderRequest;
 import jsonrpc.client.request.ProductRequest;
 import jsonrpc.client.request.StorageRequest;
+import jsonrpc.protocol.dto.base.filter.specification.PriceSpecificationDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.protocol.dto.product.ProductDto;
@@ -19,10 +19,8 @@ import org.springframework.web.client.HttpStatusCodeException;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
@@ -121,9 +119,28 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n");
 
         System.out.println("Список товаров:\n");
-        List<ProductDto> productDtoList = productRequest.findAll();
+        List<ProductDto> productDtoList = productRequest.findAll(null);
         System.out.println(productDtoList);
         System.out.println("\n");
+
+
+        System.out.println("Список товаров с ценой от 0 до 20:\n");
+        PriceSpecificationDto spec =
+                new PriceSpecificationDto(BigDecimal.valueOf(0),BigDecimal.valueOf(20));
+        productDtoList = productRequest.findAll(spec);
+        System.out.println(productDtoList);
+        System.out.println("\n");
+
+
+        System.out.println("Список товаров с ценой выше 30:\n");
+        spec = new PriceSpecificationDto(BigDecimal.valueOf(30), null);
+        productDtoList = productRequest.findAll(spec);
+        System.out.println(productDtoList);
+        System.out.println("\n");
+
+
+
+
 
         System.out.println("Запасы на складе:\n");
         List<ProductItemDto> productItemDtoList = storageRequest.getAll();

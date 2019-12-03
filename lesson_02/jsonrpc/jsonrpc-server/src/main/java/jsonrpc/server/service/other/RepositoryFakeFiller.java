@@ -60,7 +60,7 @@ public class RepositoryFakeFiller {
 
             p.setName(faker.commerce().productName());
             p.setVcode(faker.number().digits(7));
-            p.setPrice(BigDecimal.valueOf(Double.valueOf(faker.commerce().price())));
+            p.setPrice(BigDecimal.valueOf(Double.valueOf(faker.number().numberBetween(1, 50))));
             //p.setPrice(BigDecimal.valueOf(67));
             p.setTestDate(Instant.EPOCH);
 

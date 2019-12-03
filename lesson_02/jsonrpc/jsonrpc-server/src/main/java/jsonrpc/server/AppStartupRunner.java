@@ -26,6 +26,5 @@ public class AppStartupRunner implements ApplicationRunner {
     public void run(ApplicationArguments args) {
 
         repositoryFakeFiller.fillData();
-
     }
 }

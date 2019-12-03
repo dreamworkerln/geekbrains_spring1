@@ -1,6 +1,7 @@
 package jsonrpc.utils;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 
 public class Utils {
 
@@ -113,6 +114,38 @@ public class Utils {
     }
 
 */
+
+    /**
+     * Find first field with BigDecimal type<br>
+     * Not search in super classes
+     */
+
+    /**
+     *
+     * @param source searching in this class
+     * @param pattern which class to find
+     * @return field name
+     */
+    public static String getPriceFieldName(Class source, Class pattern) {
+
+        String result = null;
+        outerLoop:
+        do {
+            for (Field f : source.getDeclaredFields()) {
+                if (f.getType() == pattern) {
+                    result = f.getName();
+                    break outerLoop;
+                }
+            }
+        }
+        while((source = source.getSuperclass()) != null);
+
+        return result;
+    }
+
+
+
+
 
 
 
