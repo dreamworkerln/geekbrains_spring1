@@ -2,22 +2,26 @@ package jsonrpc.server.controller.jrpc.base;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jsonrpc.protocol.dto.product.ProductDto;
+import org.springframework.stereotype.Service;
 
+import javax.validation.Validator;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class AbstractJrpcController {
+@Service
+public abstract class AbstractConverter {
 
     protected final ObjectMapper objectMapper;
+    protected final Validator validator;
 
 
-    protected AbstractJrpcController(ObjectMapper objectMapper) {
+    protected AbstractConverter(ObjectMapper objectMapper, Validator validator) {
         this.objectMapper = objectMapper;
+        this.validator = validator;
     }
 
 
-    protected Long getId(JsonNode params) {
+    public Long getId(JsonNode params) {
 
         Long result;
 
@@ -38,7 +42,7 @@ public abstract class AbstractJrpcController {
     }
 
 
-    protected List<Long> getIdList(JsonNode params) {
+    public List<Long> getIdList(JsonNode params) {
 
         List<Long> result;
         try {

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.order.OrderDto;
+import jsonrpc.server.controller.jrpc.base.AbstractConverter;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.mappers.OrderMapper;
@@ -30,7 +31,7 @@ import java.util.Set;
  */
 @Service
 @JrpcController(path = HandlerName.Order.path)
-public class OrderController extends AbstractJrpcController {
+public class OrderController  {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -39,17 +40,14 @@ public class OrderController extends AbstractJrpcController {
 
 
     @Autowired
-    protected OrderController(ObjectMapper objectMapper,
-                              OrderService orderService,
+    protected OrderController(OrderService orderService,
                               OrderConverter converter) {
-
-        super(objectMapper);
 
         this.orderService = orderService;
         this.converter = converter;
     }
 
-    
+
     // -----------------------------------------------------------------------------
 
 
@@ -57,31 +55,25 @@ public class OrderController extends AbstractJrpcController {
     @JrpcMethod(method = HandlerName.Order.findById)
     public JsonNode findById(JsonNode params) {
 
-        // request id
-        long id = getId(params);
-
-        // Getting from repository product by id
+        long id = converter.getId(params);
         Order order = orderService.findById(id).orElse(null);
-        OrderDto orderdto = converter.toDto(order);
-        return objectMapper.valueToTree(orderdto);
+        return converter.toJsonOrder(order);
     }
 
 
     @JrpcMethod(method = HandlerName.Order.save)
-    public JsonNode save(JsonNode params) throws JsonProcessingException {
+    public JsonNode save(JsonNode params)  {
 
-        OrderDto orderdto = objectMapper.treeToValue(params, OrderDto.class);
-        Order order = converter.toEntity(orderdto);
+        Order order = converter.toEntity(params);
         order = orderService.save(order);
-        return objectMapper.valueToTree(order.getId());
+        return converter.toJsonId(order);
     }
 
 
     @JrpcMethod(method = HandlerName.Order.delete)
-    public JsonNode delete(JsonNode params) throws JsonProcessingException {
+    public JsonNode delete(JsonNode params)  {
 
-        OrderDto orderdto = objectMapper.treeToValue(params, OrderDto.class);
-        Order order = converter.toEntity(orderdto);
+        Order order = converter.toEntity(params);
         orderService.delete(order);
         return null;
     }
@@ -115,28 +107,27 @@ public class OrderController extends AbstractJrpcController {
 
     // ToDo: Перетащить AbstractJrpcController и сделать базовым для OrderConverter (и остальных конвертеров)
 
+
     @Service
     @Transactional
-    static class OrderConverter {
+    static class OrderConverter extends AbstractConverter {
 
         private final OrderMapper orderMapper;
-        protected final ObjectMapper objectMapper;
-        private final Validator validator;
 
-        @Autowired
-        OrderConverter(OrderMapper orderMapper, ObjectMapper objectMapper,
-                       Validator validator) {
+        public OrderConverter(ObjectMapper objectMapper,
+                              OrderMapper orderMapper,
+                              Validator validator) {
 
-            this.orderMapper = orderMapper; this.objectMapper = objectMapper;
-            this.validator = validator;
+            super(objectMapper, validator);
+            this.orderMapper = orderMapper;
         }
 
-
-        public Order toEntity(OrderDto dto) {
+        public Order toEntity(JsonNode params)  {
 
             // parsing request
             Order result;
             try {
+                OrderDto dto = objectMapper.treeToValue(params, OrderDto.class);
                 result = orderMapper.toEntity(dto);
                 // Проверяем на валидность
                 validate(result);
@@ -148,8 +139,13 @@ public class OrderController extends AbstractJrpcController {
             return result;
         }
 
-        public OrderDto toDto(Order order) {
-            return orderMapper.toDto(order);
+        public JsonNode toJsonOrder(Order order) {
+            OrderDto orderDto = orderMapper.toDto(order);
+            return objectMapper.valueToTree(orderDto);
+        }
+
+        public JsonNode toJsonId(Order order) {
+            return objectMapper.valueToTree(order.getId());
         }
 
         public void validate(Order order) {

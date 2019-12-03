@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.product.ProductItemDto;
-import jsonrpc.server.controller.jrpc.base.AbstractJrpcController;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.product.ProductItem;
@@ -18,20 +17,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Validator;
 import java.lang.invoke.MethodHandles;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @JrpcController(path = HandlerName.Storage.path)
-public class StorageController extends AbstractJrpcController {
+public class StorageController  {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final StorageService storageService;
-    private final ProductItemMapper productItemMapper;
-    private final ProductItemListMapper productItemListMapper;
+    private final StorageConverter converter;
+    //private final ProductItemMapper productItemMapper;
+    //private final ProductItemListMapper productItemListMapper;
 
 
     public StorageController(
