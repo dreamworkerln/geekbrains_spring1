@@ -1,6 +1,7 @@
 package jsonrpc.server.entities.base.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import java.time.Instant;

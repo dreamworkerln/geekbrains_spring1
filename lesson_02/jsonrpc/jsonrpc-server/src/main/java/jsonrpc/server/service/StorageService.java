@@ -8,10 +8,9 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
-public interface StorageService extends AbstractService {
+public interface StorageService /*extends AbstractService*/ {
 
-    //@Override
-    //Optional<ProductItem> findById(Long id);
+    Optional<? extends ProductItem> findById(Long id);
     
     //Optional<? extends ProductItem> findByProductId(Long id);
     Optional<? extends ProductItem> findByProductId(Long id);

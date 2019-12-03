@@ -1,29 +1,36 @@
 package jsonrpc.server.entities.product.mappers;
 
 import jsonrpc.protocol.dto.product.ProductDto;
+import jsonrpc.server.entities.base.mapper.IdMapper;
 import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.entities.product.Product;
+import jsonrpc.server.service.ProductService;
+import jsonrpc.server.service.StorageService;
 import jsonrpc.utils.Utils;
 import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {InstantMapper.class})
-public interface ProductMapper {
+public abstract class ProductMapper implements IdMapper {
+
+    @Autowired
+    private ProductService productService;
 
     //ProductMapper INSTANCE = Mappers.getMapper(ProductMapper.class);
 
     //@Mapping(source = "person.description", target = "description")
     //@Mapping(source = "address.houseNo", target = "houseNumber")
-    ProductDto toDto(Product product);
-    Product toEntity(ProductDto productDto);
+    public abstract ProductDto toDto(Product product);
+    public abstract Product toEntity(ProductDto productDto);
 
 
-    default Long toProductDto(Product product) {
+    public Long toProductDto(Product product) {
         return product.getId();
     }
 
-    default Product toProduct(Long productId) {
+    public Product toProduct(Long productId) {
 
         Product result = new Product();
         Utils.fieldSetter("id", result, productId);
@@ -35,11 +42,9 @@ public interface ProductMapper {
     // а MapStruct не умеет работать через отражения с protected членами
     // (или я не знаю как), поэтому делаем это вручную
     @AfterMapping
-    default void setId(ProductDto source, @MappingTarget Product target) {
+    void setId(ProductDto source, @MappingTarget Product target) {
 
-        Utils.fieldSetter("id", target, source.getId());
-
-        // Do not map created & updated - only server produce this values
+        idMap(productService::findById, source, target);
     }
 
 }

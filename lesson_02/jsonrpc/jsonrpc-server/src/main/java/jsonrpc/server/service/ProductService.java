@@ -1,12 +1,11 @@
 package jsonrpc.server.service;
 
 import jsonrpc.server.entities.product.Product;
-import jsonrpc.server.entities.storage.StorageItem;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface ProductService extends AbstractService {
+public interface ProductService /*extends AbstractService*/ {
 
     Optional<Product> findById(Long id);
     List<Product> findAllById(List<Long> listId);

@@ -1,16 +1,21 @@
 package jsonrpc.server.service.impl;
 
-import jsonrpc.server.entities.storage.StorageItem;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.protocol.dto.order.OrderDto;
+import jsonrpc.server.entities.order.OrderItem;
+import jsonrpc.server.entities.order.mappers.OrderMapper;
+import jsonrpc.server.repository.OrderItemRepository;
 import jsonrpc.server.repository.OrderRepository;
 import jsonrpc.server.service.OrderService;
 import jsonrpc.server.entities.order.Order;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
-import java.time.Instant;
 import java.util.*;
 
 
@@ -19,17 +24,16 @@ import java.util.*;
 public class OrderServiceD implements OrderService {
 
     private final OrderRepository orderRepository;
-    //private final ProductService productService;
-    private final Validator validator;
+    private final OrderItemRepository orderItemRepository;
 
-
+    @Autowired
     public OrderServiceD(OrderRepository orderRepository,
-                         Validator validator) {
+                         OrderItemRepository orderItemRepository) {
 
         this.orderRepository = orderRepository;
-        //this.productService = productService;
-        this.validator = validator;
+        this.orderItemRepository = orderItemRepository;
     }
+
 
     // ----------------------------------------------------------------------------------
 
@@ -54,6 +58,7 @@ public class OrderServiceD implements OrderService {
 
     @Override
     public Order save(Order order) {
+
         return orderRepository.save(order);
     }
 
@@ -63,34 +68,29 @@ public class OrderServiceD implements OrderService {
         orderRepository.delete(order);
     }
 
-    // ----------------------------------------------------------------------------
-
-
-
-    @Override
-    public void validate(Order order) {
-
-        Set<ConstraintViolation<Order>> violations = validator.validate(order);
-        if (violations.size() != 0) {
-            throw new ConstraintViolationException("Order validation failed", violations);
-        }
-    }
-
-
     // ------------------------------------------------------------------------------
 
-    /**
-     * Обновляет Order.update
-     * Если был изменен к-л из Order.itemList (или добавлен/удален)
-     */
-    private List<Instant> getUList(Order order) {
-
-        List<Instant> result = new ArrayList<>();
-
-        if (order!= null) {
-            order.getItemList().forEach(oi -> result.add(oi.getUpdated()));
-        }
-        return result;
+    public Optional<OrderItem> findItemById(Long id) {
+        return orderItemRepository.findById(id);
     }
+
+
+    // ================================================================================
+
+
+
+//    /**
+//     * Обновляет Order.update
+//     * Если был изменен к-л из Order.itemList (или добавлен/удален)
+//     */
+//    private List<Instant> getUList(Order order) {
+//
+//        List<Instant> result = new ArrayList<>();
+//
+//        if (order!= null) {
+//            order.getItemList().forEach(oi -> result.add(oi.getUpdated()));
+//        }
+//        return result;
+//    }
 
 }

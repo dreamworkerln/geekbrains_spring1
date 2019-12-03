@@ -1,9 +1,10 @@
-package jsonrpc.server.service;
+package jsonrpc.server.service.other;
 
 
 import com.github.javafaker.Faker;
 import jsonrpc.server.entities.product.Product;
-import jsonrpc.utils.Utils;
+import jsonrpc.server.service.ProductService;
+import jsonrpc.server.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +54,7 @@ public class RepositoryFakeFiller {
         System.out.println(Locale.getDefault());
         System.out.println( dfs.getDecimalSeparator() );
 
-        for (long i = 0; i < 1; i++) {
+        for (long i = 0; i < 5; i++) {
 
             p = new Product();
 
@@ -66,18 +67,11 @@ public class RepositoryFakeFiller {
             productService.save(p);
 
             storageService.put(p, faker.number().numberBetween(1, 50));
-
-            //p.toCreate();
-            //p.toUpdate();
-            //Utils.idSetter(p, i);
-
-            //productRepository.save(p);
-            //storageRepository.save(p, faker.number().numberBetween(1, 50));
         }
 
         storageService.put(p, 1000);
 
-        System.out.println(storageService.findByProductId(1L).get().toString());
+        storageService.findByProductId(1L).ifPresent(System.out::println);
 
     }
 }

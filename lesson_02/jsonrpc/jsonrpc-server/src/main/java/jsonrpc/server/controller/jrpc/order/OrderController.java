@@ -1,5 +1,6 @@
 package jsonrpc.server.controller.jrpc.order;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
@@ -9,17 +10,18 @@ import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.mappers.OrderMapper;
 import jsonrpc.server.controller.jrpc.base.AbstractJrpcController;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
-import jsonrpc.server.entities.product.Product;
-import jsonrpc.server.repository.OrderRepository;
 import jsonrpc.server.service.OrderService;
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
 import java.lang.invoke.MethodHandles;
-import java.util.List;
+import java.util.Set;
 
 /**
  * Выдает информацию о товарах<br>
@@ -33,18 +35,18 @@ public class OrderController extends AbstractJrpcController {
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final OrderService orderService;
-    private final OrderMapper orderMapper;
+    private final OrderConverter converter;
 
 
     @Autowired
     protected OrderController(ObjectMapper objectMapper,
                               OrderService orderService,
-                              OrderMapper orderMapper) {
+                              OrderConverter converter) {
 
         super(objectMapper);
 
         this.orderService = orderService;
-        this.orderMapper = orderMapper;
+        this.converter = converter;
     }
 
     
@@ -60,52 +62,103 @@ public class OrderController extends AbstractJrpcController {
 
         // Getting from repository product by id
         Order order = orderService.findById(id).orElse(null);
-        OrderDto orderdto = orderMapper.toDto(order);
+        OrderDto orderdto = converter.toDto(order);
         return objectMapper.valueToTree(orderdto);
     }
 
-    @JrpcMethod(method = HandlerName.Order.save)
-    public JsonNode save(JsonNode params) {
 
-        Order order = getOrder(params);
+    @JrpcMethod(method = HandlerName.Order.save)
+    public JsonNode save(JsonNode params) throws JsonProcessingException {
+
+        OrderDto orderdto = objectMapper.treeToValue(params, OrderDto.class);
+        Order order = converter.toEntity(orderdto);
         order = orderService.save(order);
         return objectMapper.valueToTree(order.getId());
     }
 
 
     @JrpcMethod(method = HandlerName.Order.delete)
-    public JsonNode delete(JsonNode params) {
+    public JsonNode delete(JsonNode params) throws JsonProcessingException {
 
-        Order order = getOrder(params);
+        OrderDto orderdto = objectMapper.treeToValue(params, OrderDto.class);
+        Order order = converter.toEntity(orderdto);
         orderService.delete(order);
         return null;
     }
+
+    // ---------------------------------------------------------------
+
+//    private OrderDto toDto(JsonNode params) {
+//
+//        OrderDto result;
+//
+//        try {
+//            result = objectMapper.treeToValue(params, OrderDto.class);
+//        } catch (JsonProcessingException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return result;
+//    }
 
 
 
     // ==============================================================================
 
+    // И весь этот гемморой только из-за того, что
+    // нельзя добавить @Transactional к контроллеру, т.к. тогда он обмажетя
+    // проксями из спринга и мутирует своим классом, jrpc хендлеры не будут
+    // автоподгружаться ....
+    //
+    // А без транзакция жопа при orderMapper.toEntity(...)
+    // Там на каждый объект из графа будет открываться новая транзакция, чтобы подгрузить created
+    // (ну и в будущем другие поля, которые хранятся только на сервере их надо подгрузить в объект)
 
+    // ToDo: Перетащить AbstractJrpcController и сделать базовым для OrderConverter (и остальных конвертеров)
 
+    @Service
+    @Transactional
+    static class OrderConverter {
 
+        private final OrderMapper orderMapper;
+        protected final ObjectMapper objectMapper;
+        private final Validator validator;
 
+        @Autowired
+        OrderConverter(OrderMapper orderMapper, ObjectMapper objectMapper,
+                       Validator validator) {
 
-    private Order getOrder(JsonNode params) {
-
-        // parsing request
-        Order result;
-        try {
-            OrderDto orderDto = objectMapper.treeToValue(params, OrderDto.class);
-
-            result = orderMapper.toEntity(orderDto);
-            // Проверяем на валидность
-            orderService.validate(result);
-
+            this.orderMapper = orderMapper; this.objectMapper = objectMapper;
+            this.validator = validator;
         }
-        catch (Exception e) {
-            throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
+
+
+        public Order toEntity(OrderDto dto) {
+
+            // parsing request
+            Order result;
+            try {
+                result = orderMapper.toEntity(dto);
+                // Проверяем на валидность
+                validate(result);
+            }
+            // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
+            catch (Exception e) {
+                throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
+            }
+            return result;
         }
-        return result;
+
+        public OrderDto toDto(Order order) {
+            return orderMapper.toDto(order);
+        }
+
+        public void validate(Order order) {
+
+            Set<ConstraintViolation<Order>> violations = validator.validate(order);
+            if (violations.size() != 0) {
+                throw new ConstraintViolationException("Order validation failed", violations);
+            }
+        }
     }
 
 

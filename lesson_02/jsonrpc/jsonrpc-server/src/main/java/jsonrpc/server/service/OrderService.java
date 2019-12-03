@@ -1,12 +1,14 @@
 package jsonrpc.server.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.entities.order.OrderItem;
 import jsonrpc.server.entities.storage.StorageItem;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface OrderService extends AbstractService {
+public interface OrderService /*extends AbstractService*/ {
 
     Optional<Order> findById(Long id);
 
@@ -18,5 +20,5 @@ public interface OrderService extends AbstractService {
 
     void delete(Order order);
 
-    void validate(Order order);
+    Optional<OrderItem> findItemById(Long id);
 }

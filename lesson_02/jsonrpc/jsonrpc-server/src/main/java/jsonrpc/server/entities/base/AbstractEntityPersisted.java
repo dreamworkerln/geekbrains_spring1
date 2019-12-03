@@ -15,12 +15,12 @@ public abstract class AbstractEntityPersisted extends AbstractEntity {
     protected Instant created;
 
 
-    @Column(name = "updated"/*, insertable = false*/)
+    @Column(name = "updated")
     @UpdateTimestamp
     protected Instant updated;
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
     public Long getId() {
@@ -40,6 +40,26 @@ public abstract class AbstractEntityPersisted extends AbstractEntity {
     public Instant getUpdated() {
         return updated;
     }
+
+
+//    @PrePersist
+//    protected void prePersist() {
+//        System.out.println("prePersist");
+//        created = Instant.now();
+//        updated = Instant.now();
+//    }
+//
+//    @PreUpdate
+//    protected void preUpdate() {
+//        System.out.println("preUpdate");
+//        updated = Instant.now();
+//    }
+//
+//    @PostUpdate
+//    protected void postUpdate() {
+//        System.out.println("postUpdate");
+//    }
+}
 
 //    @Transient
 //    public void setCreated(Instant created) {
@@ -62,4 +82,5 @@ public abstract class AbstractEntityPersisted extends AbstractEntity {
 //    public void toUpdate() {
 //        updated = Instant.now().truncatedTo(ChronoUnit.SECONDS);
 //    }
-}
+
+

@@ -19,6 +19,7 @@ public abstract class AbstractMapper {
         // 1. Set id
         Utils.fieldSetter("id", target, source.getId());
 
+        /*
 
         // 2. Set created and updated from server (if have this entity persisted)
         if (target.getId() != null) {
@@ -31,5 +32,7 @@ public abstract class AbstractMapper {
                 Utils.fieldSetter("updated", target, p.getUpdated());
             });
         }
+
+        */
     }
 }

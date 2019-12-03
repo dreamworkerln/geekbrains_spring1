@@ -84,6 +84,8 @@ public class AppStartupRunner implements ApplicationRunner {
 
         */
 
+
+        /*
         try {
             System.out.println("Попытаемся забрать со склада 900 единиц товара с id=1:\n");
             storageRequest.remove(1L, 900);
@@ -92,6 +94,7 @@ public class AppStartupRunner implements ApplicationRunner {
                       new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
             //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
         }
+        */
 
 
 
@@ -141,20 +144,34 @@ public class AppStartupRunner implements ApplicationRunner {
             //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
         }
 
+        */
+
         System.out.println("Сделаем заказ:\n");
-        Long orderId = orderRequest.save(3L, 10);
+        OrderDto orderDto = new OrderDto();
+        OrderItemDto itemDto;
+        itemDto  = new OrderItemDto(1L, 2);
+        orderDto.addItemDto(itemDto);
+        itemDto  = new OrderItemDto(2L, 15);
+        orderDto.addItemDto(itemDto);
+        itemDto  = new OrderItemDto(3L, 12);
+        orderDto.addItemDto(itemDto);
+        itemDto  = new OrderItemDto(4L, 18);
+        orderDto.addItemDto(itemDto);
+        Long orderId = orderRequest.save(orderDto);
         System.out.println("orderId: " + orderId);
         System.out.println("\n");
 
         System.out.println("Проверим заказ:\n");
-        OrderDto orderDto = orderRequest.findById(orderId);
+        orderDto = orderRequest.findById(orderId);
         System.out.println(orderDto);
         System.out.println("\n");
 
 
         System.out.println("Изменим заказ:\n");
-        OrderItemDto itemDto = new OrderItemDto(4L, 2);
-        orderDto.addItemDto(itemDto);
+        orderDto.getItemList().get(0).setCount(10);
+        orderDto.getItemList().get(0).setCount(9);
+        orderDto.getItemList().get(0).setCount(8);
+        orderDto.getItemList().get(0).setCount(7);
         orderRequest.save(orderDto);
 
         System.out.println("Проверим заказ:\n");
@@ -163,7 +180,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n");
 
 
-        */
+
     }
 
 }

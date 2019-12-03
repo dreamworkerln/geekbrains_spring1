@@ -40,10 +40,9 @@ public class StorageServiceD implements StorageService {
 
 
     @Override
-    public Optional<ProductItem> findById(Long id) {
+    public Optional<? extends ProductItem> findById(Long id) {
 
-        throw new InvalidInvocationException("Нехер это вызывать, это не Product.id продукта, а ProductItem.id");
-        //return storageRepository.findById(id);
+        return storageRepository.findById(id);
     }
 
     @Override
@@ -175,7 +174,7 @@ public class StorageServiceD implements StorageService {
         // ToDo: Для тестов тут спим для проверки LOCK SELECT FOR UPDATE на 1 строку с товаром:
         try {
 
-            int l = 3000;
+            int l = 30;
 
             System.out.print("ДУМАЕМ .");
             Thread.sleep(l);

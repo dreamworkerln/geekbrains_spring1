@@ -1,21 +1,25 @@
 package jsonrpc.server.entities.order.mappers;
 
 import jsonrpc.protocol.dto.order.OrderItemDto;
-import jsonrpc.server.entities.base.mapper.AbstractMapper;
+import jsonrpc.server.entities.base.mapper.IdMapper;
 import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.entities.order.OrderItem;
 import jsonrpc.server.entities.product.mappers.ProductMapper;
-import jsonrpc.utils.Utils;
+import jsonrpc.server.service.OrderService;
 import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {InstantMapper.class, ProductMapper.class})
-public interface OrderItemMapper {
+public abstract class OrderItemMapper implements IdMapper {
+
+    @Autowired
+    OrderService orderService;
 
     @Mapping(source = "product", target = "productId", qualifiedByName = "toProductDto")
-    OrderItemDto toDto(OrderItem orderItem);
+    public abstract OrderItemDto toDto(OrderItem orderItem);
 
 
     // хрена, в OrderItemDto не будет ссылки на OrderDto, задолбал stackOverflow
@@ -24,7 +28,7 @@ public interface OrderItemMapper {
     // (вроде как mapStruct графы с циклами может как-то разруливать, но хз как)
     @Mapping(source = "productId", target = "product", qualifiedByName = "toProduct")
     @Mapping(target = "order", ignore = true)
-    OrderItem toEntity(OrderItemDto orderItemDto);
+    public abstract OrderItem toEntity(OrderItemDto orderItemDto);
 
 
 
@@ -43,13 +47,9 @@ public interface OrderItemMapper {
 
 
     @AfterMapping
-    default void setId(OrderItemDto source, @MappingTarget OrderItem target) {
+    void afterMapping(OrderItemDto source, @MappingTarget OrderItem target) {
 
-        // 1. Set id
-        Utils.fieldSetter("id", target, source.getId());
-
-        // для OrderItem нет сервиса ...
-        // OrderMapper умеет мапить свои OrderItem
+        idMap(orderService::findItemById, source, target);
     }
 }
 

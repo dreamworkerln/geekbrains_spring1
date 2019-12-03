@@ -1,7 +1,6 @@
 package jsonrpc.server;
 
-import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
-import jsonrpc.server.service.RepositoryFakeFiller;
+import jsonrpc.server.service.other.RepositoryFakeFiller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;

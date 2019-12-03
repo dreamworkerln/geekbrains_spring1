@@ -1,21 +1,27 @@
 package jsonrpc.server.entities.product.mappers;
 
 import jsonrpc.protocol.dto.product.ProductItemDto;
+import jsonrpc.server.entities.base.mapper.IdMapper;
 import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.entities.product.ProductItem;
+import jsonrpc.server.service.StorageService;
 import jsonrpc.utils.Utils;
 import org.mapstruct.*;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {InstantMapper.class, ProductMapper.class})
-public interface ProductItemMapper {
+public abstract class ProductItemMapper implements IdMapper {
+
+    @Autowired
+    private StorageService storageService;
 
     @Mapping(source = "product", target = "productId", qualifiedByName = "toProductDto")
-    ProductItemDto toDto(ProductItem productItem);
+    public abstract ProductItemDto toDto(ProductItem productItem);
 
     @Mapping(source = "productId", target = "product", qualifiedByName = "toProduct")
-    ProductItem toEntity(ProductItemDto productItemDto);
+    public abstract ProductItem toEntity(ProductItemDto productItemDto);
 
 //    // ProductItem.product -> ProductItemDto.productId
 //    default Long toProductDto(Product product) {
@@ -34,8 +40,8 @@ public interface ProductItemMapper {
     // а MapStruct не умеет работать через отражения с protected членами
     // (или я не знаю как), поэтому делаем это вручную
     @AfterMapping
-    default void setId(ProductItemDto source, @MappingTarget ProductItem target) {
-        Utils.fieldSetter("id", target, source.getId());
+    void afterMapping(ProductItemDto source, @MappingTarget ProductItem target) {
+        idMap(storageService::findById, source, target);
     }
 
 
