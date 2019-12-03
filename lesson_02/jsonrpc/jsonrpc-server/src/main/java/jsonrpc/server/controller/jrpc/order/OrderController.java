@@ -1,6 +1,5 @@
 package jsonrpc.server.controller.jrpc.order;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
@@ -9,7 +8,6 @@ import jsonrpc.server.controller.jrpc.base.AbstractConverter;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.mappers.OrderMapper;
-import jsonrpc.server.controller.jrpc.base.AbstractJrpcController;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.service.OrderService;
 import org.slf4j.Logger;
@@ -57,14 +55,14 @@ public class OrderController  {
 
         long id = converter.getId(params);
         Order order = orderService.findById(id).orElse(null);
-        return converter.toJsonOrder(order);
+        return converter.toJsonOrderDto(order);
     }
 
 
     @JrpcMethod(method = HandlerName.Order.save)
     public JsonNode save(JsonNode params)  {
 
-        Order order = converter.toEntity(params);
+        Order order = converter.toOrder(params);
         order = orderService.save(order);
         return converter.toJsonId(order);
     }
@@ -73,7 +71,7 @@ public class OrderController  {
     @JrpcMethod(method = HandlerName.Order.delete)
     public JsonNode delete(JsonNode params)  {
 
-        Order order = converter.toEntity(params);
+        Order order = converter.toOrder(params);
         orderService.delete(order);
         return null;
     }
@@ -122,7 +120,7 @@ public class OrderController  {
             this.orderMapper = orderMapper;
         }
 
-        public Order toEntity(JsonNode params)  {
+        public Order toOrder(JsonNode params)  {
 
             // parsing request
             Order result;
@@ -139,7 +137,7 @@ public class OrderController  {
             return result;
         }
 
-        public JsonNode toJsonOrder(Order order) {
+        public JsonNode toJsonOrderDto(Order order) {
             OrderDto orderDto = orderMapper.toDto(order);
             return objectMapper.valueToTree(orderDto);
         }

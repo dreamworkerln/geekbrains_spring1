@@ -47,8 +47,4 @@ public interface StorageService /*extends AbstractService*/ {
     void delete(@NotNull Product product);
     void delete(@NotNull Long productId);
 
-
-
-    //
-    void validate(ProductItem product);
 }

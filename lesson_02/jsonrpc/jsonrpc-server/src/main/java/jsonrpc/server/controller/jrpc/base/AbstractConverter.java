@@ -56,7 +56,6 @@ public abstract class AbstractConverter {
             result = Arrays.asList(objectMapper.treeToValue(params, Long[].class));
 
             result.forEach(l -> {
-
                 if (l == null) {
                     throw new IllegalArgumentException("IdList contains null element");
                 }

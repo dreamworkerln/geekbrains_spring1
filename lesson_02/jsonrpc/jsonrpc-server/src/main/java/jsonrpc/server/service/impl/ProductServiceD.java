@@ -74,14 +74,4 @@ public class ProductServiceD implements ProductService {
         storageService.delete(product);
     }
 
-    // ----------------------------------------------------------------------------
-    @Override
-    public void validate(Product product) {
-
-        Set<ConstraintViolation<Product>> violations = validator.validate(product);
-        if (violations.size() != 0) {
-            throw new ConstraintViolationException("Product validation failed", violations);
-        }
-    }
-
 }

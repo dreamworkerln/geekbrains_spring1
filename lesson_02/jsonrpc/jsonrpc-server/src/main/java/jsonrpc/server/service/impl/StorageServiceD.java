@@ -131,21 +131,6 @@ public class StorageServiceD implements StorageService {
 
 
 
-
-
-
-
-
-    @Override
-    public void validate(ProductItem product) {
-
-        Set<ConstraintViolation<ProductItem>> violations = validator.validate(product);
-        if (violations.size() != 0) {
-            throw new ConstraintViolationException("ProductItem validation failed", violations);
-        }
-    }
-
-
     // ==================================================================================
 
     private void changeCount(Product product, int count) {
@@ -166,7 +151,7 @@ public class StorageServiceD implements StorageService {
 
         if (pi.getCount() + count < 0) {
             throw new IllegalArgumentException("Невозможно забрать со склада " + -count + " единиц товара id==" +
-                    product.getId() + " " + ", на складе в наличии " + pi.getCount());
+                    product.getId() + ", на складе в наличии " + pi.getCount());
         }
 
 

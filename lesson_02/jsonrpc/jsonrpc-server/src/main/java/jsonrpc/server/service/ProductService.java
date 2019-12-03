@@ -15,6 +15,6 @@ public interface ProductService /*extends AbstractService*/ {
 
     void delete(Product product);
 
-    void validate(Product product);
+    //void validate(Product product);
 
 }

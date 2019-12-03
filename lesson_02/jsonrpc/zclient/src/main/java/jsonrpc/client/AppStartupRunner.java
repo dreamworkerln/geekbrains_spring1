@@ -85,7 +85,7 @@ public class AppStartupRunner implements ApplicationRunner {
         */
 
 
-        /*
+                /*
         try {
             System.out.println("Попытаемся забрать со склада 900 единиц товара с id=1:\n");
             storageRequest.remove(1L, 900);
@@ -94,6 +94,7 @@ public class AppStartupRunner implements ApplicationRunner {
                       new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
             //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
         }
+
         */
 
 
@@ -102,7 +103,11 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
 
-/*
+
+
+
+
+
 
 
 
@@ -144,7 +149,7 @@ public class AppStartupRunner implements ApplicationRunner {
             //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
         }
 
-        */
+
 
         System.out.println("Сделаем заказ:\n");
         OrderDto orderDto = new OrderDto();
@@ -178,7 +183,6 @@ public class AppStartupRunner implements ApplicationRunner {
         orderDto = orderRequest.findById(orderId);
         System.out.println(orderDto);
         System.out.println("\n");
-
 
 
     }
