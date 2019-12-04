@@ -3,6 +3,7 @@ package jsonrpc.server.entities.product.mappers;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.entities.base.mapper.IdMapper;
 import jsonrpc.server.entities.base.mapper.InstantMapper;
+import jsonrpc.server.entities.category.Category;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.service.ProductService;
 import jsonrpc.server.service.StorageService;
@@ -22,9 +23,13 @@ public abstract class ProductMapper implements IdMapper {
 
     //@Mapping(source = "person.description", target = "description")
     //@Mapping(source = "address.houseNo", target = "houseNumber")
+
+    @Mapping(source = "category", target = "categoryId", qualifiedByName = "toCategoryDto")
     public abstract ProductDto toDto(Product product);
 
-    @Mapping(target = "category", ignore = true)
+    //@Mapping(target = "category", ignore = true)
+
+    @Mapping(source = "categoryId", target = "category", qualifiedByName = "toCategory")
     public abstract Product toEntity(ProductDto productDto);
 
 
@@ -36,6 +41,17 @@ public abstract class ProductMapper implements IdMapper {
 
         Product result = new Product();
         Utils.fieldSetter("id", result, productId);
+        return result;
+    }
+
+    public Long toCategoryDto(Category category) {
+        return category.getId();
+    }
+
+    public Category toCategory(Long categoryId) {
+
+        Category result = new Category();
+        Utils.fieldSetter("id", result, categoryId);
         return result;
     }
 

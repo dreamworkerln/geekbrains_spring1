@@ -37,16 +37,6 @@ public class AppStartupRunner implements ApplicationRunner {
 
         repositoryFakeFiller.fillData();
 
-        Zozo zozo = new Zozo();
-        zozo.setName("213");
-        System.out.println(zozo);
-
-        Optional<Long> opt = Optional.of(5L);
-
-
-
-        ProductSpecDto pDto = new ProductSpecDto();
-
         //pDto.setPriceMax(BigDecimal.valueOf(10L));
 
         /*

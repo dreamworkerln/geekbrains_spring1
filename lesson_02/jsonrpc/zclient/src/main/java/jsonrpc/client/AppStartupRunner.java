@@ -4,6 +4,7 @@ import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.client.request.OrderRequest;
 import jsonrpc.client.request.ProductRequest;
 import jsonrpc.client.request.StorageRequest;
+import jsonrpc.protocol.dto.base.filter.specification.ProductSpecDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.protocol.dto.product.ProductDto;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -115,27 +117,32 @@ public class AppStartupRunner implements ApplicationRunner {
 
         System.out.println("Using client config: " + clientProperties.getServer());
         System.out.println("\n");
+        List<ProductDto> productDtoList;
 
+        /*
         System.out.println("Список товаров:\n");
         List<ProductDto> productDtoList = productRequest.findAll(null);
         System.out.println(productDtoList);
         System.out.println("\n");
-
-
-        System.out.println("Список товаров с ценой от 0 до 20:\n");
-        /*
-        ProductSpecDto spec =
-                new ProductSpecDto(BigDecimal.valueOf(0),BigDecimal.valueOf(20));
         */
-        productDtoList = productRequest.findAll(null);
+
+        System.out.println("Список товаров с ценой от 0 до 25 категории 2:\n");
+
+        ProductSpecDto spec = new ProductSpecDto();
+        spec.getCategoryList().add(2L);
+        spec.setPriceMin(BigDecimal.valueOf(0));
+        spec.setPriceMax(BigDecimal.valueOf(25));
+
+        productDtoList = productRequest.findAll(spec);
         System.out.println(productDtoList);
         System.out.println("\n");
+        
+
+        /*
 
 
         System.out.println("Список товаров с ценой выше 30:\n");
-        /*
         spec = new ProductSpecDto(BigDecimal.valueOf(30), null);
-        */
         productDtoList = productRequest.findAll(null);
         System.out.println(productDtoList);
         System.out.println("\n");
@@ -202,6 +209,7 @@ public class AppStartupRunner implements ApplicationRunner {
         orderDto = orderRequest.findById(orderId);
         System.out.println(orderDto);
         System.out.println("\n");
+        */
 
 
     }

@@ -76,21 +76,6 @@ public class OrderController  {
         return null;
     }
 
-    // ---------------------------------------------------------------
-
-//    private OrderDto toDto(JsonNode params) {
-//
-//        OrderDto result;
-//
-//        try {
-//            result = objectMapper.treeToValue(params, OrderDto.class);
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException(e);
-//        }
-//        return result;
-//    }
-
-
 
     // ==============================================================================
 
@@ -102,9 +87,6 @@ public class OrderController  {
     // А без транзакция жопа при orderMapper.toEntity(...)
     // Там на каждый объект из графа будет открываться новая транзакция, чтобы подгрузить created
     // (ну и в будущем другие поля, которые хранятся только на сервере их надо подгрузить в объект)
-
-    // ToDo: Перетащить AbstractJrpcController и сделать базовым для OrderConverter (и остальных конвертеров)
-
 
     @Service
     @Transactional

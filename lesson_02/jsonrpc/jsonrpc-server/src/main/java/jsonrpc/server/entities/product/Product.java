@@ -49,6 +49,10 @@ public class Product extends AbstractEntityPersisted {
 
     public void setPrice(BigDecimal price) {this.price = price;}
 
+    public Category getCategory() {return category;}
+
+    public void setCategory(Category category) {this.category = category;}
+
     // ----------------------------------------------- TEST --------------------------------------
 
     private Instant testDate;
@@ -71,9 +75,7 @@ public class Product extends AbstractEntityPersisted {
         return result;
     }
 
-    public Category getCategory() {return category;}
 
-    public void setCategory(Category category) {this.category = category;}
 
     @Override
     public String toString() {
@@ -82,6 +84,7 @@ public class Product extends AbstractEntityPersisted {
                 ", name='" + name + '\'' +
                 ", vcode='" + vcode + '\'' +
                 ", price=" + price +
+                ", category=" + category.getId() +
                 ", testDate=" + testDate +
                 ", created=" + created +
                 ", updated=" + updated +

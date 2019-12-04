@@ -13,10 +13,12 @@ import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.mappers.ProductListMapper;
 import jsonrpc.server.entities.product.mappers.ProductMapper;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
+import jsonrpc.server.repository.specifications.product.ProductSpecBuilder;
 import jsonrpc.server.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -76,13 +78,10 @@ public class ProductController {
     @JrpcMethod(method = HandlerName.Product.findAll)
     public JsonNode findAll(JsonNode params) {
 
-        //Specification<Product> spec = Specification.where(null);
+        Optional<ProductSpecDto> specDto = converter.toSpecDto(params);
+        Specification<Product> spec =  ProductSpecBuilder.build(specDto);
+        return converter.toJsonProductListDto(productService.findAll(spec));
 
-        //Optional<ProductSpecDto> specDtoOp = converter.toPriceSpecificationDto(params);
-        //ProductSpecification spec = null;
-
-
-        ProductSpecDto dto = null;
         
         //if (specDtoOp.isPresent()) {
 
@@ -114,7 +113,7 @@ public class ProductController {
         //List<Product> list = productService.findAll(spec);
 
         //List<product> list = productService.findAll();
-        return converter.toJsonProductListDto(productService.findAll(null));
+
     }
 
 

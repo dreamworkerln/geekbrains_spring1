@@ -23,6 +23,8 @@ public abstract class AbstractEntityPersisted extends AbstractEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
 
+    protected AbstractEntityPersisted(){}
+
     public Long getId() {
         return id;
     }

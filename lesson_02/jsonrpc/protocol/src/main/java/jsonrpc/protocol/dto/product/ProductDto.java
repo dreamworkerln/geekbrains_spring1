@@ -16,6 +16,7 @@ public class ProductDto extends AbstractDtoPersisted {
     private String name;
     private String vcode; // Артикул
     private BigDecimal price;
+    private Long categoryId;
 
 
     public String getName() {
@@ -35,6 +36,14 @@ public class ProductDto extends AbstractDtoPersisted {
     public BigDecimal getPrice() {return price;}
 
     public void setPrice(BigDecimal price) {this.price = price;}
+
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
 
     // ----------------------------------------------------------------------
 
@@ -72,6 +81,7 @@ public class ProductDto extends AbstractDtoPersisted {
                 ", name='" + name + '\'' +
                 ", vcode='" + vcode + '\'' +
                 ", price=" + price +
+                ", categoryId=" + categoryId +
                 ", testDate=" + testDate +
                 ", created=" + created +
                 ", updated=" + updated +
