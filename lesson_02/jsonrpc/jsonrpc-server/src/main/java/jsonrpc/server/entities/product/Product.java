@@ -6,8 +6,8 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.Currency;
 
+import jsonrpc.server.entities.category.Category;
 import org.apache.commons.lang3.SerializationUtils;
 
 @Entity
@@ -22,6 +22,14 @@ public class Product extends AbstractEntityPersisted {
 
     @NotNull
     private BigDecimal price;
+
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name="category_id", referencedColumnName="id")
+    Category category;
+
+    //private List<Category> categoryList = new ArrayList<>();
+
 
     public String getName() {return name;}
 
@@ -63,10 +71,13 @@ public class Product extends AbstractEntityPersisted {
         return result;
     }
 
+    public Category getCategory() {return category;}
+
+    public void setCategory(Category category) {this.category = category;}
 
     @Override
     public String toString() {
-        return "Product{" +
+        return "product{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", vcode='" + vcode + '\'' +

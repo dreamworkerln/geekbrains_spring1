@@ -77,7 +77,7 @@ public abstract class OrderMapper implements IdMapper {
         });
 
         // Список типов товаров, которые есть в наличии в базе
-        Map<Long, Product> productMap = productService.findAllById(productIdList).stream()
+        Map<Long, product> productMap = productService.findAllById(productIdList).stream()
                 .collect(Collectors.toMap(AbstractEntityPersisted::getId, product -> product));
 
         // OrderItem, которые уже есть в наличии в базе для update-запроса заказа (созданы в прошлый раз)
@@ -100,9 +100,9 @@ public abstract class OrderMapper implements IdMapper {
         Map<Long, OrderItem> fOrderItemMap = orderItemMap;
         target.getItemList().forEach(item -> {
 
-            // прицепляем Product
+            // прицепляем product
             if (!productMap.containsKey(item.getProduct().getId())) {
-                throw new IllegalArgumentException("Order Product not persisted");
+                throw new IllegalArgumentException("Order product not persisted");
             }
             item.setProduct(productMap.get(item.getProduct().getId()));
 
@@ -153,11 +153,11 @@ public abstract class OrderMapper implements IdMapper {
 //        // 2. Fetch all persistedProducts
 //        target.getItemList().forEach(item -> {
 //
-//            Product p = item.getProduct();
-//            Product persistedProduct = productService.findById(p.getId()).orElse(null); // )))
+//            product p = item.getProduct();
+//            product persistedProduct = productService.findById(p.getId()).orElse(null); // )))
 //
 //            if (persistedProduct == null) {
-//                throw new IllegalArgumentException("Product not persisted");
+//                throw new IllegalArgumentException("product not persisted");
 //            }
 //            item.setProduct(persistedProduct);
 //            item.setOrder(target);  // Set owner to all OrderItems

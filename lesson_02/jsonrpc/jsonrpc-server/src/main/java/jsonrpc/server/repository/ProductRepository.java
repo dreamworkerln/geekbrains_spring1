@@ -13,17 +13,17 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
 //    Already exists findAllbyId()
-//    @Query("from Product p " +
+//    @Query("from product p " +
 //           "where p.id in (:idList)")
-//    List<Product> findByIdList(@Param("idList")List<Long> idList);
+//    List<product> findByIdList(@Param("idList")List<Long> idList);
 
     
 
 
 
-//    void save(Product product);
-//    Product getById(Long id);
-//    List<Product> getByIdList(List<Long> list);
-//    List<Product> getAll();
+//    void save(product product);
+//    product getById(Long id);
+//    List<product> getByIdList(List<Long> list);
+//    List<product> getAll();
 //    void delete(Long id);
 }

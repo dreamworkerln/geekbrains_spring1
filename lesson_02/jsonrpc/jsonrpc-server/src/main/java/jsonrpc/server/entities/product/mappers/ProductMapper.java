@@ -23,6 +23,8 @@ public abstract class ProductMapper implements IdMapper {
     //@Mapping(source = "person.description", target = "description")
     //@Mapping(source = "address.houseNo", target = "houseNumber")
     public abstract ProductDto toDto(Product product);
+
+    @Mapping(target = "category", ignore = true)
     public abstract Product toEntity(ProductDto productDto);
 
 
@@ -38,7 +40,7 @@ public abstract class ProductMapper implements IdMapper {
     }
 
 
-    // у Product protected setId(), и делать его public я не хочу,
+    // у product protected setId(), и делать его public я не хочу,
     // а MapStruct не умеет работать через отражения с protected членами
     // (или я не знаю как), поэтому делаем это вручную
     @AfterMapping

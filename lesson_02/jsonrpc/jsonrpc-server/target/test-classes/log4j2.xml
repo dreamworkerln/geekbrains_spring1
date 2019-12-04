@@ -30,8 +30,8 @@
 
     <Loggers>
 
-        <!--
 
+        <!--
         <Logger name="org.apache.http" level="ERROR">
         </Logger>
 

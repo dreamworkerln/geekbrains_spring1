@@ -2,6 +2,9 @@ package jsonrpc.server.controller.jrpc.base;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.server.entities.base.AbstractEntity;
+import jsonrpc.server.entities.base.AbstractEntityPersisted;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Validator;
@@ -11,15 +14,18 @@ import java.util.List;
 @Service
 public abstract class AbstractConverter {
 
-    protected final ObjectMapper objectMapper;
-    protected final Validator validator;
+    protected ObjectMapper objectMapper;
+    protected Validator validator;
 
-
-    protected AbstractConverter(ObjectMapper objectMapper, Validator validator) {
-        this.objectMapper = objectMapper;
+    @Autowired
+    public void setValidator(Validator validator) {
         this.validator = validator;
     }
 
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     public Long getId(JsonNode params) {
 
@@ -66,6 +72,10 @@ public abstract class AbstractConverter {
         }
 
         return result;
+    }
+
+    public JsonNode toJsonId(AbstractEntityPersisted entity) {
+        return objectMapper.valueToTree(entity.getId());
     }
 
 }

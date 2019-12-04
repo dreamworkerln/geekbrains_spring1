@@ -1,4 +1,4 @@
-package jsonrpc.server.controller.jrpc.zspecifications;
+package jsonrpc.server.repository.specifications;
 
 import jsonrpc.server.entities.product.Product;
 import org.springframework.data.jpa.domain.Specification;

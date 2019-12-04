@@ -24,19 +24,19 @@ public abstract class ProductItemMapper implements IdMapper {
     public abstract ProductItem toEntity(ProductItemDto productItemDto);
 
 //    // ProductItem.product -> ProductItemDto.productId
-//    default Long toProductDto(Product product) {
+//    default Long toProductDto(product product) {
 //        return product.getId();
 //    }
 //
 //    // ProductItemDto.productId -> ProductItem.product
-//    default Product toProduct(Long productId) {
-//        Product result = new Product();
+//    default product toProduct(Long productId) {
+//        product result = new product();
 //        Utils.idSetter(result, productId);
 //        return result;
 //    }
 
 
-    // у Product protected setId(), и делать его public я не хочу,
+    // у product protected setId(), и делать его public я не хочу,
     // а MapStruct не умеет работать через отражения с protected членами
     // (или я не знаю как), поэтому делаем это вручную
     @AfterMapping
@@ -45,7 +45,7 @@ public abstract class ProductItemMapper implements IdMapper {
     }
 
 
-//    // Map Product -> ProductDto (required mapping): Product ->  productId
+//    // Map product -> ProductDto (required mapping): product ->  productId
 //    @AfterMapping
 //    default void setId(ProductItem source, @MappingTarget ProductItemDto target) {
 //        target.setProductId(source.getId());

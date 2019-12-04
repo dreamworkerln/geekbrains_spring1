@@ -45,9 +45,9 @@ public interface StorageRepository extends JpaRepository<StorageItem, Long> {
 //    ProductItem getById(Long id);
 //    List<ProductItem> getByIdList(List<Long> list);
 //    List<ProductItem> getAll();
-//    Long save(Product product, int count);        // добавить на склад количество товара
-//    Long remove(Product product, int count);      // забрать со склада количество товара
-//    void delete(Product product);                // удалить со склада вообще такую позиию
+//    Long save(product product, int count);        // добавить на склад количество товара
+//    Long remove(product product, int count);      // забрать со склада количество товара
+//    void delete(product product);                // удалить со склада вообще такую позиию
 }
 
 

@@ -32,13 +32,13 @@ public abstract class OrderItemMapper implements IdMapper {
 
 
 
-//    default Product toProduct(ProductDto productDto) {
-//        Product result = new Product();
+//    default product toProduct(ProductDto productDto) {
+//        product result = new product();
 //        Utils.idSetter(result, productDto.getId());
 //        return result;
 //    }
 
-//    default ProductDto toProductDto(Product product) {
+//    default ProductDto toProductDto(product product) {
 //        ProductDto result = new ProductDto();
 //        result.setId(product.getId());
 //        return result;
@@ -80,13 +80,13 @@ public interface   OrderItemMapper extends AbstractMapper {
 
 
 
-//    default Product toProduct(ProductDto productDto) {
-//        Product result = new Product();
+//    default product toProduct(ProductDto productDto) {
+//        product result = new product();
 //        Utils.idSetter(result, productDto.getId());
 //        return result;
 //    }
 
-//    default ProductDto toProductDto(Product product) {
+//    default ProductDto toProductDto(product product) {
 //        ProductDto result = new ProductDto();
 //        result.setId(product.getId());
 //        return result;

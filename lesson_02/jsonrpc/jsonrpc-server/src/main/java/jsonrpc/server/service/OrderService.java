@@ -1,24 +1,90 @@
 package jsonrpc.server.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jsonrpc.server.entities.order.Order;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.entities.order.OrderItem;
-import jsonrpc.server.entities.storage.StorageItem;
+import jsonrpc.server.entities.order.mappers.OrderMapper;
+import jsonrpc.server.repository.OrderItemRepository;
+import jsonrpc.server.repository.OrderRepository;
+import jsonrpc.server.service.OrderService;
+import jsonrpc.server.entities.order.Order;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
+import javax.validation.Validator;
+import java.util.*;
 
-public interface OrderService /*extends AbstractService*/ {
 
-    Optional<Order> findById(Long id);
+@Service
+@Transactional
+public class OrderService {
 
-    List<Order> findAllById(List<Long> listId);
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
-    List<Order> findAll();
+    @Autowired
+    public OrderService(OrderRepository orderRepository,
+                         OrderItemRepository orderItemRepository) {
 
-    Order save(Order order);
+        this.orderRepository = orderRepository;
+        this.orderItemRepository = orderItemRepository;
+    }
 
-    void delete(Order order);
 
-    Optional<OrderItem> findItemById(Long id);
+    // ----------------------------------------------------------------------------------
+
+
+    public Optional<Order> findById(Long id) {
+        return orderRepository.findById(id);
+    }
+
+    public List<Order> findAllById(List<Long> listId) {
+
+        return orderRepository.findAllById(listId);
+    }
+
+    public List<Order> findAll() {
+        return orderRepository.findAll();
+    }
+
+
+    public Order save(Order order) {
+
+        return orderRepository.save(order);
+    }
+
+    public void delete(Order order) {
+
+        orderRepository.delete(order);
+    }
+
+    // ------------------------------------------------------------------------------
+
+    public Optional<OrderItem> findItemById(Long id) {
+        return orderItemRepository.findById(id);
+    }
+
+
+    // ================================================================================
+
+
+
+//    /**
+//     * Обновляет Order.update
+//     * Если был изменен к-л из Order.itemList (или добавлен/удален)
+//     */
+//    private List<Instant> getUList(Order order) {
+//
+//        List<Instant> result = new ArrayList<>();
+//
+//        if (order!= null) {
+//            order.getItemList().forEach(oi -> result.add(oi.getUpdated()));
+//        }
+//        return result;
+//    }
+
 }

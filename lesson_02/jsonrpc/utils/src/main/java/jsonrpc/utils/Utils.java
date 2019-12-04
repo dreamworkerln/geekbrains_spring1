@@ -117,7 +117,7 @@ public class Utils {
 
     /**
      * Find first field with BigDecimal type<br>
-     * Not search in super classes
+     * Not base in super classes
      */
 
     /**

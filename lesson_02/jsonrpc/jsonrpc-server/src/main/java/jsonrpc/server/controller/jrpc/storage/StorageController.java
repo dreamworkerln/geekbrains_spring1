@@ -110,12 +110,8 @@ public class StorageController {
         private final ProductItemMapper productItemMapper;
         private final ProductItemListMapper productItemListMapper;
 
-        public StorageConverter(ObjectMapper objectMapper,
-                                Validator validator,
-                                ProductItemMapper productItemMapper,
+        public StorageConverter(ProductItemMapper productItemMapper,
                                 ProductItemListMapper productItemListMapper) {
-
-            super(objectMapper, validator);
 
             this.productItemMapper = productItemMapper;
             this.productItemListMapper = productItemListMapper;

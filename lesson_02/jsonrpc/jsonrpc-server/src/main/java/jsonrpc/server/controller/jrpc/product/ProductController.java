@@ -3,22 +3,20 @@ package jsonrpc.server.controller.jrpc.product;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.util.concurrent.Atomics;
 import jsonrpc.protocol.dto.base.HandlerName;
-import jsonrpc.protocol.dto.base.filter.specification.PriceSpecificationDto;
+import jsonrpc.protocol.dto.base.filter.specification.ProductSpecDto;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.controller.jrpc.base.AbstractConverter;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
-import jsonrpc.server.controller.jrpc.zspecifications.PriceSpecification;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.mappers.ProductListMapper;
 import jsonrpc.server.entities.product.mappers.ProductMapper;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.service.ProductService;
-import jsonrpc.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,10 +24,11 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.Validator;
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Supplier;
 
 
 @Service
@@ -40,18 +39,14 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductConverter converter;
-    private final PriceSpecification priceSpecification;
-
 
     @Autowired
     public ProductController(
             ProductService productService,
-            ProductConverter converter,
-            PriceSpecification priceSpecification) {
+            ProductConverter converter) {
 
         this.productService = productService;
         this.converter = converter;
-        this.priceSpecification = priceSpecification;
     }
 
     // -----------------------------------------------------------------------------
@@ -81,34 +76,45 @@ public class ProductController {
     @JrpcMethod(method = HandlerName.Product.findAll)
     public JsonNode findAll(JsonNode params) {
 
-        Specification<Product> spec = Specification.where(null);
+        //Specification<Product> spec = Specification.where(null);
 
-        Optional<PriceSpecificationDto> priceSpec = converter.toPriceSpecificationDto(params);
+        //Optional<ProductSpecDto> specDtoOp = converter.toPriceSpecificationDto(params);
+        //ProductSpecification spec = null;
 
 
-        if (priceSpec.isPresent()) {
+        ProductSpecDto dto = null;
+        
+        //if (specDtoOp.isPresent()) {
 
-            PriceSpecificationDto sp = priceSpec.get();
-
+            //ProductSpecDto specDto = specDtoOp.get();
             // Устанавливаем для спецификации имя поля цены
-            sp.setFieldName(Utils.getPriceFieldName(Product.class, BigDecimal.class));
+            //specDto.setFieldName(Utils.getPriceFieldName(Product.class, BigDecimal.class));
 
+            //spec = new ProductSpecification(new SpecSearchCriteria("price", SearchOperation.GREATER_THAN, 20));
+
+//            spec = new ProductSpecification(
+//                    new SpecSearchCriteria("dodo", SearchOperation.IN, Arrays.asList(0, 1, 2, 3)));
+//
+
+
+            /*
             // Выберется что-то одно
             if (sp.validInterval()) {
-                spec = spec.and(priceSpecification.between(sp.getFieldName(), sp.getMin(), sp.getMax()));
+                spec = spec.and(priceSpecification.between(specDto.getFieldName(), specDto.getMin(), specDto.getMax()));
             }
             if (sp.validFrom()) {
-                spec = spec.and(priceSpecification.from(sp.getFieldName(), sp.getMin()));
+                spec = spec.and(priceSpecification.from(specDto.getFieldName(), specDto.getMin()));
             }
             if (sp.validTo()) {
-                spec = spec.and(priceSpecification.to(sp.getFieldName(), sp.getMax()));
+                spec = spec.and(priceSpecification.to(specDto.getFieldName(), specDto.getMax()));
             }
-        }
+            */
+        //}
 
-        List<Product> list = productService.findAll(spec);
+        //List<Product> list = productService.findAll(spec);
 
-        //List<Product> list = productService.findAll();
-        return converter.toJsonProductListDto(list);
+        //List<product> list = productService.findAll();
+        return converter.toJsonProductListDto(productService.findAll(null));
     }
 
 
@@ -142,12 +148,9 @@ public class ProductController {
         private final ProductListMapper productListMapper;
 
 
-        public ProductConverter(ObjectMapper objectMapper,
-                                Validator validator,
-                                ProductMapper productMapper,
+        public ProductConverter(ProductMapper productMapper,
                                 ProductListMapper productListMapper) {
 
-            super(objectMapper, validator);
             this.productMapper = productMapper;
             this.productListMapper = productListMapper;
         }
@@ -166,16 +169,17 @@ public class ProductController {
             }
         }
 
-        public Optional<PriceSpecificationDto> toPriceSpecificationDto(JsonNode params) {
+        public Optional<ProductSpecDto> toSpecDto(JsonNode params) {
 
             try {
-                return Optional.ofNullable(objectMapper.treeToValue(params, PriceSpecificationDto.class));
+                return Optional.ofNullable(objectMapper.treeToValue(params, ProductSpecDto.class));
                 // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
             }
             catch (Exception e) {
                 throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
             }
         }
+
 
         public JsonNode toJsonProductDto(Product product) {
             ProductDto productDto = productMapper.toDto(product);
@@ -189,18 +193,12 @@ public class ProductController {
         }
 
 
-        public JsonNode toJsonId(Product product) {
-            return objectMapper.valueToTree(product.getId());
-        }
-
-
-
 
         public void validate(Product product) {
 
             Set<ConstraintViolation<Product>> violations = validator.validate(product);
             if (violations.size() != 0) {
-                throw new ConstraintViolationException("Product validation failed", violations);
+                throw new ConstraintViolationException("product validation failed", violations);
             }
         }
     }

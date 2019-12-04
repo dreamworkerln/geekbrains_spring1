@@ -112,11 +112,7 @@ public class OrderController  {
 
         private final OrderMapper orderMapper;
 
-        public OrderConverter(ObjectMapper objectMapper,
-                              OrderMapper orderMapper,
-                              Validator validator) {
-
-            super(objectMapper, validator);
+        public OrderConverter(OrderMapper orderMapper) {
             this.orderMapper = orderMapper;
         }
 
