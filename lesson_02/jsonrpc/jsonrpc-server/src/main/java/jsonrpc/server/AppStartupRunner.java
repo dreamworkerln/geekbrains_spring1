@@ -29,9 +29,9 @@ public class AppStartupRunner implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
 
-        //repositoryFakeFiller.fillData();
+        repositoryFakeFiller.fillData();
 
-        repositoryFakeFiller.fillDataTransactTest();
+        //repositoryFakeFiller.fillDataTransactTest();
 
         //pDto.setPriceMax(BigDecimal.valueOf(10L));
 

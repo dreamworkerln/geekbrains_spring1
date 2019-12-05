@@ -83,6 +83,10 @@ public class AppStartupRunner implements ApplicationRunner {
         */
 
 
+
+
+/*
+
         try {
             System.out.println("Попытаемся забрать со склада 900 единиц товара с id=1:\n");
             storageRequest.remove(1L, 900);
@@ -92,8 +96,12 @@ public class AppStartupRunner implements ApplicationRunner {
             //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
         }
 
+*/
 
-        /*
+
+
+
+
 
         System.out.println("Using client config: " + clientProperties.getServer());
         System.out.println("\n");
@@ -106,7 +114,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n");
 
 
-        System.out.println("Список товаров с ценой от 0 до 50 категории 1:\n");
+        System.out.println("Список товаров с ценой от 0 до 50 категории 1, цена ASC:\n");
         ProductSpecDto spec = new ProductSpecDto();
         spec.getCategoryList().add(1L);
         spec.setPriceMin(BigDecimal.valueOf(0));
@@ -120,7 +128,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("Список товаров с ценой выше 30:\n");
         spec = new ProductSpecDto();
         spec.setPriceMin(BigDecimal.valueOf(30));
-        productDtoList = productRequest.findAll(null);
+        productDtoList = productRequest.findAll(spec);
         System.out.println(productDtoList);
         System.out.println("\n");
 
@@ -147,7 +155,7 @@ public class AppStartupRunner implements ApplicationRunner {
             storageRequest.remove(2L, 9999);
         } catch (HttpStatusCodeException e) {
             log.error("HTTP " + e.getStatusCode().toString() +"\n" +
-                    new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
+                      new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
             //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
         }
 
@@ -192,7 +200,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println(orderDto);
         System.out.println("\n");
 
-        */
+
 
 
 
