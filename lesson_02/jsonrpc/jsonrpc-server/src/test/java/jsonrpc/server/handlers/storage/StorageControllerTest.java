@@ -44,10 +44,9 @@ public class StorageControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private JrpcRequest jrpcRequest;
-
-    @Autowired
     private Rest rest;
+
+    JrpcRequest jrpcRequest;
 
     @BeforeAll
     static void setup() {
@@ -60,7 +59,7 @@ public class StorageControllerTest {
 
         rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
-        jrpcRequest = context.getBean(JrpcRequest.class);
+        jrpcRequest = new JrpcRequest(); //context.getBean(JrpcRequest.class);
     }
 
 

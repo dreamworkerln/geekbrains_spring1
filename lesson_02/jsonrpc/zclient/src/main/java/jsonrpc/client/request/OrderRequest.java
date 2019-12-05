@@ -38,10 +38,10 @@ public class OrderRequest extends AbstractRequest {
     public Long save(Long productId, int count) throws JsonProcessingException {
 
         String uri = HandlerName.Order.path + "." + HandlerName.Order.save;
-        OrderItemDto orderItemDto = context.getBean("orderItemDto", OrderItemDto.class);
+        OrderItemDto orderItemDto = new OrderItemDto(); //context.getBean("orderItemDto", OrderItemDto.class);
         orderItemDto.setProductId(productId);
         orderItemDto.setCount(count);
-        OrderDto order = context.getBean(OrderDto.class);
+        OrderDto order = new OrderDto(); //context.getBean(OrderDto.class);
         order.addItemDto(orderItemDto);
 
         JsonNode response = performRequest(1000L, uri, order);

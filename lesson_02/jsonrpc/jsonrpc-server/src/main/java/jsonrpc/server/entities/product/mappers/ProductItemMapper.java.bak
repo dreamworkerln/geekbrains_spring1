@@ -12,15 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {InstantMapper.class, ProductMapper.class})
-public abstract class ProductItemMapper implements IdMapper {
+public abstract class ProductItemMapper extends IdMapper {
 
     @Autowired
     private StorageService storageService;
 
-    @Mapping(source = "product", target = "productId", qualifiedByName = "toProductDto")
+    //@Mapping(source = "product", target = "productId", qualifiedByName = "toProductDto")
+    @Mapping(source = "product.id", target = "productId")
     public abstract ProductItemDto toDto(ProductItem productItem);
 
-    @Mapping(source = "productId", target = "product", qualifiedByName = "toProduct")
+    //@Mapping(source = "productId", target = "product", qualifiedByName = "toProduct")
+    //@Mapping(source = "productId", target = "id", qualifiedByName = "toEntityId")
+    @Mapping(target = "product", ignore = true)
     public abstract ProductItem toEntity(ProductItemDto productItemDto);
 
 //    // ProductItem.product -> ProductItemDto.productId

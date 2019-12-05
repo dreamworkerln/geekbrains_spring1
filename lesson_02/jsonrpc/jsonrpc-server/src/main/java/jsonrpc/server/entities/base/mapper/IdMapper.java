@@ -3,18 +3,28 @@ package jsonrpc.server.entities.base.mapper;
 import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
 import jsonrpc.server.entities.base.AbstractEntityPersisted;
 import jsonrpc.utils.Utils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 
 import java.util.Optional;
 import java.util.function.Function;
 
-public interface IdMapper {
+public abstract class IdMapper {
 
-    interface FindById extends Function<Long,Optional<? extends AbstractEntityPersisted>>{}
+
+
+    // Просто вложенный функциональный интерфейс
+    //
+    // Function<Long,Optional<? extends AbstractEntityPersisted>>
+    // сюда передается  из к-л маппера SomeEntityMapper метод из соответствующего сервиса SomeEntity.findById(Long.id)
+    // который выдает сущность по id и мы навешиваем из существующей сущности (если она есть) к-л поля
+    // в данном случае created, created, которые не передаются в DTO.
+    public interface FindById extends Function<Long,Optional<? extends AbstractEntityPersisted>>{}
 
     /**
-     * Set id, created
+     * Set id, created, created
      */
-    default void idMap(FindById findById,
+    public void idMap(FindById findById,
                        AbstractDtoPersisted source,
                        AbstractEntityPersisted target) {
 
@@ -30,10 +40,4 @@ public interface IdMapper {
             });
         }
     }
-
-
-//    default void toCreated(
-//                           AbstractDtoPersisted source,
-//                           AbstractEntityPersisted target) {
-//    }
 }

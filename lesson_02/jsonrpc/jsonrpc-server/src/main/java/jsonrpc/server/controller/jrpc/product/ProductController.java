@@ -10,7 +10,6 @@ import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.controller.jrpc.base.AbstractConverter;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.product.Product;
-import jsonrpc.server.entities.product.mappers.ProductListMapper;
 import jsonrpc.server.entities.product.mappers.ProductMapper;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.repository.specifications.product.ProductSpecBuilder;
@@ -144,14 +143,11 @@ public class ProductController {
     static class ProductConverter extends AbstractConverter {
 
         private final ProductMapper productMapper;
-        private final ProductListMapper productListMapper;
 
 
-        public ProductConverter(ProductMapper productMapper,
-                                ProductListMapper productListMapper) {
+        public ProductConverter(ProductMapper productMapper) {
 
             this.productMapper = productMapper;
-            this.productListMapper = productListMapper;
         }
 
 
@@ -187,8 +183,8 @@ public class ProductController {
 
 
         public JsonNode toJsonProductListDto(List<Product> productList) {
-            List<ProductDto> listDto = productListMapper.toDto(productList);
-            return objectMapper.valueToTree(listDto);
+            List<ProductDto> dtoList = productMapper.toDtoList(productList);
+            return objectMapper.valueToTree(dtoList);
         }
 
 

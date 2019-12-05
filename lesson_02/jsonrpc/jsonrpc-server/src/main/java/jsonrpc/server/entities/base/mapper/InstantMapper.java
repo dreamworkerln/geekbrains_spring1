@@ -1,5 +1,7 @@
 package jsonrpc.server.entities.base.mapper;
 
+import jsonrpc.server.entities.category.Category;
+import jsonrpc.utils.Utils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

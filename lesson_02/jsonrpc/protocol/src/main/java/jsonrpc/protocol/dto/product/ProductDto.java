@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 
-@Component
-@Scope("prototype")
+//@Component
+//@Scope("prototype")
 public class ProductDto extends AbstractDtoPersisted {
 
     private String name;

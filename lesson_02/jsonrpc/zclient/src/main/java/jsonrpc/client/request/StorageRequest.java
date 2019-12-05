@@ -66,7 +66,7 @@ public class StorageRequest extends AbstractRequest {
     public Long put(Long productId, int count) throws JsonProcessingException {
 
         String uri = HandlerName.Storage.path + "." + HandlerName.Storage.put;
-        ProductItemDto productItemDto = context.getBean("productItemDto", ProductItemDto.class);
+        ProductItemDto productItemDto =  new ProductItemDto();//context.getBean("productItemDto", ProductItemDto.class);
 
         productItemDto.setProductId(productId);
         productItemDto.setCount(count);
@@ -83,7 +83,7 @@ public class StorageRequest extends AbstractRequest {
     public Long remove(Long productId, int count) throws JsonProcessingException {
 
         String uri = HandlerName.Storage.path + "." + HandlerName.Storage.remove;
-        ProductItemDto productItemDto = context.getBean("productItemDto", ProductItemDto.class);
+        ProductItemDto productItemDto = new ProductItemDto(); //context.getBean("productItemDto", ProductItemDto.class);
         productItemDto.setProductId(productId);
         productItemDto.setCount(count);
 

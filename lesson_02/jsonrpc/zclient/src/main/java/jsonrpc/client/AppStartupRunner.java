@@ -83,7 +83,6 @@ public class AppStartupRunner implements ApplicationRunner {
         */
 
 
-                /*
         try {
             System.out.println("Попытаемся забрать со склада 900 единиц товара с id=1:\n");
             storageRequest.remove(1L, 900);
@@ -93,62 +92,37 @@ public class AppStartupRunner implements ApplicationRunner {
             //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
         }
 
-        */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        /*
 
         System.out.println("Using client config: " + clientProperties.getServer());
         System.out.println("\n");
         List<ProductDto> productDtoList;
 
-        /*
+
         System.out.println("Список товаров:\n");
-        List<ProductDto> productDtoList = productRequest.findAll(null);
-        System.out.println(productDtoList);
-        System.out.println("\n");
-        */
-
-        System.out.println("Список товаров с ценой от 0 до 25 категории 2:\n");
-
-        ProductSpecDto spec = new ProductSpecDto();
-        spec.getCategoryList().add(2L);
-        spec.setPriceMin(BigDecimal.valueOf(0));
-        spec.setPriceMax(BigDecimal.valueOf(25));
-
-        productDtoList = productRequest.findAll(spec);
-        System.out.println(productDtoList);
-        System.out.println("\n");
-        
-
-        /*
-
-
-        System.out.println("Список товаров с ценой выше 30:\n");
-        spec = new ProductSpecDto(BigDecimal.valueOf(30), null);
         productDtoList = productRequest.findAll(null);
         System.out.println(productDtoList);
         System.out.println("\n");
 
 
+        System.out.println("Список товаров с ценой от 0 до 50 категории 1:\n");
+        ProductSpecDto spec = new ProductSpecDto();
+        spec.getCategoryList().add(1L);
+        spec.setPriceMin(BigDecimal.valueOf(0));
+        spec.setPriceMax(BigDecimal.valueOf(50));
+        spec.setPriceOrderBy(ProductSpecDto.OrderBy.ASC);
+        productDtoList = productRequest.findAll(spec);
+        System.out.println(productDtoList);
+        System.out.println("\n");
 
+
+        System.out.println("Список товаров с ценой выше 30:\n");
+        spec = new ProductSpecDto();
+        spec.setPriceMin(BigDecimal.valueOf(30));
+        productDtoList = productRequest.findAll(null);
+        System.out.println(productDtoList);
+        System.out.println("\n");
 
 
         System.out.println("Запасы на складе:\n");
@@ -156,9 +130,11 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println(productItemDtoList);
         System.out.println("\n");
 
+
         System.out.println("Завезем на склад 500 единиц товара с id=2:\n");
         storageRequest.put(2L, 500);
         System.out.println("\n");
+
 
         System.out.println("Запасы товара id=2 на складе:\n");
         ProductItemDto productItemDto = storageRequest.getById(2L);
@@ -179,18 +155,14 @@ public class AppStartupRunner implements ApplicationRunner {
 
         System.out.println("Сделаем заказ:\n");
         OrderDto orderDto = new OrderDto();
-        OrderItemDto itemDto;
-        itemDto  = new OrderItemDto(1L, 2);
-        orderDto.addItemDto(itemDto);
-        itemDto  = new OrderItemDto(2L, 15);
-        orderDto.addItemDto(itemDto);
-        itemDto  = new OrderItemDto(3L, 12);
-        orderDto.addItemDto(itemDto);
-        itemDto  = new OrderItemDto(4L, 18);
-        orderDto.addItemDto(itemDto);
+        orderDto.addItemDto(new OrderItemDto(1L, 3));
+        orderDto.addItemDto(new OrderItemDto(2L, 4));
+        orderDto.addItemDto(new OrderItemDto(3L, 5));
+        orderDto.addItemDto(new OrderItemDto(4L, 6));
         Long orderId = orderRequest.save(orderDto);
         System.out.println("orderId: " + orderId);
         System.out.println("\n");
+
 
         System.out.println("Проверим заказ:\n");
         orderDto = orderRequest.findById(orderId);
@@ -199,17 +171,29 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
         System.out.println("Изменим заказ:\n");
-        orderDto.getItemList().get(0).setCount(10);
-        orderDto.getItemList().get(0).setCount(9);
-        orderDto.getItemList().get(0).setCount(8);
-        orderDto.getItemList().get(0).setCount(7);
+        // Не засоряем канал лишними данными
+        // (о времени, сервер все равно нам не доверяет и использует свои данные)
+        orderDto.setCreated(null);
+        orderDto.setUpdated(null);
+        orderDto.getItemList().stream().forEach(oi -> {
+            oi.setCreated(null);
+            oi.setUpdated(null);
+        });
+        List<OrderItemDto> oiList = orderDto.getItemList();
+        oiList.get(0).setCount(99);
+        oiList.get(1).setCount(98);
+        oiList.get(2).setCount(97);
+        oiList.remove(3);
         orderRequest.save(orderDto);
+
 
         System.out.println("Проверим заказ:\n");
         orderDto = orderRequest.findById(orderId);
         System.out.println(orderDto);
         System.out.println("\n");
+
         */
+
 
 
     }

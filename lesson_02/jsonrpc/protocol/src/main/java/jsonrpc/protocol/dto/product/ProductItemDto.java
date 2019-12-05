@@ -8,8 +8,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Component("productItemDto") // need qualifier due to inheritance issue
-@Scope("prototype")
+//@Component("productItemDto") // need qualifier due to inheritance issue
+//@Scope("prototype")
 public class ProductItemDto extends AbstractDtoPersisted {
 
     // lazy

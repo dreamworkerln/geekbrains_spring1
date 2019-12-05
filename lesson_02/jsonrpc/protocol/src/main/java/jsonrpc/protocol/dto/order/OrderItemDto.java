@@ -10,8 +10,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 
-@Component
-@Scope("prototype")
+//@Component
+//@Scope("prototype")
 public class OrderItemDto extends ProductItemDto {
 
     public OrderItemDto() {

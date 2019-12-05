@@ -22,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.ConstraintViolationException;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -259,6 +260,18 @@ public class ApiController {
 
                                 // если это некорректный данные в запросе пользователя
                                 if (cause instanceof IllegalArgumentException) {
+
+                                    // Чем вызвано это исключение ?
+                                    Throwable innerEx = cause.getCause();
+                                    if (innerEx instanceof ConstraintViolationException) {
+
+                                        // залогируем
+                                        log.error(((ConstraintViolationException)innerEx)
+                                                .getConstraintViolations()
+                                                .toString(), innerEx);
+                                    }
+
+
                                     // вернем 400
                                     throw new IllegalArgumentException(cause.getMessage(), e);
                                 }

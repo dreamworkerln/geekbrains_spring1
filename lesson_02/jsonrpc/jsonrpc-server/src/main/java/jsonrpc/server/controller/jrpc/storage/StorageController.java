@@ -1,15 +1,12 @@
 package jsonrpc.server.controller.jrpc.storage;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.product.ProductItemDto;
 import jsonrpc.server.controller.jrpc.base.AbstractConverter;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.product.ProductItem;
-import jsonrpc.server.entities.product.mappers.ProductItemMapper;
-import jsonrpc.server.entities.product.mappers.ProductItemListMapper;
 import jsonrpc.server.entities.product.mappers.ProductMapper;
 import jsonrpc.server.service.StorageService;
 import org.slf4j.Logger;
@@ -19,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Set;
@@ -107,20 +103,17 @@ public class StorageController {
     @Transactional
     static class StorageConverter extends AbstractConverter {
 
-        private final ProductItemMapper productItemMapper;
-        private final ProductItemListMapper productItemListMapper;
+        private final ProductMapper productMapper;
 
-        public StorageConverter(ProductItemMapper productItemMapper,
-                                ProductItemListMapper productItemListMapper) {
+        public StorageConverter(ProductMapper productMapper) {
 
-            this.productItemMapper = productItemMapper;
-            this.productItemListMapper = productItemListMapper;
+            this.productMapper = productMapper;
         }
 
         public ProductItem toProductItem(JsonNode params) {
             try {
                 ProductItemDto dto = objectMapper.treeToValue(params, ProductItemDto.class);
-                ProductItem result = productItemMapper.toEntity(dto);
+                ProductItem result = productMapper.toItemEntity(dto);
                 validate(result);
                 return result;
             }
@@ -131,13 +124,13 @@ public class StorageController {
         }
 
         public JsonNode toJsonProductItemDto(ProductItem productItem) {
-            ProductItemDto dto = productItemMapper.toDto(productItem);
+            ProductItemDto dto = productMapper.toItemDto(productItem);
             return objectMapper.valueToTree(dto);
         }
 
 
         public JsonNode toJsonProductItemListDto(List<ProductItem> productItemList) {
-            List<ProductItemDto> listDto = productItemListMapper.toDto(productItemList);
+            List<ProductItemDto> listDto = productMapper.toItemDtoList(productItemList);
             return objectMapper.valueToTree(listDto);
         }
 

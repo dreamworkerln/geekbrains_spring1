@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
-@Scope("prototype")
+//@Component
+//@Scope("prototype")
 public class ClientDto {
     private List<OrderDto> orderList = new ArrayList<>();
 

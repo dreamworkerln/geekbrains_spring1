@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 
 @Entity
-@Table(name="orderItem")
+@Table(name="orderzItem")
 public class OrderItem extends ProductItem {
 
     @NotNull

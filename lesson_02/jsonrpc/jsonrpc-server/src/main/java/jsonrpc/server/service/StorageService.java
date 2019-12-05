@@ -136,16 +136,17 @@ public class StorageService {
 
 
         if (pi.getCount() + count < 0) {
-            throw new IllegalArgumentException("Невозможно забрать со склада " + -count + " единиц товара id==" +
+            throw new IllegalArgumentException("Невозможно забрать со склада " + -count + " единиц товара id=" +
                     product.getId() + ", на складе в наличии " + pi.getCount());
         }
 
 
 
-        // ToDo: Для тестов тут спим для проверки LOCK SELECT FOR UPDATE на 1 строку с товаром:
+// ToDo: Для тестов тут спим для проверки LOCK SELECT FOR UPDATE на 1 строку с товаром:
+
         try {
 
-            int l = 30;
+            int l = 3000;
 
             System.out.print("ДУМАЕМ .");
             Thread.sleep(l);

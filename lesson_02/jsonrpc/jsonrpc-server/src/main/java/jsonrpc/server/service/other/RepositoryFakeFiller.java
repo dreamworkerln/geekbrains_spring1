@@ -76,9 +76,23 @@ public class RepositoryFakeFiller {
         p.setCategory(c);
         productService.save(p);
         //
-        storageService.put(p, 1000);
-        //
-        storageService.findByProductId(1L).ifPresent(System.out::println);
+        //storageService.findByProductId(1L).ifPresent(System.out::println);
 
+    }
+
+    public void fillDataTransactTest() {
+
+        Category c = categoryService.save(new Category("очко"));
+        Product p;
+        p = new Product();
+
+        p.setName(faker.commerce().productName());
+        p.setVcode(faker.number().digits(7));
+        p.setPrice(BigDecimal.valueOf(Double.valueOf(faker.number().numberBetween(1, 50))));
+        p.setTestDate(Instant.EPOCH);
+        p.setCategory(c);
+
+        productService.save(p);
+        storageService.put(p, 1000);
     }
 }

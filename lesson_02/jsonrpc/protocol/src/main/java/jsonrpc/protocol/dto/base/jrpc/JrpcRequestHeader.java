@@ -14,8 +14,8 @@ import org.springframework.stereotype.Component;
  * <br> Используется в ApiController, чтобы прочитать только заголовок jrpc запроса.
  * <br> (Не читая param запроса, т.к. десериализацией занимается конкретный handler)
  */
-@Component
-@Scope("prototype")
+//@Component
+//@Scope("prototype")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class JrpcRequestHeader extends Message {
 

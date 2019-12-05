@@ -16,8 +16,10 @@ import java.util.List;
 @Table(name="orderz")  // Ambiguous with hsql keyword 'order'
 public class Order extends AbstractEntityPersisted {
 
+
+    // orphanRemoval - чтоб осиротевшие заказы сами удалились. Хибер крут!
     @NotNull
-    @OneToMany(mappedBy= "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy= "order", orphanRemoval = true, cascade = CascadeType.ALL)
     @OrderBy("id ASC")
     private List<OrderItem> itemList = new ArrayList<>();
 

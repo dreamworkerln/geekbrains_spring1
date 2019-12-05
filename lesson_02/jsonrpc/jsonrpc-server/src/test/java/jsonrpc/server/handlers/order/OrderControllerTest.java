@@ -33,7 +33,6 @@ import java.lang.invoke.MethodHandles;
         BeanConfiguration.class,
         OrderDto.class,
         OrderItemDto.class,
-        JrpcRequest.class,
         ConfigProperties.class})
 // Так можно догрузить/переопределить базовые настройки
 //@TestPropertySource("classpath:configprops.properties")
@@ -64,7 +63,7 @@ class OrderControllerTest {
 
         rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
-        jrpcRequest = context.getBean(JrpcRequest.class);
+        //jrpcRequest = context.getBean(JrpcRequest.class);
     }
 
 

@@ -13,12 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {InstantMapper.class, ProductMapper.class})
-public abstract class OrderItemMapper implements IdMapper {
+public abstract class OrderItemMapper extends IdMapper {
 
     @Autowired
     OrderService orderService;
 
-    @Mapping(source = "product", target = "productId", qualifiedByName = "toProductDto")
+    @Mapping(source = "product.id", target = "productId"/*, qualifiedByName = "toProductDto"*/)
     public abstract OrderItemDto toDto(OrderItem orderItem);
 
 
@@ -26,8 +26,12 @@ public abstract class OrderItemMapper implements IdMapper {
     // https://github.com/mapstruct/mapstruct/issues/469
     // https://github.com/mapstruct/mapstruct/pull/911
     // (вроде как mapStruct графы с циклами может как-то разруливать, но хз как)
-    @Mapping(source = "productId", target = "product", qualifiedByName = "toProduct")
+    //@Mapping(source = "productId", target = "product"/*, qualifiedByName = "toProduct"*/)
+    //@Mapping(target = "order", ignore = true)
+    //@Mapping(target = "product", ignore = true)
+
     @Mapping(target = "order", ignore = true)
+    @Mapping(source = "productId", target = "product"/*, qualifiedByName = "toProduct"*/)
     public abstract OrderItem toEntity(OrderItemDto orderItemDto);
 
 

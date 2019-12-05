@@ -46,7 +46,7 @@ public abstract class AbstractRequest {
         JsonNode result;
 
         // JrpcRequest это прототип, нельзя @Autowire
-        JrpcRequest jrpcRequest = context.getBean(JrpcRequest.class);
+        JrpcRequest jrpcRequest = new JrpcRequest(); //context.getBean(JrpcRequest.class);
         jrpcRequest.setMethod(uri);
         jrpcRequest.setId(id);
         jrpcRequest.setParams(objectMapper.valueToTree(params));

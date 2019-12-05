@@ -11,9 +11,9 @@ import org.springframework.stereotype.Component;
  *  <br> По факту, сейчас используется только в тестах.
  *  <br> С помощью объекта этого класса можно сгенерить json для документации api jrpc
  */
-@Component
+//@Component
 // proxyMode = ScopedProxyMode.TARGET_CLASS - при каждом вызове к-л метода бина будет создавать new instance
-@Scope("prototype")
+//@Scope("prototype")
 public class JrpcRequest extends JrpcRequestHeader {
 
     private JsonNode params;
