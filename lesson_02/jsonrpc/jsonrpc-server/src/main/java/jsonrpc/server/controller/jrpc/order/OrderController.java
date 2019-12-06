@@ -119,10 +119,6 @@ public class OrderController  {
             return objectMapper.valueToTree(orderDto);
         }
 
-        public JsonNode toJsonId(Order order) {
-            return objectMapper.valueToTree(order.getId());
-        }
-
         public void validate(Order order) {
 
             Set<ConstraintViolation<Order>> violations = validator.validate(order);

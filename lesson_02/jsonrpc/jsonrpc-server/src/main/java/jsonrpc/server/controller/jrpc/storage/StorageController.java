@@ -134,10 +134,6 @@ public class StorageController {
             return objectMapper.valueToTree(listDto);
         }
 
-        public JsonNode toJsonId(ProductItem productItem) {
-            return objectMapper.valueToTree(productItem.getId());
-        }
-
         public void validate(ProductItem productItem) {
 
             Set<ConstraintViolation<ProductItem>> violations = validator.validate(productItem);
