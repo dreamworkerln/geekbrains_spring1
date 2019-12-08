@@ -132,6 +132,13 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println(productDtoList);
         System.out.println("\n");
 
+        System.out.println("Список товаров по 3 элемента\n");
+        spec = new ProductSpecDto();
+        spec.setLimit(3);
+        productDtoList = productRequest.findFirst(spec);
+        System.out.println(productDtoList);
+        System.out.println("\n");
+
 
         System.out.println("Запасы на складе:\n");
         List<ProductItemDto> productItemDtoList = storageRequest.getAll();

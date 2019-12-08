@@ -6,6 +6,8 @@ import jsonrpc.server.repository.ProductRepository;
 import jsonrpc.server.service.ProductService;
 import jsonrpc.server.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,6 +51,7 @@ public class ProductService {
         return productRepository.findAll(spec);
     }
 
+
     public Product save(Product product) {
 
         Product result = productRepository.save(product);
@@ -69,4 +72,7 @@ public class ProductService {
         storageService.delete(product);
     }
 
+    public Page<Product> findAll(Specification<Product> spec, PageRequest pageable) {
+        return productRepository.findAll(spec, pageable);
+    }
 }

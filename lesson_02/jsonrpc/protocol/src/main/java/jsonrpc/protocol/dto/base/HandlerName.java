@@ -6,6 +6,8 @@ public class HandlerName {
     private static final String findById = "findById";
     private static final String findAllById = "findAllById";
     private static final String findAll = "findAll";
+    private static final String findFirst = "findFirst";
+
     private static final String save = "save";
     private static final String delete = "delete";
 
@@ -31,6 +33,7 @@ public class HandlerName {
         public static final String findById = HandlerName.findById;
         public static final String findAllById = HandlerName.findAllById;
         public static final String findAll = HandlerName.findAll;
+        public static final String findFirst = HandlerName.findFirst;
         public static final String save = HandlerName.save;
         public static final String delete = HandlerName.delete;
     }

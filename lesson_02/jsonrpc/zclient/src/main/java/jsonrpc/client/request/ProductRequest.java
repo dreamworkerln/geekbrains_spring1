@@ -73,6 +73,15 @@ public class ProductRequest extends AbstractRequest {
     }
 
 
+    public List<ProductDto> findFirst(ProductSpecDto spec) throws JsonProcessingException {
+
+        String uri = HandlerName.Product.path + "." + HandlerName.Product.findFirst;
+        JsonNode response = performRequest(1000L, uri, spec);
+        return Arrays.asList(objectMapper.treeToValue(response, ProductDto[].class));
+
+    }
+
+
     public Long save(ProductDto productDto) throws JsonProcessingException {
 
         String uri = HandlerName.Product.path + "." + HandlerName.Product.save;

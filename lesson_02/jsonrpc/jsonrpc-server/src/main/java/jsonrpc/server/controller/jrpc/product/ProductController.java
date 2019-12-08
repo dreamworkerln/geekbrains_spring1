@@ -2,8 +2,6 @@ package jsonrpc.server.controller.jrpc.product;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.util.concurrent.Atomics;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.filter.specification.ProductSpecDto;
 import jsonrpc.protocol.dto.product.ProductDto;
@@ -17,19 +15,18 @@ import jsonrpc.server.service.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Supplier;
 
 
 @Service
@@ -115,6 +112,20 @@ public class ProductController {
 
     }
 
+
+    /**
+     * Return first ProductSpecDto.limit elements
+     */
+    @JrpcMethod(method = HandlerName.Product.findFirst)
+    public JsonNode findFirst(JsonNode params) {
+
+        Optional<ProductSpecDto> specDto = converter.toSpecDto(params);
+        Specification<Product> spec = ProductSpecBuilder.build(specDto);
+
+        int limit = specDto.map(ProductSpecDto::getLimit).orElse(1);
+        Page<Product> page = productService.findAll(spec, PageRequest.of(0, limit));
+        return converter.toJsonProductListDto(page.toList());
+    }
 
 
     @JrpcMethod(method = HandlerName.Product.save)

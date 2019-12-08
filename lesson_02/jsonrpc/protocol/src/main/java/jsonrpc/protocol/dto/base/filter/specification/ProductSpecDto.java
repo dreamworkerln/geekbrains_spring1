@@ -17,5 +17,6 @@ public class ProductSpecDto {
     private BigDecimal priceMin;
     private BigDecimal priceMax;
     private List<Long> categoryList = new ArrayList<>();
+    private Integer limit;
 
 }
