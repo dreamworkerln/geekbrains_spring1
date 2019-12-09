@@ -1,21 +1,13 @@
 package jsonrpc.server.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.entities.order.OrderItem;
-import jsonrpc.server.entities.order.mappers.OrderMapper;
 import jsonrpc.server.repository.OrderItemRepository;
-import jsonrpc.server.repository.OrderRepository;
-import jsonrpc.server.service.OrderService;
 import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import java.util.*;
 
 
@@ -51,11 +43,34 @@ public class OrderService {
         return orderRepository.findAll();
     }
 
-
     public Order save(Order order) {
 
-        return orderRepository.save(order);
+        //boolean isNew = order.getId() == null;
+
+        Order result = orderRepository.save(order);
+        //result = refreshableRepository.merge(result);
+        orderRepository.refresh(result);
+
+//        if (isNew) {
+//            refreshableRepository.refresh(order);
+//        }
+//        else {
+//            refreshableRepository.merge(order);
+//        }
+        return result;
     }
+
+//
+//    public Order saveAndFlush(Order order) {
+//
+//        Order result = refreshableRepository.saveAndFlush(order);
+//        refreshableRepository.refresh(order);
+//        return result;
+//    }
+
+
+
+
 
     public void delete(Order order) {
 

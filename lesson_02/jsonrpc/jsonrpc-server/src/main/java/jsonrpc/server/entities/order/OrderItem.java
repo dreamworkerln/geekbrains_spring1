@@ -2,10 +2,7 @@ package jsonrpc.server.entities.order;
 
 import jsonrpc.server.entities.product.ProductItem;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 

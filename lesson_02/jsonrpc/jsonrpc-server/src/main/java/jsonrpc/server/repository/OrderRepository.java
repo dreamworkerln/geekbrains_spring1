@@ -1,14 +1,9 @@
 package jsonrpc.server.repository;
 
 import jsonrpc.server.entities.order.Order;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import jsonrpc.server.repository.base.CustomRepository;
 
-import java.time.Instant;
-
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends CustomRepository<Order, Long> {
 
 
 //    @Query(value = "UPDATE Order o SET o.updated = :timestamp " +

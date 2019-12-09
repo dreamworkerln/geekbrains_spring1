@@ -100,7 +100,6 @@ public class StorageController {
 
 
     @Service
-    @Transactional
     static class StorageConverter extends AbstractConverter {
 
         private final ProductMapper productMapper;

@@ -64,6 +64,10 @@ public class OrderController  {
 
         Order order = converter.toOrder(params);
         order = orderService.save(order);
+
+        //order = orderService.findById(order.getId()).get();
+        System.out.println(order);
+
         return converter.toJsonId(order);
     }
 
@@ -79,6 +83,7 @@ public class OrderController  {
 
     // ==============================================================================
 
+    // РЕШЕНО:
     // И весь этот гемморой только из-за того, что
     // нельзя добавить @Transactional к контроллеру, т.к. тогда он обмажетя
     // проксями из спринга и мутирует своим классом, jrpc хендлеры не будут
@@ -88,8 +93,18 @@ public class OrderController  {
     // Там на каждый объект из графа будет открываться новая транзакция, чтобы подгрузить created
     // (ну и в будущем другие поля, которые хранятся только на сервере их надо подгрузить в объект)
 
+    // Вообщем сделал базовый репозиторий, который умеет делать
+    // void refresh(Entity entity)
+    //
+    // Итого в сервисе:
+    //
+    // Entity saved = repository.save(Entity entity)
+    // Entity refreshed = EntityManager.refresh(Entity saved)
+    // return refreshed;
+    //
+    // соответственно после сохранения сущность из базы приезжает со всем графом дочерних объектов
+
     @Service
-    @Transactional
     static class OrderConverter extends AbstractConverter {
 
         private final OrderMapper orderMapper;

@@ -33,12 +33,12 @@ public abstract class IdMapper {
         // Насколько медленно эта срань будет работать, лазая за каждой сущностью в базу,
         // посмотреть дату создания и изменения ....
         // Запихали в транзакцию (Controller.Converter)
-        if (source.getId() != null) {
-
-            findById.apply(source.getId()).ifPresent(o -> {
-                Utils.fieldSetter("created", target, o.getCreated());
-                Utils.fieldSetter("updated", target, o.getUpdated());
-            });
-        }
+//        if (source.getId() != null) {
+//
+//            findById.apply(source.getId()).ifPresent(o -> {
+//                Utils.fieldSetter("created", target, o.getCreated());
+//                Utils.fieldSetter("updated", target, o.getUpdated());
+//            });
+//        }
     }
 }

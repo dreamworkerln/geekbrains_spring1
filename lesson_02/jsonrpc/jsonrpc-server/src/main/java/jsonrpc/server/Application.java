@@ -2,10 +2,13 @@ package jsonrpc.server;
 
 
 import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.repository.base.CustomRepository;
+import jsonrpc.server.repository.base.CustomRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PreDestroy;
@@ -13,6 +16,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Locale;
 
 @SpringBootApplication
+@EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)  // делаем нашу репу базовой репой
 @EnableScheduling
 public class Application {
 

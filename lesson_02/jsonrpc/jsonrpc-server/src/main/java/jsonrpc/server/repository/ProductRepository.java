@@ -1,6 +1,7 @@
 package jsonrpc.server.repository;
 
 import jsonrpc.server.entities.product.Product;
+import jsonrpc.server.repository.base.CustomRepository;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -11,7 +12,7 @@ import java.util.List;
 
 // public interface OrderRepository extends JpaRepository<product, Long> {}
 // emulation
-public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
+public interface ProductRepository extends CustomRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
 
 //    Already exists findAllbyId()

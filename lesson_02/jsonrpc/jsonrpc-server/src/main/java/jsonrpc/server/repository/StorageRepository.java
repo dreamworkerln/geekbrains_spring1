@@ -3,6 +3,7 @@ package jsonrpc.server.repository;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.ProductItem;
 import jsonrpc.server.entities.storage.StorageItem;
+import jsonrpc.server.repository.base.CustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Transactional
-public interface StorageRepository extends JpaRepository<StorageItem, Long> {
+public interface StorageRepository extends CustomRepository<StorageItem, Long> {
 
 // Disabled due to ambiguous naming without mention about locking
 //    Optional<ProductItem> findByProductId(Long id);

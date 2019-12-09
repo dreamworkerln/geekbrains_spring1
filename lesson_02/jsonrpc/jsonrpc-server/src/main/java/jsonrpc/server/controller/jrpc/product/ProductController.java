@@ -117,7 +117,6 @@ public class ProductController {
 
 
     @Service
-    @Transactional
     static class ProductConverter extends AbstractConverter {
 
         private final ProductMapper productMapper;
