@@ -10,7 +10,6 @@ import jsonrpc.protocol.dto.base.http.HttpResponseJRPC;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.controller.jrpc.base.JrpcMethodHandler;
-import jsonrpc.utils.Utils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +110,7 @@ public class ApiController {
         // http response
         HttpResponse httpResponse;
 
-        log.trace("POST '/api': " + json);
+        log.info("POST '/api': " + json);
 
 
         // Пилим аналог

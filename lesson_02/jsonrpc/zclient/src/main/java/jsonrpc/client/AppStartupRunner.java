@@ -110,6 +110,21 @@ public class AppStartupRunner implements ApplicationRunner {
 
 */
 
+//
+//
+//        List<ProductDto> productDtoList;
+//
+//        System.out.println("Список товаров с ценой от 0 до 50 категории [1], цена ASC:\n");
+//        ProductSpecDto spec = new ProductSpecDto();
+//        spec.getCategoryList().add(1L);
+//        //spec.getCategoryList().add(2L);
+//        spec.setPriceMin(BigDecimal.valueOf(0));
+//        spec.setPriceMax(BigDecimal.valueOf(50));
+//        spec.setPriceOrderBy(ProductSpecDto.OrderBy.ASC);
+//        productDtoList = productRequest.findAll(spec);
+//        System.out.println(productDtoList);
+//        System.out.println("\n");
+//
 
 
 
@@ -126,7 +141,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n");
 
 
-        System.out.println("Список товаров с ценой от 0 до 50 категории [1,2], цена ASC:\n");
+        System.out.println("Список товаров с ценой от 0 до 50 категории [1], цена ASC:\n");
         ProductSpecDto spec = new ProductSpecDto();
         spec.getCategoryList().add(1L);
         spec.getCategoryList().add(2L);
@@ -219,10 +234,7 @@ public class AppStartupRunner implements ApplicationRunner {
         orderDto = orderRequest.findById(orderId);
         System.out.println(orderDto);
         System.out.println("\n");
-
-
-
-
+        
 
     }
 

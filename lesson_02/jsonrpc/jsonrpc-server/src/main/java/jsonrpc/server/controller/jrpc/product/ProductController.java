@@ -76,43 +76,7 @@ public class ProductController {
 
         Optional<ProductSpecDto> specDto = converter.toSpecDto(params);
         Specification<Product> spec =  ProductSpecBuilder.build(specDto);
-
-        List<Product> tmp = productService.findAll(spec);
-
-        return converter.toJsonProductListDto(tmp);
-
-        
-        //if (specDtoOp.isPresent()) {
-
-            //ProductSpecDto specDto = specDtoOp.get();
-            // Устанавливаем для спецификации имя поля цены
-            //specDto.setFieldName(Utils.getPriceFieldName(Product.class, BigDecimal.class));
-
-            //spec = new ProductSpecification(new SpecSearchCriteria("price", SearchOperation.GREATER_THAN, 20));
-
-//            spec = new ProductSpecification(
-//                    new SpecSearchCriteria("dodo", SearchOperation.IN, Arrays.asList(0, 1, 2, 3)));
-//
-
-
-            /*
-            // Выберется что-то одно
-            if (sp.validInterval()) {
-                spec = spec.and(priceSpecification.between(specDto.getFieldName(), specDto.getMin(), specDto.getMax()));
-            }
-            if (sp.validFrom()) {
-                spec = spec.and(priceSpecification.from(specDto.getFieldName(), specDto.getMin()));
-            }
-            if (sp.validTo()) {
-                spec = spec.and(priceSpecification.to(specDto.getFieldName(), specDto.getMax()));
-            }
-            */
-        //}
-
-        //List<Product> list = productService.findAll(spec);
-
-        //List<product> list = productService.findAll();
-
+        return converter.toJsonProductListDto(productService.findAll(spec));
     }
 
 

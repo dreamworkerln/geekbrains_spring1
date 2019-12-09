@@ -8,6 +8,9 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ProductSpecBuilder {
 
+
+
+
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public static Specification<Product> build(Optional<ProductSpecDto> pSpecDtoOp) {
 
@@ -24,7 +27,7 @@ public class ProductSpecBuilder {
             // BETWEEN
             if (p.getPriceMin() != null && p.getPriceMax() != null) {
 
-                specA.and(
+                specA = specA.and(
                         (root, query, builder) -> {
                             //query.orderBy(builder.desc(root.get(priceName)));
                             return builder.between(root.get(priceName), p.getPriceMin(), p.getPriceMax());
@@ -34,7 +37,7 @@ public class ProductSpecBuilder {
             // PRICE LESS THAN MAX
             if (p.getPriceMin() == null && p.getPriceMax() != null) {
 
-                specA.and(
+                specA = specA.and(
                         (root, query, builder) -> {
                             //query.orderBy(builder.desc(root.get(priceName)));
                             return builder.lessThanOrEqualTo(root.get(priceName), p.getPriceMax());
@@ -44,7 +47,7 @@ public class ProductSpecBuilder {
             // PRICE GREATER THAN MIN
             if (p.getPriceMin() != null && p.getPriceMax() == null) {
 
-                specA.and(
+                specA = specA.and(
                         (root, query, builder) -> {
                             //query.orderBy(builder.desc(root.get(priceName)));
                             return builder.greaterThanOrEqualTo(root.get(priceName), p.getPriceMin());
@@ -55,7 +58,7 @@ public class ProductSpecBuilder {
             // IN CATEGORY
             if (p.getCategoryList().size() > 0) {
 
-                specA.and(
+                specA = specA.and(
                         (root, query, builder) -> {
 
                             return builder.in(root.get(categoryName).get("id")).value(p.getCategoryList());
@@ -64,12 +67,12 @@ public class ProductSpecBuilder {
             }
 
 
-            /*
+
 
             // ORDER BY DEFAULT ID ASC
             if(p.getPriceOrderBy() == null) {
 
-                specA.and(
+                specA = specA.and(
                         (root, query, builder) -> {
                             query.orderBy(builder.asc(root.get(idName)));
                             //noinspection ConstantConditions - not good to return null but ...
@@ -82,7 +85,7 @@ public class ProductSpecBuilder {
             // ORDER BY PRICE
             if(p.getPriceOrderBy()!= null) {
 
-                specA.and(
+                specA = specA.and(
                         (root, query, builder) -> {
                             switch (p.getPriceOrderBy()){
                                 case ASC:
@@ -96,24 +99,23 @@ public class ProductSpecBuilder {
                             return null;
                         });
             }
-            */
+
         }
 
         return specA;
     }
+
+
 }
 
 
 
 // Glitch code...
 
-//Specification<Product> ppp = Specification.where(null);
-//return ppp.and((root, query, builder) -> builder.between(root.get("price"), BigDecimal.valueOf(0), BigDecimal.valueOf(20)));
-
-
-
-
 /*
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    public static Specification<Product> build(Optional<ProductSpecDto> pSpecDtoOp) {
+
         AtomicReference<Specification<Product>> specA = new AtomicReference<>(Specification.where(null));
 
 
@@ -168,11 +170,11 @@ public class ProductSpecBuilder {
             }
 
 
-            if(p.getPriceOrderBy()!= null) {
+            if (p.getPriceOrderBy() != null) {
 
                 specA.getAndUpdate(s -> s.and(
                         (root, query, builder) -> {
-                            switch (p.getPriceOrderBy()){
+                            switch (p.getPriceOrderBy()) {
                                 case ASC:
                                     query.orderBy(builder.asc(root.get(priceName)));
                                     break;
@@ -180,11 +182,6 @@ public class ProductSpecBuilder {
                                     query.orderBy(builder.desc(root.get(priceName)));
                                     break;
                             }
-                            // HAAAAAACK !!!
-                            // генерирует "WHERE product.id is not null"
-                            // зато добавляет сортировку
-                            //return builder.isTrue(root.isNotNull());
-
                             //noinspection ConstantConditions
                             return null;
                         }
@@ -193,4 +190,7 @@ public class ProductSpecBuilder {
 
         });
 
-        */
+        return specA.get();
+
+    }
+    */
