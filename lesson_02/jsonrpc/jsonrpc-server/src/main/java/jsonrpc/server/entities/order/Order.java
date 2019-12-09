@@ -1,5 +1,6 @@
 package jsonrpc.server.entities.order;
 
+import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.entities.Client;
 import jsonrpc.server.entities.Manager;
 import jsonrpc.server.entities.base.AbstractEntityPersisted;
@@ -31,6 +32,24 @@ public class Order extends AbstractEntityPersisted {
     @ManyToOne
     @JoinColumn(name="manager_id", referencedColumnName="id")
     private Manager manager;
+
+
+    //ToDo Need create enum table
+
+    // QUEUED - просто корзина, товар не резервируется, оплата не производится,
+    // ползователи бьются друг с другом кто быстрее оплатит и уведет последний товар.
+    //
+    // ORDERED - товар зарезервирован и оплачен (тут можно сделать еще режим бронь(RESERVED) с ожиданием оплаты,
+    // можно и в корзине блокировать с таймаутом). При переходе заказа в это состояния происходит резервирование.
+    //
+    // CANCELED - заказ отменен, товар возвращен на склад.
+    // COMPLETED - заказ выполнен, товар отгружен покупателю.
+    //
+    // Чего делать, когда пользователь раздербанил заказ, часть вещей  взял, часть оставил?
+    // (как по типу, так и по количеству)
+
+    @NotNull
+    private OrderDto.Status status;
 
 
 //    public Long getId() {
@@ -74,6 +93,14 @@ public class Order extends AbstractEntityPersisted {
     }
 
 
+    public OrderDto.Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderDto.Status status) {
+        this.status = status;
+    }
+
     public static Order clone(Order order) {
 
         Order result = null;
@@ -96,4 +123,5 @@ public class Order extends AbstractEntityPersisted {
                ", itemList=" + itemList +
                '}';
     }
+
 }

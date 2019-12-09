@@ -26,6 +26,7 @@ public class Product extends AbstractEntityPersisted {
     @NotNull
     @ManyToOne
     @JoinColumn(name="category_id", referencedColumnName="id")
+    private
     Category category;
 
     //private List<Category> categoryList = new ArrayList<>();
@@ -77,17 +78,22 @@ public class Product extends AbstractEntityPersisted {
 
 
 
+
     @Override
     public String toString() {
         return "product{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", vcode='" + vcode + '\'' +
-                ", price=" + price +
-                ", category=" + category.getId() +
-                ", testDate=" + testDate +
-                ", created=" + created +
-                ", updated=" + updated +
-                '}';
+               "id=" + id +
+               ", name='" + name + '\'' +
+               ", vcode='" + vcode + '\'' +
+               ", price=" + price +
+               ", category=" + (category != null ? Long.toString(category.getId()) : null) +
+               ", testDate=" + testDate +
+               ", created=" + created +
+               ", updated=" + updated +
+               '}';
     }
+
+
+
+
 }

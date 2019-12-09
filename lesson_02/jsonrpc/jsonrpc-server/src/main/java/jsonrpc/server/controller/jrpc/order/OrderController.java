@@ -119,10 +119,14 @@ public class OrderController  {
             return objectMapper.valueToTree(orderDto);
         }
 
+
+        // Валидатор валидирует только объект верхнего уровня
+        // Дочерние объекты проверять не будет (ходить по графу)
         public void validate(Order order) {
 
             Set<ConstraintViolation<Order>> violations = validator.validate(order);
             if (violations.size() != 0) {
+                log.error("Given order: {}", order);
                 throw new ConstraintViolationException("Order validation failed", violations);
             }
         }

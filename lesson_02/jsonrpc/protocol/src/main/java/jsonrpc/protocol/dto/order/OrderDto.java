@@ -23,9 +23,13 @@ public class OrderDto extends AbstractDtoPersisted {
     private ManagerDto manager;
 
     @NotNull
+    private Status status;
+
+    @NotNull
     public List<OrderItemDto> getItemList() {
         return itemList;
     }
+
 
     public void setItemList(List<OrderItemDto> itemList) {
         this.itemList = itemList;
@@ -46,6 +50,15 @@ public class OrderDto extends AbstractDtoPersisted {
     public void setManager(ManagerDto manager) {
         this.manager = manager;
     }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
 
     // --------------------------------------------------------------------
 
@@ -82,5 +95,13 @@ public class OrderDto extends AbstractDtoPersisted {
                 ", manager=" + manager +
                 ", itemList=" + itemList +
                 '}';
+    }
+
+
+    public enum Status {
+        QUEUED,
+        ORDERED,
+        CANCELED,
+        COMPLETED
     }
 }

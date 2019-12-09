@@ -25,13 +25,14 @@ public abstract class IdMapper {
      * Set id, created, created
      */
     public void idMap(FindById findById,
-                       AbstractDtoPersisted source,
-                       AbstractEntityPersisted target) {
+                      AbstractDtoPersisted source,
+                      AbstractEntityPersisted target) {
 
         Utils.fieldSetter("id", target, source.getId());
 
         // Насколько медленно эта срань будет работать, лазая за каждой сущностью в базу,
         // посмотреть дату создания и изменения ....
+        // Запихали в транзакцию (Controller.Converter)
         if (source.getId() != null) {
 
             findById.apply(source.getId()).ifPresent(o -> {

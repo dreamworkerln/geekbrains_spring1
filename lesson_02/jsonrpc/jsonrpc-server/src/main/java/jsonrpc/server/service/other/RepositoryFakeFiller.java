@@ -54,8 +54,8 @@ public class RepositoryFakeFiller {
 
         Product p = null;
         DecimalFormatSymbols dfs = new DecimalFormatSymbols( Locale.getDefault());
-        System.out.println(Locale.getDefault());
-        System.out.println(dfs.getDecimalSeparator());
+        //System.out.println(Locale.getDefault());
+        //System.out.println(dfs.getDecimalSeparator());
 
         for (long i = 0; i < 5; i++) {
 

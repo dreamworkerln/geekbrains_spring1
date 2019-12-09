@@ -4,7 +4,8 @@
 
         <Console name="Stdout" target="SYSTEM_OUT">
             <ThresholdFilter level="TRACE" onMatch="ACCEPT" onMismatch="DENY"/>
-            <PatternLayout pattern="%m%n %throwable{suffix()}%n"/>
+            <PatternLayout pattern="%p %c %x:%m%n %throwable{suffix()}%n"/>
+            <!--<PatternLayout pattern="%m%n %throwable{suffix()}%n"/>-->
         </Console>
 
         <File name="TraceLog" fileName="${sys:trace.folder.path}">

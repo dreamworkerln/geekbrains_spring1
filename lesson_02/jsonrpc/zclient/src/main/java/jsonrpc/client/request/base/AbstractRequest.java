@@ -57,14 +57,14 @@ public abstract class AbstractRequest {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
-        log.warn("REQUEST\n" + json);
+        log.info("REQUEST\n" + json);
         Rest rest = context.getBean(Rest.class);
         ResponseEntity<String> response = rest.post(apiURL, json);
 
         //System.out.println(response.getHeaders().toString());
 
 
-        log.warn("HTTP " + response.getStatusCode().toString() + "\n" + response.getBody());
+        log.info("HTTP " + response.getStatusCode().toString() + "\n" + response.getBody());
         try {
             result = objectMapper.readTree(response.getBody()).get("result");
         } catch (JsonProcessingException e) {

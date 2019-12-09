@@ -1,0 +1,25 @@
+package jsonrpc.server.entities.storage;
+
+import jsonrpc.server.entities.product.Product;
+import jsonrpc.server.entities.product.ProductItem;
+
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="reservationItem")
+public class Reservation extends ProductItem {
+
+    public Reservation() {}
+
+    public Reservation(Product product, Integer count) {
+        this.product = product;
+        this.count = count;
+    }
+
+    public static Reservation from(ProductItem productItem) {
+        return new Reservation(productItem.getProduct(), productItem.getCount());
+    }
+
+
+}

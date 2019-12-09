@@ -18,7 +18,7 @@ public class Application {
 
     public static Order orr;
 
-    private static Logger log;
+    private static Logger log = null;
 
     public static void main(String[] args) {
 
@@ -27,9 +27,7 @@ public class Application {
         // SET DECIMAL SEPARATOR TO "."
         //Locale.setDefault(new Locale("en", "US"));
 
-
-
-
+        // Will have duplicated by dev-tools
         setupLog4j();
 
         log.info("\n\n" +

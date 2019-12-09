@@ -128,6 +128,12 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
 
+        System.out.println("Завезем на склад 500 единиц товара с id=2:\n");
+        storageRequest.put(2L, 500);
+        System.out.println("\n");
+
+
+
 
 
         System.out.println("Using client config: " + clientProperties.getServer());
@@ -202,6 +208,8 @@ public class AppStartupRunner implements ApplicationRunner {
         orderDto.addItemDto(new OrderItemDto(2L, 4));
         orderDto.addItemDto(new OrderItemDto(3L, 5));
         orderDto.addItemDto(new OrderItemDto(4L, 6));
+        orderDto.setStatus(OrderDto.Status.QUEUED);
+
         Long orderId = orderRequest.save(orderDto);
         System.out.println("orderId: " + orderId);
         System.out.println("\n");
