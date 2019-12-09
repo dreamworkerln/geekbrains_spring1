@@ -21,6 +21,7 @@ import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.function.Supplier;
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
@@ -50,6 +51,17 @@ public class AppStartupRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
+
+//        Supplier<String> ochko = () -> {
+//
+//            System.out.println("ОЧКО");
+//
+//            return "42";
+//        };
+//
+//        System.out.println(ochko.get());
+
 
 
         /*
@@ -114,9 +126,10 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n");
 
 
-        System.out.println("Список товаров с ценой от 0 до 50 категории 1, цена ASC:\n");
+        System.out.println("Список товаров с ценой от 0 до 50 категории [1,2], цена ASC:\n");
         ProductSpecDto spec = new ProductSpecDto();
         spec.getCategoryList().add(1L);
+        spec.getCategoryList().add(2L);
         spec.setPriceMin(BigDecimal.valueOf(0));
         spec.setPriceMax(BigDecimal.valueOf(50));
         spec.setPriceOrderBy(ProductSpecDto.OrderBy.ASC);

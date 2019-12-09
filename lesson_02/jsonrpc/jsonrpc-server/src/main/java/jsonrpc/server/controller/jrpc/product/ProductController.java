@@ -76,7 +76,10 @@ public class ProductController {
 
         Optional<ProductSpecDto> specDto = converter.toSpecDto(params);
         Specification<Product> spec =  ProductSpecBuilder.build(specDto);
-        return converter.toJsonProductListDto(productService.findAll(spec));
+
+        List<Product> tmp = productService.findAll(spec);
+
+        return converter.toJsonProductListDto(tmp);
 
         
         //if (specDtoOp.isPresent()) {

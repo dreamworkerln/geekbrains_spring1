@@ -50,7 +50,7 @@ public class RepositoryFakeFiller {
 
         // INIT PRODUCTS AND STORAGE WITH RANDOM DATA  --------------------------------
 
-        Category c = categoryService.save(new Category("очко"));
+        Category c = categoryService.save(new Category("хлам"));
 
         Product p = null;
         DecimalFormatSymbols dfs = new DecimalFormatSymbols( Locale.getDefault());
@@ -72,7 +72,7 @@ public class RepositoryFakeFiller {
             storageService.put(p, faker.number().numberBetween(1, 50));
         }
 
-        c = categoryService.save(new Category("залупа"));
+        c = categoryService.save(new Category("треш"));
         p.setCategory(c);
         productService.save(p);
         //
@@ -82,7 +82,7 @@ public class RepositoryFakeFiller {
 
     public void fillDataTransactTest() {
 
-        Category c = categoryService.save(new Category("очко"));
+        Category c = categoryService.save(new Category("хлам"));
         Product p;
         p = new Product();
 

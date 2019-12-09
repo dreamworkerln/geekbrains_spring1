@@ -57,11 +57,14 @@ public class ProductSpecBuilder {
 
                 specA.and(
                         (root, query, builder) -> {
-                            //
+
                             return builder.in(root.get(categoryName).get("id")).value(p.getCategoryList());
+                            //return builder.in(root.get("category.id")).value(p.getCategoryList());
                         });
             }
 
+
+            /*
 
             // ORDER BY DEFAULT ID ASC
             if(p.getPriceOrderBy() == null) {
@@ -93,6 +96,7 @@ public class ProductSpecBuilder {
                             return null;
                         });
             }
+            */
         }
 
         return specA;
