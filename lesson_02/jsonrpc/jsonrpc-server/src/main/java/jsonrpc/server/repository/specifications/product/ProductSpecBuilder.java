@@ -16,8 +16,10 @@ public class ProductSpecBuilder {
 
             ProductSpecDto p = pSpecDtoOp.get();
 
+            final String idName = "id";
             final String priceName = "price";
             final String categoryName = "category";
+
 
             // BETWEEN
             if (p.getPriceMin() != null && p.getPriceMax() != null) {
@@ -58,10 +60,23 @@ public class ProductSpecBuilder {
                             //
                             return builder.in(root.get(categoryName).get("id")).value(p.getCategoryList());
                         });
+            }
+
+
+            // ORDER BY DEFAULT ID ASC
+            if(p.getPriceOrderBy() == null) {
+
+                specA.and(
+                        (root, query, builder) -> {
+                            query.orderBy(builder.asc(root.get(idName)));
+                            //noinspection ConstantConditions - not good to return null but ...
+                            return null;
+                        });
 
             }
 
-            // ORDER BY
+
+            // ORDER BY PRICE
             if(p.getPriceOrderBy()!= null) {
 
                 specA.and(
@@ -74,9 +89,7 @@ public class ProductSpecBuilder {
                                     query.orderBy(builder.desc(root.get(priceName)));
                                     break;
                             }
-                            // Not good to return null
-                            
-                            //noinspection ConstantConditions
+                            //noinspection ConstantConditions - not good to return null but ...
                             return null;
                         });
             }
@@ -87,6 +100,8 @@ public class ProductSpecBuilder {
 }
 
 
+
+// Glitch code...
 
 //Specification<Product> ppp = Specification.where(null);
 //return ppp.and((root, query, builder) -> builder.between(root.get("price"), BigDecimal.valueOf(0), BigDecimal.valueOf(20)));

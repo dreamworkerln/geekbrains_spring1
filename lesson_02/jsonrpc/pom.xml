@@ -89,7 +89,7 @@
             </exclusions>
         </dependency>
 
-        <!--add spring boot mvc, fix android-json class duplicate -->
+        <!--add spring boot tests support, fix android-json class duplicate -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -112,6 +112,9 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                    <!--Если не указать зависимости (mapstruct и projectlombok) в annotationProcessorPaths-->
+                    <!--То не будет компилироваться-->
+                    <!--К lombok в Intellij Idea надо дополнительно ставить плагин -->
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>
