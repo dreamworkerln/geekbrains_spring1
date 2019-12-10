@@ -19,7 +19,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -55,7 +54,7 @@ public class ProductController {
 
         long id = converter.getId(params);
         Product product = productService.findById(id).orElse(null);
-        return converter.toJsonProductDto(product);
+        return converter.toProductDtoJson(product);
     }
 
 
@@ -66,7 +65,7 @@ public class ProductController {
 
         List<Long> idList = converter.getIdList(params);
         List<Product> list = productService.findAllById(idList);
-        return converter.toJsonProductListDto(list);
+        return converter.toProductListDtoJson(list);
     }
 
 
@@ -76,7 +75,7 @@ public class ProductController {
 
         Optional<ProductSpecDto> specDto = converter.toSpecDto(params);
         Specification<Product> spec =  ProductSpecBuilder.build(specDto);
-        return converter.toJsonProductListDto(productService.findAll(spec));
+        return converter.toProductListDtoJson(productService.findAll(spec));
     }
 
 
@@ -91,7 +90,7 @@ public class ProductController {
 
         int limit = specDto.map(ProductSpecDto::getLimit).orElse(1);
         Page<Product> page = productService.findAll(spec, PageRequest.of(0, limit));
-        return converter.toJsonProductListDto(page.toList());
+        return converter.toProductListDtoJson(page.toList());
     }
 
 
@@ -113,7 +112,11 @@ public class ProductController {
 
 
 
+
+
     // ==========================================================================================
+
+
 
 
     @Service
@@ -127,8 +130,8 @@ public class ProductController {
             this.productMapper = productMapper;
         }
 
-
-        public Product toProduct(JsonNode params)  {
+        // Dto => Entity
+        Product toProduct(JsonNode params)  {
             try {
                 ProductDto dto = objectMapper.treeToValue(params, ProductDto.class);
                 Product result = productMapper.toEntity(dto);
@@ -141,7 +144,8 @@ public class ProductController {
             }
         }
 
-        public Optional<ProductSpecDto> toSpecDto(JsonNode params) {
+        // Dto => Entity (ProductSpecDto doesn't have Entity pair, only Dto for now)
+        Optional<ProductSpecDto> toSpecDto(JsonNode params) {
 
             try {
                 return Optional.ofNullable(objectMapper.treeToValue(params, ProductSpecDto.class));
@@ -152,21 +156,21 @@ public class ProductController {
             }
         }
 
-
-        public JsonNode toJsonProductDto(Product product) {
+        // Entity => Dto
+        JsonNode toProductDtoJson(Product product) {
             ProductDto productDto = productMapper.toDto(product);
             return objectMapper.valueToTree(productDto);
         }
 
-
-        public JsonNode toJsonProductListDto(List<Product> productList) {
+        // EntityList => Dto
+        JsonNode toProductListDtoJson(List<Product> productList) {
             List<ProductDto> dtoList = productMapper.toDtoList(productList);
             return objectMapper.valueToTree(dtoList);
         }
 
 
 
-        public void validate(Product product) {
+        void validate(Product product) {
 
             Set<ConstraintViolation<Product>> violations = validator.validate(product);
             if (violations.size() != 0) {

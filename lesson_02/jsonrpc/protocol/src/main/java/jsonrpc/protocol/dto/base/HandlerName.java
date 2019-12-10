@@ -46,10 +46,10 @@ public class HandlerName {
         public static final String findByProductId = "findByProductId";
         public static final String findAllByProductId = "findAllByProductId";
         public static final String findAll = HandlerName.findAll;
-        public static final String save = HandlerName.save;     // сохранить значение ProductItem
+        public static final String save = HandlerName.save;     // save ProductItem
         public static final String put =    HandlerName.put;    // increase product count
         public static final String remove = HandlerName.remove; // decrease product count
-        public static final String delete = HandlerName.delete; // remove self ProductItem
+        public static final String delete = HandlerName.delete; // remove ProductItem
     }
 
 }

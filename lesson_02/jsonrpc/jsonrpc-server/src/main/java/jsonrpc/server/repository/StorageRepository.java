@@ -36,10 +36,17 @@ public interface StorageRepository extends CustomRepository<StorageItem, Long> {
 
 
 
+//    @Lock(LockModeType.PESSIMISTIC_WRITE)
+//    @Query("FROM StorageItem item " +
+//           "INNER JOIN FETCH item.product p " +
+//           "WHERE p.id = :#{#product.id}")
+//    Optional<StorageItem> lockByProduct(@Param("product")Product product);
+
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("FROM StorageItem item " +
            "INNER JOIN FETCH item.product p " +
-           "WHERE p.id = :#{#product.id}")
+           "WHERE p = :#{#product}")
     Optional<StorageItem> lockByProduct(@Param("product")Product product);
 
 //    ProductItem getById(Long id);

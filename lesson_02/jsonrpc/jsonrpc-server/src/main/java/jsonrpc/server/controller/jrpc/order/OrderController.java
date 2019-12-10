@@ -1,7 +1,6 @@
 package jsonrpc.server.controller.jrpc.order;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.controller.jrpc.base.AbstractConverter;
@@ -14,11 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import java.lang.invoke.MethodHandles;
 import java.util.Set;
 
@@ -55,7 +52,7 @@ public class OrderController  {
 
         long id = converter.getId(params);
         Order order = orderService.findById(id).orElse(null);
-        return converter.toJsonOrderDto(order);
+        return converter.toOrderDtoJson(order);
     }
 
 
@@ -83,15 +80,7 @@ public class OrderController  {
 
     // ==============================================================================
 
-    // РЕШЕНО:
-    // И весь этот гемморой только из-за того, что
-    // нельзя добавить @Transactional к контроллеру, т.к. тогда он обмажетя
-    // проксями из спринга и мутирует своим классом, jrpc хендлеры не будут
-    // автоподгружаться ....
-    //
-    // А без транзакция жопа при orderMapper.toEntity(...)
-    // Там на каждый объект из графа будет открываться новая транзакция, чтобы подгрузить created
-    // (ну и в будущем другие поля, которые хранятся только на сервере их надо подгрузить в объект)
+
 
     // Вообщем сделал базовый репозиторий, который умеет делать
     // void refresh(Entity entity)
@@ -104,6 +93,8 @@ public class OrderController  {
     //
     // соответственно после сохранения сущность из базы приезжает со всем графом дочерних объектов
 
+    // ToDo: generify OrderConverter(or AbstractConverter) and use it for other converters?
+
     @Service
     static class OrderConverter extends AbstractConverter {
 
@@ -113,7 +104,8 @@ public class OrderController  {
             this.orderMapper = orderMapper;
         }
 
-        public Order toOrder(JsonNode params)  {
+        // Dto => Entity
+        Order toOrder(JsonNode params)  {
 
             // parsing request
             try {
@@ -129,7 +121,8 @@ public class OrderController  {
             }
         }
 
-        public JsonNode toJsonOrderDto(Order order) {
+        // Entity => Dto
+        JsonNode toOrderDtoJson(Order order) {
             OrderDto orderDto = orderMapper.toDto(order);
             return objectMapper.valueToTree(orderDto);
         }
@@ -137,7 +130,7 @@ public class OrderController  {
 
         // Валидатор валидирует только объект верхнего уровня
         // Дочерние объекты проверять не будет (ходить по графу)
-        public void validate(Order order) {
+        void validate(Order order) {
 
             Set<ConstraintViolation<Order>> violations = validator.validate(order);
             if (violations.size() != 0) {

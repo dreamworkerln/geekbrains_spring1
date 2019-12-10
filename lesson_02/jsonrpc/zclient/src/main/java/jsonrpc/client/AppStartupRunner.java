@@ -4,24 +4,16 @@ import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.client.request.OrderRequest;
 import jsonrpc.client.request.ProductRequest;
 import jsonrpc.client.request.StorageRequest;
-import jsonrpc.protocol.dto.base.filter.specification.ProductSpecDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
-import jsonrpc.protocol.dto.product.ProductDto;
-import jsonrpc.protocol.dto.product.ProductItemDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.lang.invoke.MethodHandles;
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.function.Supplier;
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
@@ -49,88 +41,37 @@ public class AppStartupRunner implements ApplicationRunner {
         //this.objectMapper = objectMapper;
     }
 
+
+
+    
     @Override
     public void run(ApplicationArguments args) throws Exception {
-
-
-//        Supplier<String> ochko = () -> {
-//
-//            System.out.println("ОЧКО");
-//
-//            return "42";
-//        };
-//
-//        System.out.println(ochko.get());
-
-
-
         /*
-
-        ProductDto p = new ProductDto();
-        p.setVcode("@@@@@@@@@@@");
-        p.setName("ЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯ");
-        p.setPrice(BigDecimal.valueOf(1000));
-        productRequest.save(p);
-
-
-        p.setId(1L);
-        p.setVcode("@@@@@@@@@@@");
-        p.setName("ЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙЙ");
-        p.setPrice(BigDecimal.valueOf(1000));
-        productRequest.save(p);
-
-
-        p.setId(1L);
-        p.setVcode("@@@@@@@@@@@");
-        p.setName("ХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХХ");
-        p.setPrice(BigDecimal.valueOf(1000));
-        productRequest.save(p);
-
-
-
-        p = productRequest.findById(1L);
-        System.out.println(p);
+        System.out.println("Завезем на склад 500 единиц товара с id=2:\n");
+        storageRequest.put(2L, 500);
         System.out.println("\n");
-
         */
 
 
 
+        System.out.println("Сделаем заказ:\n");
+        OrderDto orderDto = new OrderDto();
+        orderDto.addItem(new OrderItemDto(1L, 3));
+        orderDto.addItem(new OrderItemDto(2L, 4));
+        orderDto.addItem(new OrderItemDto(3L, 5));
+        orderDto.addItem(new OrderItemDto(4L, 6));
+        orderDto.setStatus(OrderDto.Status.QUEUED);
 
-/*
-
-        try {
-            System.out.println("Попытаемся забрать со склада 900 единиц товара с id=1:\n");
-            storageRequest.remove(1L, 900);
-        } catch (HttpStatusCodeException e) {
-            log.error("HTTP " + e.getStatusCode().toString() +"\n" +
-                      new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
-            //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
-        }
-
-*/
-
-//
-//
-//        List<ProductDto> productDtoList;
-//
-//        System.out.println("Список товаров с ценой от 0 до 50 категории [1], цена ASC:\n");
-//        ProductSpecDto spec = new ProductSpecDto();
-//        spec.getCategoryList().add(1L);
-//        //spec.getCategoryList().add(2L);
-//        spec.setPriceMin(BigDecimal.valueOf(0));
-//        spec.setPriceMax(BigDecimal.valueOf(50));
-//        spec.setPriceOrderBy(ProductSpecDto.OrderBy.ASC);
-//        productDtoList = productRequest.findAll(spec);
-//        System.out.println(productDtoList);
-//        System.out.println("\n");
-//
-
-
-
-        System.out.println("Завезем на склад 500 единиц товара с id=2:\n");
-        storageRequest.put(2L, 500);
+        Long orderId = orderRequest.save(orderDto);
+        System.out.println("orderId: " + orderId);
         System.out.println("\n");
+
+
+
+
+
+
+        /*
 
 
 
@@ -204,10 +145,10 @@ public class AppStartupRunner implements ApplicationRunner {
 
         System.out.println("Сделаем заказ:\n");
         OrderDto orderDto = new OrderDto();
-        orderDto.addItemDto(new OrderItemDto(1L, 3));
-        orderDto.addItemDto(new OrderItemDto(2L, 4));
-        orderDto.addItemDto(new OrderItemDto(3L, 5));
-        orderDto.addItemDto(new OrderItemDto(4L, 6));
+        orderDto.addItem(new OrderItemDto(1L, 3));
+        orderDto.addItem(new OrderItemDto(2L, 4));
+        orderDto.addItem(new OrderItemDto(3L, 5));
+        orderDto.addItem(new OrderItemDto(4L, 6));
         orderDto.setStatus(OrderDto.Status.QUEUED);
 
         Long orderId = orderRequest.save(orderDto);
@@ -242,6 +183,8 @@ public class AppStartupRunner implements ApplicationRunner {
         orderDto = orderRequest.findById(orderId);
         System.out.println(orderDto);
         System.out.println("\n");
+
+        */
         
 
     }

@@ -68,7 +68,7 @@ public class ApiController {
 
 
 
-    @RequestMapping(value = "/api", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/v1/", method = RequestMethod.POST)
     //public UserDto register(@RequestBody UserByNickAndMail request)
 
     public ResponseEntity processRequest(@RequestHeader("token") String token, @RequestBody String json) {
@@ -110,7 +110,7 @@ public class ApiController {
         // http response
         HttpResponse httpResponse;
 
-        log.info("POST '/api': " + json);
+        log.info("POST '/api/v1/': " + json);
 
 
         // Пилим аналог

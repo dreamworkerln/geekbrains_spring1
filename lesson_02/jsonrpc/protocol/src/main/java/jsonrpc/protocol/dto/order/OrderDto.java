@@ -62,7 +62,7 @@ public class OrderDto extends AbstractDtoPersisted {
 
     // --------------------------------------------------------------------
 
-    public void addItemDto(OrderItemDto orderItemDto) {
+    public void addItem(OrderItemDto orderItemDto) {
 
         itemList.add(orderItemDto);
     }
@@ -99,9 +99,9 @@ public class OrderDto extends AbstractDtoPersisted {
 
 
     public enum Status {
-        QUEUED,
-        ORDERED,
-        CANCELED,
-        COMPLETED
+        QUEUED,     // Новый заказ, нет резервирования товара
+        ORDERED,    // Заказ оформлен, товары зарезервированы
+        CANCELED,   // Заказ отменен, товар врзвращен на склад
+        COMPLETED   // Заказ выполнен, товар вручен покупателю
     }
 }

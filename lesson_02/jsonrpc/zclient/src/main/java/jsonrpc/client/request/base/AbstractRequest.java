@@ -22,11 +22,11 @@ public abstract class AbstractRequest {
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
 
-    protected final ApplicationContext context;
+    private final ApplicationContext context;
+    private final ClientProperties clientProperties;
     protected final ObjectMapper objectMapper;
-    protected final ClientProperties clientProperties;
 
-    final String apiURL;
+    private final String apiURL;
 
     public AbstractRequest(ApplicationContext context, ObjectMapper objectMapper, ClientProperties clientProperties) {
 
@@ -35,7 +35,7 @@ public abstract class AbstractRequest {
         this.objectMapper = objectMapper;
         this.clientProperties = clientProperties;
 
-        apiURL = String.format("http://%1$s:%2$s/api",
+        apiURL = String.format("http://%1$s:%2$s/api/v1/",
                 this.clientProperties.getServer().getHostName(),
                 this.clientProperties.getServer().getPort());
     }

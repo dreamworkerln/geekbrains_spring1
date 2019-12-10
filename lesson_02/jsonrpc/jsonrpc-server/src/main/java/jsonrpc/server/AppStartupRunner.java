@@ -1,11 +1,18 @@
 package jsonrpc.server;
 
+import jsonrpc.protocol.dto.order.OrderDto;
+import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.entities.order.OrderItem;
+import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.repository.ProductRepository;
+import jsonrpc.server.service.OrderService;
 import jsonrpc.server.service.other.RepositoryFakeFiller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
@@ -14,15 +21,18 @@ public class AppStartupRunner implements ApplicationRunner {
 
     private final ProductRepository productRepository;
 
+    private final OrderService orderService;
+
     //private final JrpcRequest jrpcRequest;
 
 
 
     @Autowired
-    public AppStartupRunner(RepositoryFakeFiller repositoryFakeFiller, ProductRepository productRepository) {
+    public AppStartupRunner(RepositoryFakeFiller repositoryFakeFiller, ProductRepository productRepository, OrderService orderService) {
         this.repositoryFakeFiller = repositoryFakeFiller;
         /*this.jrpcRequest = jrpcRequest;*/
         this.productRepository = productRepository;
+        this.orderService = orderService;
     }
 
 
@@ -45,9 +55,30 @@ public class AppStartupRunner implements ApplicationRunner {
 
         //System.out.println(productRepository.findAll(specCategory.and(specPrice)));
 
-        System.out.println("213");
 
-        System.out.println(productRepository.findAll());
+        try {
+            List<Product> productList = productRepository.findAll();
+            System.out.println(productList);
 
+
+
+
+//            System.out.println("Сделаем заказ:\n");
+//            Order order = new Order();
+//            OrderItem orderItem = new OrderItem();
+//            orderItem.setOrder(order);
+//            orderItem.setProduct(productList.get(0));
+//            orderItem.setCount(5);
+//            order.addItem(orderItem);
+//            order.setStatus(OrderDto.Status.QUEUED);
+//
+//            Long orderId = orderService.save(order).getId();
+//            System.out.println("orderId: " + orderId);
+//            System.out.println("\n");
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

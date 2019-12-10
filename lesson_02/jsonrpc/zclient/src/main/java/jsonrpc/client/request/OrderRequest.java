@@ -42,7 +42,7 @@ public class OrderRequest extends AbstractRequest {
         orderItemDto.setProductId(productId);
         orderItemDto.setCount(count);
         OrderDto order = new OrderDto(); //context.getBean(OrderDto.class);
-        order.addItemDto(orderItemDto);
+        order.addItem(orderItemDto);
 
         JsonNode response = performRequest(1000L, uri, order);
         return objectMapper.treeToValue(response, Long.class);

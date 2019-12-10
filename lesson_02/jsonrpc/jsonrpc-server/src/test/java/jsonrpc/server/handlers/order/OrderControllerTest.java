@@ -96,7 +96,7 @@ class OrderControllerTest {
         orderItemDto.setCount(3);
         orderItemDto.setProductId(3L);
         OrderDto orderDto = context.getBean(OrderDto.class);
-        orderDto.addItemDto(orderItemDto);
+        orderDto.addItem(orderItemDto);
 
         jrpcRequest.setMethod(HandlerName.Order.path + "." + HandlerName.Order.save);
         jrpcRequest.setParams(objectMapper.valueToTree(orderDto));

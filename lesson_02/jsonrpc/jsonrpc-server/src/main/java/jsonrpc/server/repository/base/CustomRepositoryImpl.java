@@ -10,7 +10,7 @@ import javax.persistence.EntityManager;
 import java.io.Serializable;
 
 
-// НЕ ЗАБУДЬ И НА ИНТЕРФЕЙС CustomRepository ПОВЕСИТЬ @NoRepositoryBean
+// НЕ ЗАБУДЬ И НА ИНТЕРФЕЙС CustomRepository ПОВЕСИТЬ АННОТАЦИЮ @NoRepositoryBean
 // А ТО НЕ ВЗЛЕТИТ !
 @NoRepositoryBean
 public class CustomRepositoryImpl<T, ID extends Serializable> extends SimpleJpaRepository<T, ID>
