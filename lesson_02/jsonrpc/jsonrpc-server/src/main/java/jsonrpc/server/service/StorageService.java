@@ -19,6 +19,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import static jsonrpc.server.Application.SLEEP_IN_TRANSACTION;
+
 
 @Service
 @Transactional
@@ -144,19 +146,23 @@ public class StorageService {
 
 // ToDo: Для тестов тут спим для проверки LOCK SELECT FOR UPDATE на 1 строку с товаром:
 
-//        try {
-//
-//            int l = 3000;
-//
-//            System.out.print("ДУМАЕМ .");
-//            Thread.sleep(l);
-//            System.out.print(".");
-//            Thread.sleep(l);
-//            System.out.println(".");
-//            Thread.sleep(l);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        if (SLEEP_IN_TRANSACTION) {
+
+
+            try {
+
+                int l = 3000;
+
+                System.out.print("ДУМАЕМ .");
+                Thread.sleep(l);
+                System.out.print(".");
+                Thread.sleep(l);
+                System.out.println(".");
+                Thread.sleep(l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
 
         pi.setCount(pi.getCount() + count);

@@ -20,6 +20,8 @@ import java.util.Locale;
 @EnableScheduling
 public class Application {
 
+    public static boolean SLEEP_IN_TRANSACTION = false;
+
     public static Order orr;
 
     private static Logger log = null;
