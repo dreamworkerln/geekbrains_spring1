@@ -1,16 +1,14 @@
 package jsonrpc.protocol.dto.storage;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.product.ProductItemDto;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
 //@Component
 //@Scope("prototype")
-public class StorageDto extends AbstractDtoPersisted {
+public class StorageDto extends AbstractDto {
 
     private List<ProductItemDto> productList = new ArrayList<>();
 

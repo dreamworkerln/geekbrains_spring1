@@ -1,7 +1,7 @@
 package jsonrpc.server.entities.base.mapper;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
-import jsonrpc.server.entities.base.AbstractEntityPersisted;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.server.entities.base.AbstractEntityDDDPersisted;
 import jsonrpc.server.service.AbstractService;
 import jsonrpc.utils.Utils;
 

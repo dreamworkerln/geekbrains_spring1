@@ -4,22 +4,15 @@ import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.ProductItem;
 import jsonrpc.server.entities.storage.StorageItem;
 import jsonrpc.server.repository.StorageRepository;
-import jsonrpc.server.service.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jmx.access.InvalidInvocationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import static jsonrpc.server.Application.SLEEP_IN_TRANSACTION;
+import static jsonrpc.server.ServerApplication.SLEEP_IN_TRANSACTION;
 
 
 @Service

@@ -62,36 +62,42 @@ public class OrderService {
             // создаем заказ со статусом QUEUED
             result = orderRepository.save(order);
 
-            try {
 
-                // SELECT FOR UPDATE блокируем строки в Order, Product, OrderItem, StorageItem
-                orderRepository.lockByOrder(order);
 
-                orderRepository.lockByOrder(order);
+            // SELECT FOR UPDATE блокируем строки в Order, Product, OrderItem, StorageItem
+            // блокировки, как я понял - reentrant, на своем lock ты повторно не вешаешься
+            // если работаешь в одной транзакции(или в продленнйо транзакции)
+            orderRepository.lockByOrder(order);
 
-                // пытаемся зарезарвировать со склада каждый товар из элементов заказа
-                order.getItemList().forEach(oi -> storageService.remove(oi.getProduct(), oi.getCount()));
+            // пытаемся зарезервировать со склада каждый товар из элементов заказа
+            order.getItemList().forEach(oi -> storageService.remove(oi.getProduct(), oi.getCount()));
 
-            }
-            catch(Exception e) {
-                // Ну если в delete() упали, что поделаешь ...
-                orderRepository.delete(order);
+            // Если товара на складе будет не достаточно, транзакция откатится и заказ не создастся
 
-                // Re-throw upper причину невозможности создания заказа
-                // (бросание исключения в нормальном режиме - на складе недостаточно товара для выполнения заказа)
-                throw e;
-            }
         }
         else {
-            throw new NotImplementedException("Редактировать существующий заказ моя пока не уметь - " +
-                                              "это надо со склада товары заново перерезервировать.");
+
+            // блокируемся нах
+            orderRepository.lockByOrder(order);
+
+            // берем старый заказ
+            Order oldOrder = orderRepository.findById(order.getId()).orElseThrow(() ->
+                    new IllegalArgumentException("Order not exists:\n" + order.getId()));
+
+            // возвращаем все взад как было до этого заказа
+            // (пока дельты не будем считать по товарам)
+            oldOrder.getItemList().forEach(oi -> storageService.put(oi.getProduct(), oi.getCount()));
+
+            // начинаем заново
+            result = orderRepository.save(order);
+
+            // пытаемся зарезервировать со склада каждый товар из элементов заказа
+            order.getItemList().forEach(oi -> storageService.remove(oi.getProduct(), oi.getCount()));
+
         }
 
 
-
-
-
-
+        // Обновляем заказ(подгружаем все дочерние элементы, чтоб не юзался кеш хибера)
         orderRepository.refresh(result);
 
         return result;

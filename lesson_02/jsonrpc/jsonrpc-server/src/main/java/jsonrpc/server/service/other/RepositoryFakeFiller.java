@@ -69,7 +69,7 @@ public class RepositoryFakeFiller {
             p.setCategory(c);
 
             productService.save(p);
-            storageService.put(p, faker.number().numberBetween(1, 50));
+            storageService.put(p, faker.number().numberBetween(20, 50));
         }
 
         c = categoryService.save(new Category("треш"));

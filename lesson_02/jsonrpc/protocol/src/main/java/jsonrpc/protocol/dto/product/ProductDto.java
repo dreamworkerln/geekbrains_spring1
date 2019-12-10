@@ -1,9 +1,6 @@
 package jsonrpc.protocol.dto.product;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -11,7 +8,7 @@ import java.time.Instant;
 
 //@Component
 //@Scope("prototype")
-public class ProductDto extends AbstractDtoPersisted {
+public class ProductDto extends AbstractDto {
 
     private String name;
     private String vcode; // Артикул

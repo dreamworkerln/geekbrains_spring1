@@ -6,7 +6,7 @@ import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.server.entities.Client;
 import jsonrpc.server.entities.Manager;
-import jsonrpc.server.entities.base.mapper.IdMapper;
+import jsonrpc.server.entities.base.mapper.AbstractMapper;
 import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderItem;
@@ -21,7 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
         unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {InstantMapper.class, ProductMapper.class})
 // ProductMapper.class, ProductItemMapper.class, OrderItemMapper.class
-public abstract class OrderMapper extends IdMapper {
+public abstract class OrderMapper extends AbstractMapper {
 
     @Autowired
     OrderService orderService;
@@ -34,16 +34,16 @@ public abstract class OrderMapper extends IdMapper {
     public abstract OrderDto toDto(Order order);
 
     public abstract Order toEntity(OrderDto orderDto);
-    //Order toEntity(OrderDto orderDto, @Context ProductRepository productRepository);
+    //Order toItemEntity(OrderDto orderDto, @Context ProductRepository productRepository);
 
 
     @Mapping(source = "product.id", target = "productId"/*, qualifiedByName = "toProductDto"*/)
-    public abstract OrderItemDto toDto(OrderItem orderItem);
+    public abstract OrderItemDto toItemDto(OrderItem orderItem);
 
 
     @Mapping(target = "order", ignore = true)
     @Mapping(source = "productId", target = "product"/*, qualifiedByName = "toProduct"*/)
-    public abstract OrderItem toEntity(OrderItemDto orderItemDto);
+    public abstract OrderItem toItemEntity(OrderItemDto orderItemDto);
     
 
 
@@ -102,7 +102,7 @@ public abstract class OrderMapper extends IdMapper {
 
         // Список типов товаров, которые есть в наличии в базе
         Map<Long, product> productMap = productService.findAllById(productIdList).stream()
-                .collect(Collectors.toMap(AbstractEntityPersisted::getId, product -> product));
+                .collect(Collectors.toMap(AbstractEntity::getId, product -> product));
 
         // OrderItem, которые уже есть в наличии в базе для update-запроса заказа (созданы в прошлый раз)
         Map<Long, OrderItem> orderItemMap = new HashMap<>();
@@ -114,7 +114,7 @@ public abstract class OrderMapper extends IdMapper {
         }
         if (pOrder.isPresent()) {
             orderItemMap = pOrder.get().getItemList().stream()
-                    .collect(Collectors.toMap(AbstractEntityPersisted::getId, orderItem -> orderItem));
+                    .collect(Collectors.toMap(AbstractEntity::getId, orderItem -> orderItem));
         }
 
 

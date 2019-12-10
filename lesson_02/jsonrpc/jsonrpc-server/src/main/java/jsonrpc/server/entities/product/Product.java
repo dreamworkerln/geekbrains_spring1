@@ -1,6 +1,6 @@
 package jsonrpc.server.entities.product;
 
-import jsonrpc.server.entities.base.AbstractEntityPersisted;
+import jsonrpc.server.entities.base.AbstractEntity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.SerializationUtils;
 
 @Entity
 @Table(name="product")
-public class Product extends AbstractEntityPersisted {
+public class Product extends AbstractEntity {
 
     @NotNull
     private String name;

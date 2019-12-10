@@ -2,7 +2,6 @@ package jsonrpc.server;
 
 
 import jsonrpc.server.entities.order.Order;
-import jsonrpc.server.repository.base.CustomRepository;
 import jsonrpc.server.repository.base.CustomRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,7 @@ import java.util.Locale;
 @SpringBootApplication
 @EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)  // делаем нашу репу базовой репой
 @EnableScheduling
-public class Application {
+public class ServerApplication {
 
     public static boolean SLEEP_IN_TRANSACTION = false;
 
@@ -42,7 +41,7 @@ public class Application {
                  "================================= STARTUP ================================\n" +
                  "==========================================================================\n");
 
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(ServerApplication.class, args);
 
     }
 

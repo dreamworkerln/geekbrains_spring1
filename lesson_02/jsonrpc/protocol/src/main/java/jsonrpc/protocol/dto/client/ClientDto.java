@@ -1,8 +1,6 @@
 package jsonrpc.protocol.dto.client;
 
 import jsonrpc.protocol.dto.order.OrderDto;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,11 +1,8 @@
 package jsonrpc.protocol.dto.order;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 import jsonrpc.protocol.dto.client.ClientDto;
 import jsonrpc.protocol.dto.manager.ManagerDto;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -13,7 +10,7 @@ import java.util.List;
 
 //@Component
 //@Scope("prototype")
-public class OrderDto extends AbstractDtoPersisted {
+public class OrderDto extends AbstractDto {
 
     @NotNull
     private List<OrderItemDto> itemList = new ArrayList<>();

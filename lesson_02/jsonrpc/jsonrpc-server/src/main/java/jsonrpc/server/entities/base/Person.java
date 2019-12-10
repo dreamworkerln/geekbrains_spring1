@@ -1,14 +1,11 @@
 package jsonrpc.server.entities.base;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @MappedSuperclass
-public class Person extends AbstractEntityPersisted {
+public class Person extends AbstractEntity {
 
     @NotBlank
     private String lastName;

@@ -1,7 +1,9 @@
 package jsonrpc.server.entities.base.mapper;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
-import jsonrpc.server.entities.base.AbstractEntityPersisted;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.server.entities.base.AbstractEntityDDD;
+import jsonrpc.server.entities.base.AbstractEntityDDDPersisted;
 import jsonrpc.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -9,9 +11,10 @@ import org.springframework.context.ApplicationContext;
 import java.util.Optional;
 import java.util.function.Function;
 
-public abstract class IdMapper {
+public abstract class AbstractMapperZ {
 
 
+    public abstract AbstractEntityPersisted toEntity(AbstractDtoPersisted dto);
 
     // Просто вложенный функциональный интерфейс
     //

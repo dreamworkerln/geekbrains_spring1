@@ -2,8 +2,7 @@ package jsonrpc.server.entities.product.mappers;
 
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.protocol.dto.product.ProductItemDto;
-import jsonrpc.server.entities.base.AbstractEntityPersisted;
-import jsonrpc.server.entities.base.mapper.IdMapper;
+import jsonrpc.server.entities.base.mapper.AbstractMapper;
 import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.entities.category.Category;
 import jsonrpc.server.entities.product.Product;
@@ -14,7 +13,6 @@ import jsonrpc.utils.Utils;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,7 +20,7 @@ import java.util.List;
 @Mapper(componentModel = "spring",
         unmappedTargetPolicy = ReportingPolicy.ERROR,
         uses = {InstantMapper.class /*ProductMapper.ProductFactory.class*/})
-public abstract class ProductMapper extends IdMapper {
+public abstract class ProductMapper extends AbstractMapper {
 
     @Autowired
     private ProductService productService;
@@ -95,7 +93,7 @@ public abstract class ProductMapper extends IdMapper {
 //    }
 
 
-//    void setEntityId(Long dtoId, @MappingTarget AbstractEntityPersisted target) {
+//    void setEntityId(Long dtoId, @MappingTarget AbstractEntity target) {
 //
 //        Utils.fieldSetter("id", target, dtoId);
 //    }

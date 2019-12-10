@@ -160,7 +160,7 @@ class OrderControllerTest {
         String methodName = GetByIdParam.class.getSimpleName();
         methodName = Character.toLowerCase(methodName.charAt(0)) + methodName.substring(1);
         jrpcRequest.setMethod(SpringConfiguration.Controller.Handlers.Shop.ORDER + "." + methodName);
-        jrpcRequest.setParams(getByIdMapper.toDto(getByIdParam));
+        jrpcRequest.setParams(getByIdMapper.toItemDto(getByIdParam));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
 

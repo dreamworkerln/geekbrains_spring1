@@ -1,6 +1,6 @@
 package jsonrpc.server.service;
 
-import jsonrpc.server.entities.base.AbstractEntityPersisted;
+import jsonrpc.server.entities.base.AbstractEntityDDDPersisted;
 import jsonrpc.server.entities.storage.StorageItem;
 
 import java.util.Optional;

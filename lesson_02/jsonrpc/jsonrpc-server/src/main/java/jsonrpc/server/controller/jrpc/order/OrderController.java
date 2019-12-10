@@ -1,11 +1,14 @@
 package jsonrpc.server.controller.jrpc.order;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.pivovarit.function.ThrowingFunction;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.server.controller.jrpc.base.AbstractConverter;
+import jsonrpc.server.controller.jrpc.base.AbstractConverterZ;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.order.Order;
+import jsonrpc.server.entities.order.mappers.OrderConverter;
 import jsonrpc.server.entities.order.mappers.OrderMapper;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.service.OrderService;
@@ -14,10 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
+import javax.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
-import java.util.Set;
+import java.util.function.Function;
 
 /**
  * Выдает информацию о товарах<br>
@@ -35,8 +37,7 @@ public class OrderController  {
 
 
     @Autowired
-    protected OrderController(OrderService orderService,
-                              OrderConverter converter) {
+    protected OrderController(OrderService orderService, OrderConverter converter) {
 
         this.orderService = orderService;
         this.converter = converter;
@@ -52,14 +53,14 @@ public class OrderController  {
 
         long id = converter.getId(params);
         Order order = orderService.findById(id).orElse(null);
-        return converter.toOrderDtoJson(order);
+        return converter.toDtoJson(order);
     }
 
 
     @JrpcMethod(method = HandlerName.Order.save)
     public JsonNode save(JsonNode params)  {
 
-        Order order = converter.toOrder(params);
+        Order order = converter.toEntity(params);
         order = orderService.save(order);
 
         //order = orderService.findById(order.getId()).get();
@@ -72,7 +73,7 @@ public class OrderController  {
     @JrpcMethod(method = HandlerName.Order.delete)
     public JsonNode delete(JsonNode params)  {
 
-        Order order = converter.toOrder(params);
+        Order order = converter.toEntity(params);
         orderService.delete(order);
         return null;
     }
@@ -93,52 +94,52 @@ public class OrderController  {
     //
     // соответственно после сохранения сущность из базы приезжает со всем графом дочерних объектов
 
-    // ToDo: generify OrderConverter(or AbstractConverter) and use it for other converters?
-
-    @Service
-    static class OrderConverter extends AbstractConverter {
-
-        private final OrderMapper orderMapper;
-
-        public OrderConverter(OrderMapper orderMapper) {
-            this.orderMapper = orderMapper;
-        }
-
-        // Dto => Entity
-        Order toOrder(JsonNode params)  {
-
-            // parsing request
-            try {
-                OrderDto dto = objectMapper.treeToValue(params, OrderDto.class);
-                Order result = orderMapper.toEntity(dto);
-                // Проверяем на валидность
-                validate(result);
-                return result;
-            }
-            // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
-            catch (Exception e) {
-                throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
-            }
-        }
-
-        // Entity => Dto
-        JsonNode toOrderDtoJson(Order order) {
-            OrderDto orderDto = orderMapper.toDto(order);
-            return objectMapper.valueToTree(orderDto);
-        }
 
 
-        // Валидатор валидирует только объект верхнего уровня
-        // Дочерние объекты проверять не будет (ходить по графу)
-        void validate(Order order) {
-
-            Set<ConstraintViolation<Order>> violations = validator.validate(order);
-            if (violations.size() != 0) {
-                log.error("Given order: {}", order);
-                throw new ConstraintViolationException("Order validation failed", violations);
-            }
-        }
-    }
+//    @Service
+//    static class OrderConverter extends AbstractConverter {
+//
+//        private final OrderMapper orderMapper;
+//
+//        public OrderConverter(OrderMapper orderMapper) {
+//            this.orderMapper = orderMapper;
+//        }
+//
+//        // Dto => Entity
+//        Order toOrder(JsonNode params)  {
+//
+//            // parsing request
+//            try {
+//                OrderDto dto = objectMapper.jsonToDto(params, OrderDto.class);
+//                Order result = orderMapper.toItemEntity(dto);
+//                // Проверяем на валидность
+//                validate(result);
+//                return result;
+//            }
+//            // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
+//            catch (Exception e) {
+//                throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
+//            }
+//        }
+//
+//        // Entity => Dto
+//        JsonNode toOrderDtoJson(Order order) {
+//            OrderDto orderDto = orderMapper.toItemDto(order);
+//            return objectMapper.valueToTree(orderDto);
+//        }
+//
+//
+//        // Валидатор валидирует только объект верхнего уровня
+//        // Дочерние объекты проверять не будет (ходить по графу)
+//        void validate(Order order) {
+//
+//            Set<ConstraintViolation<Order>> violations = validator.validate(order);
+//            if (violations.size() != 0) {
+//                log.error("Given order: {}", order);
+//                throw new ConstraintViolationException("Order validation failed", violations);
+//            }
+//        }
+//    }
 
 
 

@@ -1,10 +1,6 @@
 package jsonrpc.protocol.dto.order;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
 import jsonrpc.protocol.dto.product.ProductItemDto;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

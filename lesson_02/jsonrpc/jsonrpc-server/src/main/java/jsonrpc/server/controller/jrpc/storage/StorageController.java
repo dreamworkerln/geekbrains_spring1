@@ -12,7 +12,6 @@ import jsonrpc.server.service.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -152,12 +151,12 @@ public class StorageController {
 //        // parsing request
 //        ProductItem result;
 //        try {
-//            ProductItemDto productItemDto = objectMapper.treeToValue(params, ProductItemDto.class);
+//            ProductItemDto productItemDto = objectMapper.jsonToDto(params, ProductItemDto.class);
 //
 //
 //            // Проверка входящего DTO
 //            // - опустили, пуская проверяет storageService на сконверченной Entity
-//            result = productItemMapper.toEntity(productItemDto);
+//            result = productItemMapper.toItemEntity(productItemDto);
 //
 //            // Проверяем на валидность
 //            storageService.validate(result);

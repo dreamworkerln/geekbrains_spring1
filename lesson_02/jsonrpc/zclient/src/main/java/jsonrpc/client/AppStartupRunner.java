@@ -4,16 +4,23 @@ import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.client.request.OrderRequest;
 import jsonrpc.client.request.ProductRequest;
 import jsonrpc.client.request.StorageRequest;
+import jsonrpc.protocol.dto.base.filter.specification.ProductSpecDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
+import jsonrpc.protocol.dto.product.ProductDto;
+import jsonrpc.protocol.dto.product.ProductItemDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.lang.invoke.MethodHandles;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @Component
 public class AppStartupRunner implements ApplicationRunner {
@@ -25,7 +32,6 @@ public class AppStartupRunner implements ApplicationRunner {
     private final ProductRequest productRequest;
     private final StorageRequest storageRequest;
     private final OrderRequest orderRequest;
-    //private final ObjectMapper objectMapper;
 
 
     @Autowired
@@ -38,7 +44,6 @@ public class AppStartupRunner implements ApplicationRunner {
         this.productRequest = productRequest;
         this.storageRequest = storageRequest;
         this.orderRequest = orderRequest;
-        //this.objectMapper = objectMapper;
     }
 
 
@@ -52,8 +57,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n");
         */
 
-
-
+/*
         System.out.println("Сделаем заказ:\n");
         OrderDto orderDto = new OrderDto();
         orderDto.addItem(new OrderItemDto(1L, 3));
@@ -65,13 +69,14 @@ public class AppStartupRunner implements ApplicationRunner {
         Long orderId = orderRequest.save(orderDto);
         System.out.println("orderId: " + orderId);
         System.out.println("\n");
+*/
 
 
 
 
 
 
-        /*
+
 
 
 
@@ -145,10 +150,10 @@ public class AppStartupRunner implements ApplicationRunner {
 
         System.out.println("Сделаем заказ:\n");
         OrderDto orderDto = new OrderDto();
-        orderDto.addItem(new OrderItemDto(1L, 3));
-        orderDto.addItem(new OrderItemDto(2L, 4));
-        orderDto.addItem(new OrderItemDto(3L, 5));
-        orderDto.addItem(new OrderItemDto(4L, 6));
+        orderDto.addItem(new OrderItemDto(1L, 1));
+        orderDto.addItem(new OrderItemDto(2L, 2));
+        orderDto.addItem(new OrderItemDto(3L, 3));
+        orderDto.addItem(new OrderItemDto(4L, 4));
         orderDto.setStatus(OrderDto.Status.QUEUED);
 
         Long orderId = orderRequest.save(orderDto);
@@ -172,9 +177,9 @@ public class AppStartupRunner implements ApplicationRunner {
             oi.setUpdated(null);
         });
         List<OrderItemDto> oiList = orderDto.getItemList();
-        oiList.get(0).setCount(99);
-        oiList.get(1).setCount(98);
-        oiList.get(2).setCount(97);
+        oiList.get(0).setCount(11);
+        oiList.get(1).setCount(12);
+        oiList.get(2).setCount(13);
         oiList.remove(3);
         orderRequest.save(orderDto);
 
@@ -184,7 +189,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println(orderDto);
         System.out.println("\n");
 
-        */
+
         
 
     }

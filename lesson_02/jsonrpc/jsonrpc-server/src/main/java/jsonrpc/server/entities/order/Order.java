@@ -3,7 +3,7 @@ package jsonrpc.server.entities.order;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.entities.Client;
 import jsonrpc.server.entities.Manager;
-import jsonrpc.server.entities.base.AbstractEntityPersisted;
+import jsonrpc.server.entities.base.AbstractEntity;
 import org.apache.commons.lang3.SerializationUtils;
 
 import javax.persistence.*;
@@ -15,7 +15,7 @@ import java.util.List;
 // Заказ пользователя
 @Entity
 @Table(name="orderz")  // Ambiguous with hsql keyword 'order'
-public class Order extends AbstractEntityPersisted {
+public class Order extends AbstractEntity {
 
 
     // orphanRemoval - чтоб осиротевшие заказы сами удалились. Хибер крут!

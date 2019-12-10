@@ -1,11 +1,10 @@
 package jsonrpc.server.entities.category;
 
-import jsonrpc.server.entities.base.AbstractEntityPersisted;
+import jsonrpc.server.entities.base.AbstractEntity;
 import jsonrpc.server.entities.order.OrderItem;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,7 +15,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class Category extends AbstractEntityPersisted {
+public class Category extends AbstractEntity {
 
     @NotNull
     private String name;

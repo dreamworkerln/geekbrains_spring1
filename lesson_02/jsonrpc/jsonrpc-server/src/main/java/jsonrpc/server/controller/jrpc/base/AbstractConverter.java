@@ -3,7 +3,6 @@ package jsonrpc.server.controller.jrpc.base;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.server.entities.base.AbstractEntity;
-import jsonrpc.server.entities.base.AbstractEntityPersisted;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -74,7 +73,7 @@ public abstract class AbstractConverter {
         return result;
     }
 
-    public JsonNode toJsonId(AbstractEntityPersisted entity) {
+    public JsonNode toJsonId(AbstractEntity entity) {
         return objectMapper.valueToTree(entity.getId());
     }
 

@@ -1,16 +1,13 @@
 package jsonrpc.protocol.dto.product;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDtoPersisted;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
+import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 //@Component("productItemDto") // need qualifier due to inheritance issue
 //@Scope("prototype")
-public class ProductItemDto extends AbstractDtoPersisted {
+public class ProductItemDto extends AbstractDto {
 
     // lazy
     // только ссылка на продукт (by id)
