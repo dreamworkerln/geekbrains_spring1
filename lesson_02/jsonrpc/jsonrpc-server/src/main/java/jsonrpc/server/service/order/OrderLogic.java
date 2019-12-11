@@ -72,10 +72,11 @@ public class OrderLogic {
         // начинаем заново
         order = orderRepository.save(order);
 
+        // подгружаем все связанные с заказом элементы графа
+        orderRepository.refresh(order);
+
         // пытаемся зарезервировать со склада каждый товар из элементов заказа
         order.getItemList().forEach(oi -> storageService.remove(oi.getProduct(), oi.getCount()));
-
-        //order.setStatus(OrderDto.Status.ORDERED);
 
         return order;
 

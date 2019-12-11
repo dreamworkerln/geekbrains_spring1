@@ -111,7 +111,7 @@ public class OrderService {
         m[TRA][COM] = completeAct;
 
 
-        // смотри, что у нас тут
+        // смотрим, что у нас тут
         int oldOrd = old.getStatus().ordinal();
         int newOrd = order.getStatus().ordinal();
 
