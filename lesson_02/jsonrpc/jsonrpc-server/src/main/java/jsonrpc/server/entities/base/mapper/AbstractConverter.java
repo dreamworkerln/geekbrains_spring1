@@ -1,4 +1,4 @@
-package jsonrpc.server.controller.jrpc.base;
+package jsonrpc.server.entities.base.mapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,16 +18,16 @@ import java.util.function.Function;
 import javax.validation.ConstraintViolationException;
 
 @Service
-public abstract class AbstractConverterZ<E extends AbstractEntity,D extends AbstractDto,S> {
+public abstract class AbstractConverter<E extends AbstractEntity,D extends AbstractDto,S> {
 
 
-    protected ThrowingFunction<JsonNode, D, Exception> jsonToDto;
-    protected ThrowingFunction<JsonNode, S, Exception> jsonToDtoSpec;
+    private ThrowingFunction<JsonNode, D, Exception> jsonToDto;
+    private ThrowingFunction<JsonNode, S, Exception> jsonToDtoSpec;
 
-    protected Function<D, E> toEntity;
-    protected Function<List<D>, List<E>> toEntityList;
-    protected Function<E, D> toDto;
-    protected Function<List<E>, List<D>> toDtoList;
+    private Function<D, E> toEntity;
+    private Function<List<D>, List<E>> toEntityList;
+    private Function<E, D> toDto;
+    private Function<List<E>, List<D>> toDtoList;
 
     private   Validator    validator;
     protected ObjectMapper objectMapper;

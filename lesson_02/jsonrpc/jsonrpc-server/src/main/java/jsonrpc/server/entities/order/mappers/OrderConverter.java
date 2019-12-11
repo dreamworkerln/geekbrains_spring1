@@ -1,7 +1,7 @@
 package jsonrpc.server.entities.order.mappers;
 
 import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.server.controller.jrpc.base.AbstractConverterZ;
+import jsonrpc.server.entities.base.mapper.AbstractConverter;
 import jsonrpc.server.entities.order.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 
 @Service
-public class OrderConverter extends AbstractConverterZ<Order,OrderDto, Void> {
+public class OrderConverter extends AbstractConverter<Order,OrderDto, Void> {
 
     private final OrderMapper orderMapper;
 

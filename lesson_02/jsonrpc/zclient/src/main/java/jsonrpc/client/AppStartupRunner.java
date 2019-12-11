@@ -73,15 +73,6 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
 
-
-
-
-
-
-
-
-
-
         System.out.println("Using client config: " + clientProperties.getServer());
         System.out.println("\n");
         List<ProductDto> productDtoList;

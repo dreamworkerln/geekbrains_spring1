@@ -4,12 +4,11 @@ package jsonrpc.server.controller.jrpc.product;
 import com.fasterxml.jackson.databind.JsonNode;
 import jsonrpc.protocol.dto.base.HandlerName;
 import jsonrpc.protocol.dto.base.filter.specification.ProductSpecDto;
-import jsonrpc.protocol.dto.product.ProductDto;
-import jsonrpc.server.controller.jrpc.base.AbstractConverter;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.product.Product;
-import jsonrpc.server.entities.product.mappers.ProductMapper;
+
 import jsonrpc.server.controller.jrpc.base.JrpcController;
+import jsonrpc.server.entities.product.mappers.ProductConverter;
 import jsonrpc.server.repository.specifications.product.ProductSpecBuilder;
 import jsonrpc.server.service.ProductService;
 import org.slf4j.Logger;
@@ -20,12 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 
 @Service
@@ -54,7 +50,7 @@ public class ProductController {
 
         long id = converter.getId(params);
         Product product = productService.findById(id).orElse(null);
-        return converter.toProductDtoJson(product);
+        return converter.toDtoJson(product);
     }
 
 
@@ -65,7 +61,7 @@ public class ProductController {
 
         List<Long> idList = converter.getIdList(params);
         List<Product> list = productService.findAllById(idList);
-        return converter.toProductListDtoJson(list);
+        return converter.toDtoListJson(list);
     }
 
 
@@ -75,7 +71,7 @@ public class ProductController {
 
         Optional<ProductSpecDto> specDto = converter.toSpecDto(params);
         Specification<Product> spec =  ProductSpecBuilder.build(specDto);
-        return converter.toProductListDtoJson(productService.findAll(spec));
+        return converter.toDtoListJson(productService.findAll(spec));
     }
 
 
@@ -90,14 +86,14 @@ public class ProductController {
 
         int limit = specDto.map(ProductSpecDto::getLimit).orElse(1);
         Page<Product> page = productService.findAll(spec, PageRequest.of(0, limit));
-        return converter.toProductListDtoJson(page.toList());
+        return converter.toDtoListJson(page.toList());
     }
 
 
     @JrpcMethod(method = HandlerName.Product.save)
     public JsonNode save(JsonNode params) {
 
-        Product product = converter.toProduct(params);
+        Product product = converter.toEntity(params);
         product = productService.save(product);
         return converter.toJsonId(product);
     }
@@ -105,7 +101,7 @@ public class ProductController {
     @JrpcMethod(method = HandlerName.Product.delete)
     public JsonNode delete(JsonNode params) {
 
-        Product product = converter.toProduct(params);
+        Product product = converter.toEntity(params);
         productService.delete(product);
         return null;
     }
@@ -118,6 +114,7 @@ public class ProductController {
 
 
 
+/*
 
     @Service
     static class ProductConverter extends AbstractConverter {
@@ -178,6 +175,7 @@ public class ProductController {
             }
         }
     }
+*/
 
 }
 
