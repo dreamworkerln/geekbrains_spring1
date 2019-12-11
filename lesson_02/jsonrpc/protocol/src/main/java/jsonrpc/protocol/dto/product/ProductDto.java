@@ -1,6 +1,6 @@
 package jsonrpc.protocol.dto.product;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.AbstractDto;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -54,22 +54,6 @@ public class ProductDto extends AbstractDto {
     public void setTestDate(Instant testDate) {
         this.testDate = testDate;
     }
-
-
-
-//    public static void validate(ProductDto productDto) {
-//
-//        if (productDto == null) {
-//            throw new IllegalArgumentException("productDto == null");
-//        }
-//
-//        if (StringUtils.isBlank(productDto.vcode)) {
-//            throw new IllegalArgumentException("productDto.vcode is empty");
-//        }
-//
-//        //ToDo implement etc checks ...
-//    }
-
 
     @Override
     public String toString() {

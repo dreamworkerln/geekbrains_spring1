@@ -11,7 +11,7 @@ import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.OrderItem;
 import jsonrpc.server.entities.product.mappers.ProductMapper;
-import jsonrpc.server.service.OrderService;
+import jsonrpc.server.service.order.OrderService;
 
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;

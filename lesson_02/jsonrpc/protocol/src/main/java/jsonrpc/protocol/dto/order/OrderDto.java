@@ -1,6 +1,6 @@
 package jsonrpc.protocol.dto.order;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.AbstractDto;
 import jsonrpc.protocol.dto.client.ClientDto;
 import jsonrpc.protocol.dto.manager.ManagerDto;
 
@@ -64,24 +64,6 @@ public class OrderDto extends AbstractDto {
         itemList.add(orderItemDto);
     }
 
-
-
-
-
-//    public static void validate(OrderDto orderDto) {
-//
-//        if (orderDto == null) {
-//            throw new IllegalArgumentException("orderDto == null");
-//        }
-//
-//        if (orderDto.itemList == null) {
-//            throw new IllegalArgumentException("orderDto.itemList is empty");
-//        }
-//
-//        //ToDo implement etc checks ...
-//    }
-
-
     @Override
     public String toString() {
         return "OrderDto{" +
@@ -94,11 +76,16 @@ public class OrderDto extends AbstractDto {
                 '}';
     }
 
+    // для IRL нужна еще куча состояний
 
     public enum Status {
-        QUEUED,     // Новый заказ, нет резервирования товара
-        ORDERED,    // Заказ оформлен, товары зарезервированы
-        CANCELED,   // Заказ отменен, товар врзвращен на склад
+        NULL,       // Заказ не существует
+        ORDERED,    // Заказ оформлен, товары зарезервированы (для нового заказа верно после успешного завершения транзакции)
+        TRANSIT,    // Заказ оформлен, товары зарезервированы, едет к клиенту, редактирвать нельзя
+        CANCELED,   // Заказ отменен, товар возвращен на склад
         COMPLETED   // Заказ выполнен, товар вручен покупателю
+
+        //TRANSIT_BACK Заказ отменен, поехал обратно на склад, все еще в пути, ничего с ним делать нельзя
+        // отдельный статус IN_TRANSIT ????
     }
 }

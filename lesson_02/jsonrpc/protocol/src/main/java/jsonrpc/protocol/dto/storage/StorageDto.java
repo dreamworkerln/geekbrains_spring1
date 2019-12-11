@@ -1,6 +1,6 @@
 package jsonrpc.protocol.dto.storage;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.AbstractDto;
 import jsonrpc.protocol.dto.product.ProductItemDto;
 
 import java.util.ArrayList;

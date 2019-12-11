@@ -2,7 +2,7 @@ package jsonrpc.server.handlers.order;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
-import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
+import jsonrpc.protocol.jrpc.request.JrpcRequest;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.server.TestSuite;

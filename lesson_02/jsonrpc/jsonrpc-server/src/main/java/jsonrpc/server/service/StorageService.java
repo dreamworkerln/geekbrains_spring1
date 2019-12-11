@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.ValidationException;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
@@ -117,21 +118,20 @@ public class StorageService {
     private void changeCount(Product product, int count) {
 
 
+        // checks
         if (product == null) {
-            throw new IllegalArgumentException("product == null");
+            throw new ValidationException("product == null");
         }
-
         if (product.getId() == null) {
-            throw new IllegalArgumentException("product.id == null");
+            throw new ValidationException("product.id == null");
         }
 
-        //ProductItem pi = storageRepository.findByProductIdLock(product.getId())
         ProductItem pi = storageRepository.lockByProduct(product)
-                .orElseThrow(() -> new IllegalArgumentException("product id==" + product.getId() + " not found"));
+                .orElseThrow(() -> new ValidationException("product id==" + product.getId() + " not found"));
 
 
         if (pi.getCount() + count < 0) {
-            throw new IllegalArgumentException("Невозможно забрать со склада " + -count + " единиц товара id=" +
+            throw new InvalidLogicException("Невозможно забрать со склада " + -count + " единиц товара id=" +
                     product.getId() + ", на складе в наличии " + pi.getCount());
         }
 

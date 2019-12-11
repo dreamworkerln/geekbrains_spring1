@@ -1,0 +1,10 @@
+package jsonrpc.protocol.http;
+
+import jsonrpc.protocol.jrpc.JrpcBase;
+import org.springframework.http.HttpStatus;
+
+public class BaseHttpResponse extends BaseHttpResponse {
+
+    private JrpcBase result;
+
+}

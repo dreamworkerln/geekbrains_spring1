@@ -4,7 +4,7 @@ package jsonrpc.server.handlers.product;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.protocol.dto.base.HandlerName;
-import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
+import jsonrpc.protocol.jrpc.request.JrpcRequest;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.server.TestSuite;
 import jsonrpc.server.configuration.ConfigProperties;

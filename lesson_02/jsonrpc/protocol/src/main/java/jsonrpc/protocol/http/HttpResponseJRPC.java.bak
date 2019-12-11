@@ -1,8 +1,7 @@
-package jsonrpc.protocol.dto.base.http;
+package jsonrpc.protocol.http;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
 
 /**
  * HTTP response that encapsulate jrpc

@@ -1,0 +1,23 @@
+package jsonrpc.protocol.http;
+
+import jsonrpc.protocol.jrpc.JrpcBase;
+import org.springframework.http.HttpStatus;
+
+public class HttpOkResponse extends HttpResponse {
+
+    private JrpcBase result;
+
+
+    HttpOkResponse(JrpcBase result) {
+        this.status = HttpStatus.OK;
+        this.result = result;
+    }
+
+    public JrpcBase getResult() {
+        return result;
+    }
+
+    public void setResult(JrpcBase result) {
+        this.result = result;
+    }
+}

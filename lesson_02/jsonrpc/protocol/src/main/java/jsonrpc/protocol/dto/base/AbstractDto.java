@@ -1,8 +1,7 @@
-package jsonrpc.protocol.dto.base.jrpc;
+package jsonrpc.protocol.dto.base;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 public abstract class AbstractDto implements Serializable {
 

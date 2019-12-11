@@ -1,0 +1,4 @@
+package jsonrpc.protocol.jrpc;
+
+public class JrpcRequestBase {
+}

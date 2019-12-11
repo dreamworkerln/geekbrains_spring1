@@ -48,7 +48,7 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
 
-    
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
         /*
@@ -134,54 +134,71 @@ public class AppStartupRunner implements ApplicationRunner {
         } catch (HttpStatusCodeException e) {
             log.error("HTTP " + e.getStatusCode().toString() +"\n" +
                       new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
-            //System.out.println("JRPC ERROR: " + objectMapper.readTree(e.getResponseBodyAsString()).get("error"));
         }
 
 
 
-        System.out.println("Сделаем заказ:\n");
-        OrderDto orderDto = new OrderDto();
-        orderDto.addItem(new OrderItemDto(1L, 1));
-        orderDto.addItem(new OrderItemDto(2L, 2));
-        orderDto.addItem(new OrderItemDto(3L, 3));
-        orderDto.addItem(new OrderItemDto(4L, 4));
-        orderDto.setStatus(OrderDto.Status.QUEUED);
+        try {
 
-        Long orderId = orderRequest.save(orderDto);
-        System.out.println("orderId: " + orderId);
-        System.out.println("\n");
-
-
-        System.out.println("Проверим заказ:\n");
-        orderDto = orderRequest.findById(orderId);
-        System.out.println(orderDto);
-        System.out.println("\n");
+            System.out.println("Сделаем заказ:\n");
+            OrderDto orderDto = new OrderDto();
+            orderDto.addItem(new OrderItemDto(1L, 1));
+            orderDto.addItem(new OrderItemDto(2L, 2));
+            orderDto.addItem(new OrderItemDto(3L, 3));
+            orderDto.addItem(new OrderItemDto(4L, 4));
+            orderDto.setStatus(OrderDto.Status.ORDERED);
+            Long orderId = orderRequest.save(orderDto);
+            System.out.println("orderId: " + orderId);
+            System.out.println("\n");
 
 
-        System.out.println("Изменим заказ:\n");
-        // Не засоряем канал лишними данными
-        // (о времени, сервер все равно нам не доверяет и использует свои данные)
-        orderDto.setCreated(null);
-        orderDto.setUpdated(null);
-        orderDto.getItemList().stream().forEach(oi -> {
-            oi.setCreated(null);
-            oi.setUpdated(null);
-        });
-        List<OrderItemDto> oiList = orderDto.getItemList();
-        oiList.get(0).setCount(11);
-        oiList.get(1).setCount(12);
-        oiList.get(2).setCount(13);
-        oiList.remove(3);
-        orderRequest.save(orderDto);
 
 
-        System.out.println("Проверим заказ:\n");
-        orderDto = orderRequest.findById(orderId);
-        System.out.println(orderDto);
-        System.out.println("\n");
+            System.out.println("Проверим заказ:\n");
+            orderDto = orderRequest.findById(orderId);
+            System.out.println(orderDto);
+            System.out.println("\n");
 
 
-        
+
+
+            System.out.println("Изменим заказ:\n");
+            // Не засоряем канал лишними данными
+            // (о времени, сервер все равно нам не доверяет и использует свои данные)
+            orderDto.setCreated(null);
+            orderDto.setUpdated(null);
+            orderDto.getItemList().stream().forEach(oi -> {
+                oi.setCreated(null);
+                oi.setUpdated(null);
+            });
+            List<OrderItemDto> oiList = orderDto.getItemList();
+            oiList.get(0).setCount(11);
+            oiList.get(1).setCount(12);
+            oiList.get(2).setCount(13);
+            oiList.remove(3);
+            orderRequest.save(orderDto);
+
+
+            System.out.println("Проверим заказ:\n");
+            orderDto = orderRequest.findById(orderId);
+            System.out.println(orderDto);
+            System.out.println("\n");
+
+            System.out.println("Продолжаем делать новые заказы, пока товар не закончится:\n");
+
+            while(true) {
+                orderDto.setId(null);
+                orderRequest.save(orderDto);
+            }
+
+
+        } catch (HttpStatusCodeException e) {
+            log.error("HTTP " + e.getStatusCode().toString() +"\n" +
+                      new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
+        }
+
+
+
 
     }
 

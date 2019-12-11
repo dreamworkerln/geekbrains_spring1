@@ -1,0 +1,10 @@
+package jsonrpc.protocol.http;
+
+import org.springframework.http.HttpStatus;
+
+public class HttpForbiddenResponse extends HttpResponse{
+
+    public HttpForbiddenResponse() {
+        super(HttpStatus.FORBIDDEN);
+    }
+}

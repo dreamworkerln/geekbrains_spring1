@@ -1,0 +1,34 @@
+package jsonrpc.protocol.http;
+
+import jsonrpc.protocol.jrpc.response.JrpcErrorResponse;
+import org.springframework.http.HttpStatus;
+
+public class HttpResponseError extends HttpResponse {
+
+    protected JrpcErrorResponse error;
+
+    public HttpResponseError() {
+        this.status = HttpStatus.BAD_REQUEST;
+        this.error = new JrpcErrorResponse();
+    }
+
+    public HttpResponseError(String message, HttpStatus status) {
+        this.status = status;
+
+
+
+
+
+        this.error = new JrpcErrorResponse(message, status);
+    }
+
+    public HttpResponseError(HttpStatus status) {
+        this.setStatus(status);
+        this.error = new JrpcErrorResponse(HttpStatus.BAD_REQUEST.name(), );
+
+    }
+
+    public JrpcErrorResponse getError() {
+        return error;
+    }
+}

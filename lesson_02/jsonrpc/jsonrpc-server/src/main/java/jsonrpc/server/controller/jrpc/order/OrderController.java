@@ -6,7 +6,7 @@ import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.entities.order.mappers.OrderConverter;
 import jsonrpc.server.controller.jrpc.base.JrpcController;
-import jsonrpc.server.service.OrderService;
+import jsonrpc.server.service.order.OrderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -128,7 +128,7 @@ public class OrderController  {
 //
 //            Set<ConstraintViolation<Order>> violations = validator.validate(order);
 //            if (violations.size() != 0) {
-//                log.error("Given order: {}", order);
+//                log.body("Given order: {}", order);
 //                throw new ConstraintViolationException("Order validation failed", violations);
 //            }
 //        }

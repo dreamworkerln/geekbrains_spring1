@@ -33,13 +33,7 @@ public class ServerApplication {
         // SET DECIMAL SEPARATOR TO "."
         //Locale.setDefault(new Locale("en", "US"));
 
-        // Will have duplicated by dev-tools
         setupLog4j();
-
-        log.info("\n\n" +
-                 "==========================================================================\n" +
-                 "================================= STARTUP ================================\n" +
-                 "==========================================================================\n");
 
         SpringApplication.run(ServerApplication.class, args);
 

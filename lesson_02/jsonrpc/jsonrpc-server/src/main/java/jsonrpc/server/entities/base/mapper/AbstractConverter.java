@@ -1,19 +1,19 @@
 package jsonrpc.server.entities.base.mapper;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pivovarit.function.ThrowingFunction;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.AbstractDto;
 import jsonrpc.server.entities.base.AbstractEntity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.ValidationException;
 import javax.validation.Validator;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import javax.validation.ConstraintViolationException;
 
@@ -53,12 +53,11 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
 
             // validate
             if (result == null || result < 0) {
-                throw new IllegalArgumentException("id == null < 0");
+                throw new ValidationException("Id validation failed");
             }
         }
-        // All parse/deserialize errors interpreted as 400 error - do not remove this try/catch
-        catch (Exception e) {
-            throw new IllegalArgumentException("id parse error", e);
+        catch (JsonProcessingException e) {
+            throw new ParseException(0, "Id parse error", e);
         }
         return result;
     }
@@ -70,7 +69,7 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
         try {
 
             if (params == null) {
-                throw new IllegalArgumentException("IdList == null");
+                throw new ValidationException("IdList = null");
             }
 
 
@@ -79,12 +78,12 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
 
             result.forEach(l -> {
                 if (l == null) {
-                    throw new IllegalArgumentException("IdList contains null element");
+                    throw new ValidationException("IdList contains null elements");
                 }
             });
         }
-        catch (Exception e) {
-            throw new IllegalArgumentException("idList param parse error", e);
+        catch (JsonProcessingException e) {
+            throw new ParseException(0 ,"idList param parse error", e);
         }
 
         return result;
@@ -133,9 +132,8 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
             validate(result);
             return result;
         }
-        // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
         catch (Exception e) {
-            throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
+            throw new ParseException(0, "Dto parse error", e);
         }
     }
 
@@ -145,10 +143,9 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
 
         try {
             return Optional.ofNullable(jsonToDtoSpec.apply(params));
-            // It's request, only IllegalArgumentException - will lead to HTTP 400 ERROR
         }
         catch (Exception e) {
-            throw new IllegalArgumentException("Jackson parse error:\n" + e.getMessage(), e);
+            throw new ParseException(0, "Entity parse error", e);
         }
     }
 
@@ -167,19 +164,11 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
 
 
 
-    private void validate(E entity) {
+    protected void validate(E entity) {
         Set<ConstraintViolation<E>> violations = validator.validate(entity);
         if (violations.size() != 0) {
             throw new ConstraintViolationException("Entity validation failed", violations);
         }
     }
-
-
-
-
-
-
-
-
 
 }

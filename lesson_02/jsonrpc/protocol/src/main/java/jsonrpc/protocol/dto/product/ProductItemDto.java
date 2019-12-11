@@ -1,6 +1,6 @@
 package jsonrpc.protocol.dto.product;
 
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import jsonrpc.protocol.dto.base.AbstractDto;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -46,14 +46,6 @@ public class ProductItemDto extends AbstractDto {
     public void setCount(Integer count) {
         this.count = count;
     }
-
-
-//    public static void validate(ProductItemDto productDto) {
-//
-//        if (productDto == null) {
-//            throw new IllegalArgumentException("productDto == null");
-//        }
-//    }
 
     @Override
     public String toString() {

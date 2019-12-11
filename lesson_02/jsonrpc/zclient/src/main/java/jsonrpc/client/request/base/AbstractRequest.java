@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.client.configuration.ClientProperties;
-import jsonrpc.protocol.dto.base.jrpc.JrpcRequest;
+import jsonrpc.protocol.jrpc.request.JrpcRequest;
 import jsonrpc.utils.Rest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,9 @@ public abstract class AbstractRequest {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
+    //private final static String JRPC_VERSION = "2.0";
+    private final static String API_VERSION = "1.0";
+
 
     private final ApplicationContext context;
     private final ClientProperties clientProperties;
@@ -35,9 +38,10 @@ public abstract class AbstractRequest {
         this.objectMapper = objectMapper;
         this.clientProperties = clientProperties;
 
-        apiURL = String.format("http://%1$s:%2$s/api/v1/",
+        apiURL = String.format("http://%1$s:%2$s/api/%3$s/",
                 this.clientProperties.getServer().getHostName(),
-                this.clientProperties.getServer().getPort());
+                this.clientProperties.getServer().getPort(),
+                API_VERSION);
     }
 
 

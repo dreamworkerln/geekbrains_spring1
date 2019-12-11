@@ -18,25 +18,9 @@ public class OrderItemDto extends ProductItemDto {
     }
 
     // не надо нам циклических зависимостей
-// OrderDto -> OrderDto.itemList -> OrderItemDto -> OrderDto -> ...
-//
-//    private OrderDto order;
-//
-//    public OrderDto getOrder() {
-//        return order;
-//    }
-//
-//    public void setOrder(OrderDto order) {
-//        this.order = order;
-//    }
+    // OrderDto -> OrderDto.itemList -> OrderItemDto -> OrderDto -> ...
+    // OrderItemDto не содержит ссылки на OrderDto
 
-
-//    public static void validate(OrderItemDto productDto) {
-//
-//        if (productDto == null) {
-//            throw new IllegalArgumentException("productDto == null");
-//        }
-//    }
 
 
     @Override

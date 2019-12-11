@@ -1,12 +1,12 @@
 package jsonrpc.server.controller.jrpc.base;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jsonrpc.protocol.dto.base.jrpc.AbstractDto;
+import com.pivovarit.function.ThrowingFunction;
 
 import java.util.function.Function;
 
 /**
  * Функциональный интерфейс обработчика jrpc запроса
- * (Просто более короткий alias для Function<JsonNode,AbstractDto>)
+ * alias
  */
-public interface JrpcMethodHandler extends Function<JsonNode,JsonNode> {}
+public interface JrpcMethodHandler extends ThrowingFunction<JsonNode,JsonNode, Exception> {}
