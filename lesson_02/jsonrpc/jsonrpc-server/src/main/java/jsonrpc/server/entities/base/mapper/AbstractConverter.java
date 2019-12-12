@@ -153,7 +153,14 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
     public Optional<S> toSpecDto(JsonNode params) {
 
         try {
-            return Optional.ofNullable(jsonToDtoSpec.apply(params));
+            Optional<S> result = Optional.ofNullable(jsonToDtoSpec.apply(params));
+            if (result.isPresent()) {
+                validateSpecDto(result.get());
+            }
+            return result;
+        }
+        catch (ValidationException e) {
+            throw e;
         }
         catch (Exception e) {
             throw new ParseException(0, "To Dto convert error", e);
@@ -191,5 +198,16 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
             throw new ConstraintViolationException("Entity validation failed", violations);
         }
     }
+
+
+    // check SpecDto validity
+    private void validateSpecDto(S specDto) {
+        Set<ConstraintViolation<S>> violations = validator.validate(specDto);
+        if (violations.size() != 0) {
+            throw new ConstraintViolationException("Entity validation failed", violations);
+        }
+
+    }
+
 
 }

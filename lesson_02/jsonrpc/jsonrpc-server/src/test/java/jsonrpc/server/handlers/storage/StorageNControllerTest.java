@@ -33,7 +33,7 @@ import java.util.Arrays;
         ConfigProperties.class})
 
 
-public class StorageControllerTest {
+public class StorageNControllerTest {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -68,7 +68,7 @@ public class StorageControllerTest {
 
         jrpcRequest.setId(22L);
 
-        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.findByProductId);
+        jrpcRequest.setMethod(HandlerName.StorageN.path + "." + HandlerName.StorageN.findByProductId);
         jrpcRequest.setParams(objectMapper.valueToTree(1L));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
@@ -82,7 +82,7 @@ public class StorageControllerTest {
     void getByIdList() throws JsonProcessingException {
 
         jrpcRequest.setId(22L);
-        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.findAllByProductId);
+        jrpcRequest.setMethod(HandlerName.StorageN.path + "." + HandlerName.StorageN.findAllByProductId);
         jrpcRequest.setParams(objectMapper.valueToTree(new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L))));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
@@ -100,7 +100,7 @@ public class StorageControllerTest {
 
         jrpcRequest.setId(22L);
 
-        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.findAll);
+        jrpcRequest.setMethod(HandlerName.StorageN.path + "." + HandlerName.StorageN.findAll);
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
@@ -119,7 +119,7 @@ public class StorageControllerTest {
         productItemDto.setProductId(2L);
         productItemDto.setCount(200);
 
-        jrpcRequest.setMethod(HandlerName.Storage.path + "." + HandlerName.Storage.put);
+        jrpcRequest.setMethod(HandlerName.StorageN.path + "." + HandlerName.StorageN.put);
         jrpcRequest.setParams(objectMapper.valueToTree(productItemDto));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);

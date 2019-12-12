@@ -2,7 +2,7 @@ package jsonrpc.server.service.order;
 
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.repository.OrderRepository;
-import jsonrpc.server.service.StorageService;
+import jsonrpc.server.service.storage.StorageService;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +38,7 @@ public class OrderLogic {
         orderRepository.refresh(order);
 
 
-        // SELECT FOR UPDATE блокируем строки в Order, Product, OrderItem, StorageItem
+        // SELECT FOR UPDATE блокируем строки в OrderN, ProductN, OrderItem, StorageItem
         // блокировки, как я понял - reentrant, на своем lock ты повторно не вешаешься
         // если работаешь в одной транзакции(или в продленной транзакции)
         orderRepository.lockByOrder(order);
@@ -62,7 +62,7 @@ public class OrderLogic {
         // берем старый заказ (по 2 разу, возьмет из кеша, т.к. одна транзакция)
         Long orderId = order.getId();
         Order old = orderRepository.findById(order.getId()).orElseThrow(() ->
-                new ValidationException("Order not exists:\n" + orderId));
+                new ValidationException("OrderN not exists:\n" + orderId));
 
         // возвращаем все взад как было до этого заказа
         // (пока дельты не будем считать по товарам)

@@ -1,9 +1,10 @@
-package jsonrpc.server.service;
+package jsonrpc.server.service.storage;
 
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.ProductItem;
 import jsonrpc.server.entities.storage.StorageItem;
 import jsonrpc.server.repository.StorageRepository;
+import jsonrpc.server.service.InvalidLogicException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,7 +133,7 @@ public class StorageService {
 
         if (pi.getCount() + count < 0) {
             throw new InvalidLogicException("Невозможно забрать со склада " + -count + " единиц товара id=" +
-                    product.getId() + ", на складе в наличии " + pi.getCount());
+                                            product.getId() + ", на складе в наличии " + pi.getCount());
         }
 
 

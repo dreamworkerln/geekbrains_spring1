@@ -1,10 +1,9 @@
 package jsonrpc.server.repository.specifications.product;
 
-import jsonrpc.protocol.dto.base.filter.specification.ProductSpecDto;
+import jsonrpc.protocol.dto.product.spec.ProductSpecDto;
 import jsonrpc.server.entities.product.Product;
 import org.springframework.data.jpa.domain.Specification;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ProductSpecBuilder {
 
@@ -69,7 +68,7 @@ public class ProductSpecBuilder {
 
 
 
-            // ORDER BY DEFAULT ID ASC
+            // DEFAULT SORT  BY ID ASC
             if(p.getPriceOrderBy() == null) {
 
                 specA = specA.and(
@@ -82,7 +81,7 @@ public class ProductSpecBuilder {
             }
 
 
-            // ORDER BY PRICE
+            // SORT BY PRICE
             if(p.getPriceOrderBy()!= null) {
 
                 specA = specA.and(
@@ -114,9 +113,9 @@ public class ProductSpecBuilder {
 
 /*
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public static Specification<Product> build(Optional<ProductSpecDto> pSpecDtoOp) {
+    public static Specification<ProductN> build(Optional<ProductSpecDto> pSpecDtoOp) {
 
-        AtomicReference<Specification<Product>> specA = new AtomicReference<>(Specification.where(null));
+        AtomicReference<Specification<ProductN>> specA = new AtomicReference<>(Specification.where(null));
 
 
         pSpecDtoOp.ifPresent(p -> {

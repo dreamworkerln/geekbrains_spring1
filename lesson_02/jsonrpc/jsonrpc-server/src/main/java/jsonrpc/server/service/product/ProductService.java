@@ -1,10 +1,9 @@
-package jsonrpc.server.service;
+package jsonrpc.server.service.product;
 
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.storage.StorageItem;
 import jsonrpc.server.repository.ProductRepository;
-import jsonrpc.server.service.ProductService;
-import jsonrpc.server.service.StorageService;
+import jsonrpc.server.service.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,12 +11,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
-import javax.validation.Validator;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @Transactional
@@ -43,7 +38,7 @@ public class ProductService {
         return productRepository.findAllById(listId);
     }
 
-//    public List<Product> findAll() {
+//    public List<ProductN> findAll() {
 //        return productRepository.findAll();
 //    }
 

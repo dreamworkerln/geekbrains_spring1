@@ -3,14 +3,14 @@ package jsonrpc.server.controller.jrpc.product;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import jsonrpc.protocol.dto.base.HandlerName;
-import jsonrpc.protocol.dto.base.filter.specification.ProductSpecDto;
+import jsonrpc.protocol.dto.product.spec.ProductSpecDto;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.product.Product;
 
 import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.entities.product.mappers.ProductConverter;
 import jsonrpc.server.repository.specifications.product.ProductSpecBuilder;
-import jsonrpc.server.service.ProductService;
+import jsonrpc.server.service.product.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.Optional;
 
 
 @Service
-@JrpcController(path = HandlerName.Product.path)
+@JrpcController(path = HandlerName.ProductN.path)
 public class ProductController {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -45,7 +45,7 @@ public class ProductController {
     // -----------------------------------------------------------------------------
 
 
-    @JrpcMethod(method = HandlerName.Product.findById)
+    @JrpcMethod(method = HandlerName.ProductN.findById)
     public JsonNode findById(JsonNode params) {
 
         long id = converter.getId(params);
@@ -56,7 +56,7 @@ public class ProductController {
 
 
 
-    @JrpcMethod(method = HandlerName.Product.findAllById)
+    @JrpcMethod(method = HandlerName.ProductN.findAllById)
     public JsonNode findAllById(JsonNode params) {
 
         List<Long> idList = converter.getIdList(params);
@@ -66,7 +66,7 @@ public class ProductController {
 
 
 
-    @JrpcMethod(method = HandlerName.Product.findAll)
+    @JrpcMethod(method = HandlerName.ProductN.findAll)
     public JsonNode findAll(JsonNode params) {
 
         Optional<ProductSpecDto> specDto = converter.toSpecDto(params);
@@ -78,7 +78,7 @@ public class ProductController {
     /**
      * Return first ProductSpecDto.limit elements
      */
-    @JrpcMethod(method = HandlerName.Product.findFirst)
+    @JrpcMethod(method = HandlerName.ProductN.findFirst)
     public JsonNode findFirst(JsonNode params) {
 
         Optional<ProductSpecDto> specDto = converter.toSpecDto(params);
@@ -90,7 +90,7 @@ public class ProductController {
     }
 
 
-    @JrpcMethod(method = HandlerName.Product.save)
+    @JrpcMethod(method = HandlerName.ProductN.save)
     public JsonNode save(JsonNode params) {
 
         Product product = converter.toEntity(params);
@@ -98,7 +98,7 @@ public class ProductController {
         return converter.toIdJson(product);
     }
 
-    @JrpcMethod(method = HandlerName.Product.delete)
+    @JrpcMethod(method = HandlerName.ProductN.delete)
     public JsonNode delete(JsonNode params) {
 
         Product product = converter.toEntity(params);
@@ -128,10 +128,10 @@ public class ProductController {
         }
 
         // Dto => Entity
-        Product toProduct(JsonNode params)  {
+        ProductN toProduct(JsonNode params)  {
             try {
                 ProductDto dto = objectMapper.treeToValue(params, ProductDto.class);
-                Product result = productMapper.toEntity(dto);
+                ProductN result = productMapper.toEntity(dto);
                 validate(result);
                 return result;
             }
@@ -154,22 +154,22 @@ public class ProductController {
         }
 
         // Entity => Dto
-        JsonNode toProductDtoJson(Product product) {
+        JsonNode toProductDtoJson(ProductN product) {
             ProductDto productDto = productMapper.toDto(product);
             return objectMapper.valueToTree(productDto);
         }
 
         // EntityList => Dto
-        JsonNode toProductListDtoJson(List<Product> productList) {
+        JsonNode toProductListDtoJson(List<ProductN> productList) {
             List<ProductDto> dtoList = productMapper.toDtoList(productList);
             return objectMapper.valueToTree(dtoList);
         }
 
 
 
-        void validate(Product product) {
+        void validate(ProductN product) {
 
-            Set<ConstraintViolation<Product>> violations = validator.validate(product);
+            Set<ConstraintViolation<ProductN>> violations = validator.validate(product);
             if (violations.size() != 0) {
                 throw new ConstraintViolationException("product validation failed", violations);
             }

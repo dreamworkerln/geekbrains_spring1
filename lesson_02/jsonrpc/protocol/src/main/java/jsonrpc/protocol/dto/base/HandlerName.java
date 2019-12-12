@@ -11,14 +11,14 @@ public class HandlerName {
     private static final String save = "save";
     private static final String delete = "delete";
 
-    // Storage increase/decrease product count
+    // StorageN increase/decrease product count
     private static final String put = "put";
     private static final String remove = "remove";
 
 
 
 
-    public static class Order {
+    public static class OrderN {
         public static final String path = "shop.entities.order";
 
         public static final String findById = HandlerName.findById;
@@ -27,7 +27,7 @@ public class HandlerName {
     }
 
 
-    public static class Product {
+    public static class ProductN {
         public static final String path = "shop.entities.product";
 
         public static final String findById = HandlerName.findById;
@@ -40,7 +40,7 @@ public class HandlerName {
 
 
 
-    public static class Storage {
+    public static class StorageN {
         public static final String path = "shop.entities.storage";
 
         public static final String findByProductId = "findByProductId";

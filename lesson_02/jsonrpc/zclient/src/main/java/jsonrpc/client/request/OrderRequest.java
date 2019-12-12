@@ -28,7 +28,7 @@ public class OrderRequest extends AbstractRequest {
 
     public OrderDto findById(long id) throws JsonProcessingException {
 
-        String uri = HandlerName.Order.path + "." + HandlerName.Order.findById;
+        String uri = HandlerName.OrderN.path + "." + HandlerName.OrderN.findById;
         JsonNode response = performRequest(1000L, uri, id);
         return objectMapper.treeToValue(response, OrderDto.class);
 
@@ -37,7 +37,7 @@ public class OrderRequest extends AbstractRequest {
 
     public Long save(Long productId, int count) throws JsonProcessingException {
 
-        String uri = HandlerName.Order.path + "." + HandlerName.Order.save;
+        String uri = HandlerName.OrderN.path + "." + HandlerName.OrderN.save;
         OrderItemDto orderItemDto = new OrderItemDto(); //context.getBean("orderItemDto", OrderItemDto.class);
         orderItemDto.setProductId(productId);
         orderItemDto.setCount(count);
@@ -52,7 +52,7 @@ public class OrderRequest extends AbstractRequest {
 
     public Long save(OrderDto order) throws JsonProcessingException {
 
-        String uri = HandlerName.Order.path + "." + HandlerName.Order.save;
+        String uri = HandlerName.OrderN.path + "." + HandlerName.OrderN.save;
         JsonNode response = performRequest(1000L, uri, order);
         return objectMapper.treeToValue(response, Long.class);
     }

@@ -33,7 +33,7 @@ import java.util.Arrays;
 //        JrpcRequest.class
 
 
-public class ProductHandlerTest {
+public class ProductNHandlerTest {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -81,7 +81,7 @@ public class ProductHandlerTest {
         jrpcRequest.setId(22L);
 
         // specify handler and method name, params
-        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.findById);
+        jrpcRequest.setMethod(HandlerName.ProductN.path + "." + HandlerName.ProductN.findById);
         jrpcRequest.setParams(objectMapper.valueToTree(1L));
 
         // producing json
@@ -102,7 +102,7 @@ public class ProductHandlerTest {
 
         jrpcRequest.setId(22L);
 
-        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.findAllById);
+        jrpcRequest.setMethod(HandlerName.ProductN.path + "." + HandlerName.ProductN.findAllById);
         jrpcRequest.setParams(objectMapper.valueToTree(Arrays.asList(1L, 2L, 3L, 999L)));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);
@@ -125,7 +125,7 @@ public class ProductHandlerTest {
 
         jrpcRequest.setId(22L);
 
-        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.findAll);
+        jrpcRequest.setMethod(HandlerName.ProductN.path + "." + HandlerName.ProductN.findAll);
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
 
@@ -147,7 +147,7 @@ public class ProductHandlerTest {
         productDto.setTestDate(Instant.EPOCH);
         productDto.setVcode("123");
 
-        jrpcRequest.setMethod(HandlerName.Product.path + "." + HandlerName.Product.save);
+        jrpcRequest.setMethod(HandlerName.ProductN.path + "." + HandlerName.ProductN.save);
         jrpcRequest.setParams(objectMapper.valueToTree(productDto));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);

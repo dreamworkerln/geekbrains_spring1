@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 
 /*
 Содержит информацию о количестве товара данного типа
-Используется в Storage(хранилище) и Order(корзина)
+Используется в StorageN(хранилище) и OrderN(корзина)
 */
 
 //@MappedSuperclass
@@ -28,7 +28,7 @@ public class ProductItem extends AbstractEntity {
 
     //@ManyToOne
     //@JoinColumn(name="order_id", referencedColumnName="id")
-    //private Order order;
+    //private OrderN order;
 
     public ProductItem() {}
 
@@ -64,11 +64,11 @@ public class ProductItem extends AbstractEntity {
         return result;
     }
 
-//    public Order getOrder() {
+//    public OrderN getOrder() {
 //        return order;
 //    }
 //
-//    public void setOrder(Order order) {
+//    public void setOrder(OrderN order) {
 //        this.order = order;
 //    }
 

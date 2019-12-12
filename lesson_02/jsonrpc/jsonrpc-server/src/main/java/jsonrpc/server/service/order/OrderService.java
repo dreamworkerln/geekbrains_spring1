@@ -6,7 +6,7 @@ import jsonrpc.server.repository.OrderItemRepository;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.repository.OrderRepository;
 import jsonrpc.server.service.InvalidLogicException;
-import jsonrpc.server.service.StorageService;
+import jsonrpc.server.service.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.ValidationException;
 import java.lang.reflect.Array;
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 
@@ -77,7 +76,7 @@ public class OrderService {
         else {
             // берем старый заказ
             old = orderRepository.findById(order.getId()).orElseThrow(() ->
-                    new ValidationException("Order not exists:\n" + orderId));
+                    new ValidationException("OrderN not exists:\n" + orderId));
         }
 
         // Списки действий
@@ -125,7 +124,7 @@ public class OrderService {
         }
         else {
             // Такая логика запрещена
-            throw new InvalidLogicException("Invalid Order operation: " +
+            throw new InvalidLogicException("Invalid OrderN operation: " +
                                             "from " + old.getStatus() + " to " + order.getStatus());
         }
 
@@ -136,9 +135,9 @@ public class OrderService {
     }
 
 //
-//    public Order saveAndFlush(Order order) {
+//    public OrderN saveAndFlush(OrderN order) {
 //
-//        Order result = refreshableRepository.saveAndFlush(order);
+//        OrderN result = refreshableRepository.saveAndFlush(order);
 //        refreshableRepository.refresh(order);
 //        return result;
 //    }
@@ -164,10 +163,10 @@ public class OrderService {
 
 
 //    /**
-//     * Обновляет Order.update
-//     * Если был изменен к-л из Order.itemList (или добавлен/удален)
+//     * Обновляет OrderN.update
+//     * Если был изменен к-л из OrderN.itemList (или добавлен/удален)
 //     */
-//    private List<Instant> getUList(Order order) {
+//    private List<Instant> getUList(OrderN order) {
 //
 //        List<Instant> result = new ArrayList<>();
 //

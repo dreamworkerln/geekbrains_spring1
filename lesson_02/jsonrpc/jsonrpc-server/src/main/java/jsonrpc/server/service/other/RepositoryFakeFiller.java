@@ -4,9 +4,9 @@ package jsonrpc.server.service.other;
 import com.github.javafaker.Faker;
 import jsonrpc.server.entities.category.Category;
 import jsonrpc.server.entities.product.Product;
-import jsonrpc.server.service.CategoryService;
-import jsonrpc.server.service.ProductService;
-import jsonrpc.server.service.StorageService;
+import jsonrpc.server.service.category.CategoryService;
+import jsonrpc.server.service.product.ProductService;
+import jsonrpc.server.service.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

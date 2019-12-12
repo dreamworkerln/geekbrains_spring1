@@ -114,7 +114,7 @@ public class Order extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Order{" +
+        return "OrderN{" +
                "id=" + id +
                ", created=" + created +
                ", updated=" + updated +

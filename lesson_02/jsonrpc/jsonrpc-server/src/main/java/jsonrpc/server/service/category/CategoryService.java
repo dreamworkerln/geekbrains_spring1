@@ -1,4 +1,4 @@
-package jsonrpc.server.service;
+package jsonrpc.server.service.category;
 
 import jsonrpc.server.entities.category.Category;
 import jsonrpc.server.repository.CategoryRepository;

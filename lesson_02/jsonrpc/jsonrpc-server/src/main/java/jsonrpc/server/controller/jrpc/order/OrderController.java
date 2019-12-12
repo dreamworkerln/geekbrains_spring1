@@ -17,10 +17,10 @@ import java.lang.invoke.MethodHandles;
 /**
  * Выдает информацию о товарах<br>
  * Какие типы товаров есть, их описание, цена, артикул и т.д.
- * (За количеством на складе обращайтесь в сервис Storage)
+ * (За количеством на складе обращайтесь в сервис StorageN)
  */
 @Service
-@JrpcController(path = HandlerName.Order.path)
+@JrpcController(path = HandlerName.OrderN.path)
 public class OrderController  {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -41,7 +41,7 @@ public class OrderController  {
 
 
 
-    @JrpcMethod(method = HandlerName.Order.findById)
+    @JrpcMethod(method = HandlerName.OrderN.findById)
     public JsonNode findById(JsonNode params) {
 
         long id = converter.getId(params);
@@ -50,7 +50,7 @@ public class OrderController  {
     }
 
 
-    @JrpcMethod(method = HandlerName.Order.save)
+    @JrpcMethod(method = HandlerName.OrderN.save)
     public JsonNode save(JsonNode params)  {
 
         Order order = converter.toEntity(params);
@@ -63,7 +63,7 @@ public class OrderController  {
     }
 
 
-    @JrpcMethod(method = HandlerName.Order.delete)
+    @JrpcMethod(method = HandlerName.OrderN.delete)
     public JsonNode delete(JsonNode params)  {
 
         Order order = converter.toEntity(params);
@@ -104,12 +104,12 @@ public class OrderController  {
 //        }
 //
 //        // Dto => Entity
-//        Order toOrder(JsonNode params)  {
+//        OrderN toOrder(JsonNode params)  {
 //
 //            // parsing request
 //            try {
 //                OrderDto dto = objectMapper.jsonToDto(params, OrderDto.class);
-//                Order result = orderMapper.toItemEntity(dto);
+//                OrderN result = orderMapper.toItemEntity(dto);
 //                // Проверяем на валидность
 //                validate(result);
 //                return result;
@@ -121,7 +121,7 @@ public class OrderController  {
 //        }
 //
 //        // Entity => Dto
-//        JsonNode toOrderDtoJson(Order order) {
+//        JsonNode toOrderDtoJson(OrderN order) {
 //            OrderDto orderDto = orderMapper.toItemDto(order);
 //            return objectMapper.valueToTree(orderDto);
 //        }
@@ -129,12 +129,12 @@ public class OrderController  {
 //
 //        // Валидатор валидирует только объект верхнего уровня
 //        // Дочерние объекты проверять не будет (ходить по графу)
-//        void validate(Order order) {
+//        void validate(OrderN order) {
 //
-//            Set<ConstraintViolation<Order>> violations = validator.validate(order);
+//            Set<ConstraintViolation<OrderN>> violations = validator.validate(order);
 //            if (violations.size() != 0) {
 //                log.body("Given order: {}", order);
-//                throw new ConstraintViolationException("Order validation failed", violations);
+//                throw new ConstraintViolationException("OrderN validation failed", violations);
 //            }
 //        }
 //    }
@@ -168,7 +168,7 @@ public class OrderController  {
 //        System.out.println("-----------------------------------\n");
 //
 //
-///*        modelMapper.addMappings(new PropertyMap<OrderDto, Order>() {
+///*        modelMapper.addMappings(new PropertyMap<OrderDto, OrderN>() {
 //            @Override
 //            protected void configure() {
 //                skip().setDate(null);
@@ -177,7 +177,7 @@ public class OrderController  {
 //            }
 //        });
 //
-//        modelMapper.addMappings(new PropertyMap<Order, OrderDto>() {
+//        modelMapper.addMappings(new PropertyMap<OrderN, OrderDto>() {
 //            @Override
 //            protected void configure() {
 //                skip().setDate(null);
@@ -209,16 +209,16 @@ public class OrderController  {
 
 
 
-//    private OrderDto convertToDto(Order order) {
+//    private OrderDto convertToDto(OrderN order) {
 //
 //        OrderDto result = modelMapper.map(order, OrderDto.class);
 //        // result.setDate(order.getDate().getEpochSecond());
 //        return result;
 //    }
 //
-//    private Order convertToEntity(OrderDto orderDto) {
+//    private OrderN convertToEntity(OrderDto orderDto) {
 //
-//        Order result = modelMapper.map(orderDto, Order.class);
+//        OrderN result = modelMapper.map(orderDto, OrderN.class);
 //        //result.setDate(Instant.ofEpochSecond(orderDto.getDate()));
 //
 //        return result;

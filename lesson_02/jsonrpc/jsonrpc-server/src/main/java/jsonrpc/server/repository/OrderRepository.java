@@ -16,9 +16,9 @@ import java.util.stream.Collectors;
 public interface OrderRepository extends CustomRepository<Order, Long> {
 
     // Вешает блокировку(строка по id) на
-    // Product,
+    // ProductN,
     // StorageItem,
-    // Order         // так же как и на Product, на всякий пожарный
+    // OrderN         // так же как и на ProductN, на всякий пожарный
     // OrderItem
     //
     // Ничего не возвращаем, делается чисто один lock, дальше можно модифицировать
@@ -47,7 +47,7 @@ public interface OrderRepository extends CustomRepository<Order, Long> {
     List<Order> lockByOrder(@Param("order")Order order);
 
 
-//    @Query(value = "UPDATE Order o SET o.updated = :timestamp " +
+//    @Query(value = "UPDATE OrderN o SET o.updated = :timestamp " +
 //            "WHERE o = :order")
 //            //"WHERE o.id = :id")
 //            // :#{#order.id}
@@ -56,14 +56,14 @@ public interface OrderRepository extends CustomRepository<Order, Long> {
 //            value = "UPDATE \"order\" SET updated = :timestamp " +
 //                    "WHERE id = :#{#order.id}",
 //            nativeQuery = true)
-//    void toUpdateNative(@Param("order") Order order, @Param("timestamp")Instant timestamp);
+//    void toUpdateNative(@Param("order") OrderN order, @Param("timestamp")Instant timestamp);
 //
 //
 //    @Modifying
-//        @Query(value = "UPDATE Order o SET o.updated = CURRENT_TIMESTAMP " +
+//        @Query(value = "UPDATE OrderN o SET o.updated = CURRENT_TIMESTAMP " +
 //            "WHERE o = :order")
 //            //"WHERE o.id = :id")
 //            // :#{#order.id}
 //
-//    void toUpdate(@Param("order") Order order);
+//    void toUpdate(@Param("order") OrderN order);
 }

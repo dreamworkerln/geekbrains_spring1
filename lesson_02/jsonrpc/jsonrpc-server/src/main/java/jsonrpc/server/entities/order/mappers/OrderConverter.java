@@ -32,12 +32,12 @@ public class OrderConverter extends AbstractConverter<Order,OrderDto, Void> {
     protected void validate(Order order) {
         super.validate(order);
 
-        // "Нельзя пускать на сохранение Order у которого id=null, но есть элементы от другого order'a с ненулевыми id"
+        // "Нельзя пускать на сохранение OrderN у которого id=null, но есть элементы от другого order'a с ненулевыми id"
         if (order.getId() == null) {
             
             order.getItemList().forEach(item -> {
                 if (item.getId() != null) {
-                    throw new ValidationException("New Order referenced to existing OrderItem from other Order");
+                    throw new ValidationException("New OrderN referenced to existing OrderItem from other OrderN");
                 }
             });
         }

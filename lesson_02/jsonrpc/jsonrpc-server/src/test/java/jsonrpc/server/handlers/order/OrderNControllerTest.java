@@ -36,7 +36,7 @@ import java.lang.invoke.MethodHandles;
         ConfigProperties.class})
 // Так можно догрузить/переопределить базовые настройки
 //@TestPropertySource("classpath:configprops.properties")
-class OrderControllerTest {
+class OrderNControllerTest {
 
     private static final Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
@@ -74,7 +74,7 @@ class OrderControllerTest {
         jrpcRequest.setId(22L);
 
         // specify handler and method name, params
-        jrpcRequest.setMethod(HandlerName.Order.path + "." + HandlerName.Order.findById);
+        jrpcRequest.setMethod(HandlerName.OrderN.path + "." + HandlerName.OrderN.findById);
         jrpcRequest.setParams(objectMapper.valueToTree(id));
 
         // producing json
@@ -98,7 +98,7 @@ class OrderControllerTest {
         OrderDto orderDto = context.getBean(OrderDto.class);
         orderDto.addItem(orderItemDto);
 
-        jrpcRequest.setMethod(HandlerName.Order.path + "." + HandlerName.Order.save);
+        jrpcRequest.setMethod(HandlerName.OrderN.path + "." + HandlerName.OrderN.save);
         jrpcRequest.setParams(objectMapper.valueToTree(orderDto));
 
         String json = objectMapper.writeValueAsString(jrpcRequest);

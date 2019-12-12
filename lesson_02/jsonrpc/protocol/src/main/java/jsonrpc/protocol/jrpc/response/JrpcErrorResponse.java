@@ -5,11 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import jsonrpc.protocol.jrpc.JrpcBase;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * Represent json-rpc execution error response
  */
 @Data
+@EqualsAndHashCode(callSuper=true)
 public class JrpcErrorResponse extends JrpcBase {
 
 

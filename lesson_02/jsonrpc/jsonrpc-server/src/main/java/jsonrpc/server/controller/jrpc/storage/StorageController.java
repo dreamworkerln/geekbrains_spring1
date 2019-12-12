@@ -6,7 +6,7 @@ import jsonrpc.server.controller.jrpc.base.JrpcController;
 import jsonrpc.server.controller.jrpc.base.JrpcMethod;
 import jsonrpc.server.entities.product.ProductItem;
 import jsonrpc.server.entities.storage.StorageConverter;
-import jsonrpc.server.service.StorageService;
+import jsonrpc.server.service.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -14,7 +14,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.List;
 
 @Service
-@JrpcController(path = HandlerName.Storage.path)
+@JrpcController(path = HandlerName.StorageN.path)
 public class StorageController {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
@@ -35,7 +35,7 @@ public class StorageController {
     // -----------------------------------------------------------------------------
 
 
-    @JrpcMethod(method = HandlerName.Storage.findByProductId)
+    @JrpcMethod(method = HandlerName.StorageN.findByProductId)
     public JsonNode findByProductId(JsonNode params) {
 
 
@@ -45,7 +45,7 @@ public class StorageController {
         return converter.toDtoJson(productItem);
     }
 
-    @JrpcMethod(method = HandlerName.Storage.findAllByProductId)
+    @JrpcMethod(method = HandlerName.StorageN.findAllByProductId)
     public JsonNode findAllByProductId(JsonNode params) {
 
         List<Long> idList = converter.getIdList(params);
@@ -54,7 +54,7 @@ public class StorageController {
     }
 
 
-    @JrpcMethod(method = HandlerName.Storage.findAll)
+    @JrpcMethod(method = HandlerName.StorageN.findAll)
     public JsonNode findAll(JsonNode params) {
 
         List<ProductItem> list = storageService.findAll();
@@ -62,7 +62,7 @@ public class StorageController {
     }
 
 
-    @JrpcMethod(method = HandlerName.Storage.put)
+    @JrpcMethod(method = HandlerName.StorageN.put)
     public JsonNode put(JsonNode params) {
 
         ProductItem productItem = converter.toEntity(params);
@@ -71,7 +71,7 @@ public class StorageController {
     }
 
 
-    @JrpcMethod(method = HandlerName.Storage.remove)
+    @JrpcMethod(method = HandlerName.StorageN.remove)
     public JsonNode remove(JsonNode params) {
 
         ProductItem productItem = converter.toEntity(params);
@@ -80,7 +80,7 @@ public class StorageController {
     }
 
 
-    @JrpcMethod(method = HandlerName.Storage.delete)
+    @JrpcMethod(method = HandlerName.StorageN.delete)
     public JsonNode delete(JsonNode params) {
 
         Long id = converter.getId(params);

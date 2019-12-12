@@ -7,8 +7,8 @@ import jsonrpc.server.entities.base.mapper.InstantMapper;
 import jsonrpc.server.entities.category.Category;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.entities.product.ProductItem;
-import jsonrpc.server.service.ProductService;
-import jsonrpc.server.service.StorageService;
+import jsonrpc.server.service.product.ProductService;
+import jsonrpc.server.service.storage.StorageService;
 import jsonrpc.utils.Utils;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +68,7 @@ public abstract class ProductMapper extends AbstractMapper {
 
     public Product toProduct(Long productId) {
 
-        //Product result = productFactory.createProduct();
+        //ProductN result = productFactory.createProduct();
         Product result = new Product();
         Utils.fieldSetter("id", result, productId);
         return result;

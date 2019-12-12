@@ -4,7 +4,8 @@ import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.client.request.OrderRequest;
 import jsonrpc.client.request.ProductRequest;
 import jsonrpc.client.request.StorageRequest;
-import jsonrpc.protocol.dto.base.filter.specification.ProductSpecDto;
+import jsonrpc.protocol.dto.base.HandlerName;
+import jsonrpc.protocol.dto.product.spec.ProductSpecDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.protocol.dto.product.ProductDto;
@@ -131,6 +132,25 @@ public class AppStartupRunner implements ApplicationRunner {
         try {
             System.out.println("Попытаемся забрать со склада 9999 единиц товара с id=2:\n");
             storageRequest.remove(2L, 9999);
+        } catch (HttpStatusCodeException e) {
+            log.error("HTTP " + e.getStatusCode().toString() +"\n" +
+                      new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
+        }
+
+        try {
+
+        System.out.println("Создадим новый продукт и затем изменим его:\n");
+        ProductDto productDto = new ProductDto();
+        productDto.setName("Валенки");
+        productDto.setCategoryId(1L);
+        productDto.setPrice(BigDecimal.valueOf(10));
+        productDto.setVcode("1z1z1z");
+        Long productId = productRequest.save(productDto);
+
+        productDto = productRequest.findById(productId);
+        productDto.setCategoryId(3L);
+        productRequest.save(productDto);
+
         } catch (HttpStatusCodeException e) {
             log.error("HTTP " + e.getStatusCode().toString() +"\n" +
                       new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));

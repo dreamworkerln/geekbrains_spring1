@@ -1,12 +1,9 @@
 package jsonrpc.server;
 
-import jsonrpc.protocol.dto.order.OrderDto;
-import jsonrpc.server.entities.order.Order;
-import jsonrpc.server.entities.order.OrderItem;
 import jsonrpc.server.entities.product.Product;
 import jsonrpc.server.repository.ProductRepository;
 import jsonrpc.server.service.order.OrderService;
-import jsonrpc.server.service.StorageService;
+import jsonrpc.server.service.storage.StorageService;
 import jsonrpc.server.service.other.RepositoryFakeFiller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -101,19 +98,20 @@ public class AppStartupRunner implements ApplicationRunner {
 //
 //
 //
-            System.out.println("Сделаем заказ:\n");
-            Order order = new Order();
-            OrderItem orderItem = new OrderItem();
-            orderItem.setOrder(order);
-            orderItem.setProduct(productList.get(0));
-            orderItem.setCount(5);
-            order.addItem(orderItem);
-            order.setStatus(OrderDto.Status.ORDERED);
-
-            Long orderId = orderService.save(order).getId();
-            System.out.println("orderId: " + orderId);
-            System.out.println("\n");
+            
+//            System.out.println("Сделаем заказ:\n");
+//            Order order = new Order();
+//            OrderItem orderItem = new OrderItem();
+//            orderItem.setOrder(order);
+//            orderItem.setProduct(productList.get(0));
+//            orderItem.setCount(5);
+//            order.addItem(orderItem);
+//            order.setStatus(OrderDto.Status.ORDERED);
 //
+//            Long orderId = orderService.save(order).getId();
+//            System.out.println("orderId: " + orderId);
+//            System.out.println("\n");
+
 
         } catch (Exception e) {
             e.printStackTrace();

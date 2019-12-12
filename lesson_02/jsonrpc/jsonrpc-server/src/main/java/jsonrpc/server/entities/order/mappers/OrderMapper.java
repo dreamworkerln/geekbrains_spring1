@@ -34,7 +34,7 @@ public abstract class OrderMapper extends AbstractMapper {
     public abstract OrderDto toDto(Order order);
 
     public abstract Order toEntity(OrderDto orderDto);
-    //Order toItemEntity(OrderDto orderDto, @Context ProductRepository productRepository);
+    //OrderN toItemEntity(OrderDto orderDto, @Context ProductRepository productRepository);
 
 
     @Mapping(source = "product.id", target = "productId"/*, qualifiedByName = "toProductDto"*/)
@@ -68,7 +68,7 @@ public abstract class OrderMapper extends AbstractMapper {
 
 
 //    @AfterMapping
-//    default void postMap(OrderDto source, @MappingTarget Order target,@Context ProductRepository productRepository) {
+//    default void postMap(OrderDto source, @MappingTarget OrderN target,@Context ProductRepository productRepository) {
 
     
     @AfterMapping
@@ -108,7 +108,7 @@ public abstract class OrderMapper extends AbstractMapper {
         Map<Long, OrderItem> orderItemMap = new HashMap<>();
 
 
-        Optional<Order> pOrder = Optional.empty();
+        Optional<OrderN> pOrder = Optional.empty();
         if (target.getId() != null) {
             pOrder = orderService.findById(target.getId());
         }
@@ -118,7 +118,7 @@ public abstract class OrderMapper extends AbstractMapper {
         }
 
 
-        // Патчим Order.itemList - >
+        // Патчим OrderN.itemList - >
         // подшиваем OrderItem.created, OrderItem.updated и OrderItem.product вручную
         // (Так к нам на вход приезжает довольно обгрызанный OrderDto, где таких данных просто нет)
         Map<Long, OrderItem> fOrderItemMap = orderItemMap;
@@ -126,7 +126,7 @@ public abstract class OrderMapper extends AbstractMapper {
 
             // прицепляем product
             if (!productMap.containsKey(item.getProduct().getId())) {
-                throw new IllegalArgumentException("Order product not persisted");
+                throw new IllegalArgumentException("OrderN product not persisted");
             }
             item.setProduct(productMap.get(item.getProduct().getId()));
 
@@ -136,7 +136,7 @@ public abstract class OrderMapper extends AbstractMapper {
                 Utils.fieldSetter("updated", item, fOrderItemMap.get(item.getId()).getUpdated());
             }
 
-            // прицепляем Order
+            // прицепляем OrderN
             item.setOrder(target);
         });
 
@@ -151,7 +151,7 @@ public abstract class OrderMapper extends AbstractMapper {
 //
 //        // 2. Set created and updated from server
 //        if (target.getId() != null) {
-//            Order persisted = productService.findById(entity.getId()).orElse(null);
+//            OrderN persisted = productService.findById(entity.getId()).orElse(null);
 //
 //            if (persisted!= null) {
 //                Utils.fieldSetter("created", entity, persisted.getCreated());
@@ -169,9 +169,9 @@ public abstract class OrderMapper extends AbstractMapper {
 
 
 //    @AfterMapping
-//    void postMap(OrderDto source, @MappingTarget Order target) {
+//    void postMap(OrderDto source, @MappingTarget OrderN target) {
 //
-//        // 1. Set Order.id
+//        // 1. Set OrderN.id
 //        Utils.idSetter(target, source.getId());
 //
 //        // 2. Fetch all persistedProducts
