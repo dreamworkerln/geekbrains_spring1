@@ -95,7 +95,7 @@ public class ProductController {
 
         Product product = converter.toEntity(params);
         product = productService.save(product);
-        return converter.toJsonId(product);
+        return converter.toIdJson(product);
     }
 
     @JrpcMethod(method = HandlerName.Product.delete)

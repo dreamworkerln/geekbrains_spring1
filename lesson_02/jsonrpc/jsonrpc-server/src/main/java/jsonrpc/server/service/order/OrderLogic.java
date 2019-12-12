@@ -1,6 +1,5 @@
 package jsonrpc.server.service.order;
 
-import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.repository.OrderRepository;
 import jsonrpc.server.service.StorageService;

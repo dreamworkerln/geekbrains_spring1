@@ -188,6 +188,7 @@ public class AppStartupRunner implements ApplicationRunner {
 
             while(true) {
                 orderDto.setId(null);
+                orderDto.getItemList().forEach(item -> item.setId(null));
                 orderRequest.save(orderDto);
             }
 

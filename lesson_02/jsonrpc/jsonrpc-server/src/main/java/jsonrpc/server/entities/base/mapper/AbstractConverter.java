@@ -43,6 +43,7 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
         this.objectMapper = objectMapper;
     }
 
+    // Json => Long
     public Long getId(JsonNode params) {
 
         Long result;
@@ -63,6 +64,7 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
     }
 
 
+    // Json => List<Long>
     public List<Long> getIdList(JsonNode params) {
 
         List<Long> result;
@@ -89,7 +91,8 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
         return result;
     }
 
-    public JsonNode toJsonId(AbstractEntity entity) {
+    // Long => Json
+    public JsonNode toIdJson(AbstractEntity entity) {
         return objectMapper.valueToTree(entity.getId());
     }
 
@@ -99,6 +102,9 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
     // =================================================================================
 
 
+    /**
+     * Assign jackson conversion mapping from json to Dto
+     */
     protected void setJsonToDto(ThrowingFunction<JsonNode, D, Exception>  jsonToDto,
                                 ThrowingFunction<JsonNode, S, Exception>  jsonToDtoSpec) {
 
@@ -107,7 +113,9 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
     }
 
 
-
+    /**
+     *  Assign mapstruct mapping from Dto to Entity and vice versa
+     */
     protected void setMappers(
             Function<D, E> toEntity,
             Function<List<D>, List<E>> toEntityList,
@@ -124,7 +132,7 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
     // --------------------------------------------------------------------------
 
 
-    // Dto => Entity
+    // Json => Dto => Entity
     public E toEntity(JsonNode params)  {
         try {
             D dto = jsonToDto.apply(params);
@@ -132,38 +140,51 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
             validate(result);
             return result;
         }
+        catch (ValidationException e) {
+            throw e;
+        }
         catch (Exception e) {
             throw new ParseException(0, "Dto parse error", e);
         }
     }
 
 
-    // Dto => Entity
+    // Json => Dto (Specifications have no Entities)
     public Optional<S> toSpecDto(JsonNode params) {
 
         try {
             return Optional.ofNullable(jsonToDtoSpec.apply(params));
         }
         catch (Exception e) {
-            throw new ParseException(0, "Entity parse error", e);
+            throw new ParseException(0, "To Dto convert error", e);
         }
     }
 
 
-    // Entity => Dto
+    // Entity => Dto => Json
     public JsonNode toDtoJson(E entity) {
-        D dto = toDto.apply(entity);
-        return objectMapper.valueToTree(dto);
+        try {
+            D dto = toDto.apply(entity);
+            return objectMapper.valueToTree(dto);
+        }
+        catch (Exception e) {
+            throw new ParseException(0, "To Dto convert error", e);
+        }
     }
 
-    // EntityList => Dto
+    // EntityList => Dto => Json
     public JsonNode toDtoListJson(List<E> entityList) {
-        List<D> dtoList = toDtoList.apply(entityList);
-        return objectMapper.valueToTree(dtoList);
+        try {
+            List<D> dtoList = toDtoList.apply(entityList);
+            return objectMapper.valueToTree(dtoList);
+        }
+        catch (Exception e) {
+            throw new ParseException(0, "To DtoList parse error", e);
+        }
     }
 
 
-
+    // check Entity validity
     protected void validate(E entity) {
         Set<ConstraintViolation<E>> violations = validator.validate(entity);
         if (violations.size() != 0) {

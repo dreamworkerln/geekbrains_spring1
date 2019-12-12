@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.validation.ValidationException;
 
 @Service
 public class OrderConverter extends AbstractConverter<Order,OrderDto, Void> {
@@ -28,12 +29,17 @@ public class OrderConverter extends AbstractConverter<Order,OrderDto, Void> {
     }
 
     @Override
-    protected void validate(Order entity) {
-        super.validate(entity);
+    protected void validate(Order order) {
+        super.validate(order);
 
-        throw new NotImplementedException("Нельзя пускать на сохранение Order у которого id=null, но есть элементы от другого ordera с ненулевыми id");
-
-
-        // InvalidDataAccessApiUsageException: detached entity passed to persist: jsonrpc.server.entities.order.OrderItem;
+        // "Нельзя пускать на сохранение Order у которого id=null, но есть элементы от другого order'a с ненулевыми id"
+        if (order.getId() == null) {
+            
+            order.getItemList().forEach(item -> {
+                if (item.getId() != null) {
+                    throw new ValidationException("New Order referenced to existing OrderItem from other Order");
+                }
+            });
+        }
     }
 }

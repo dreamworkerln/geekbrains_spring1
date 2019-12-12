@@ -59,7 +59,7 @@ public class OrderController  {
         //order = orderService.findById(order.getId()).get();
         System.out.println(order);
 
-        return converter.toJsonId(order);
+        return converter.toIdJson(order);
     }
 
 
