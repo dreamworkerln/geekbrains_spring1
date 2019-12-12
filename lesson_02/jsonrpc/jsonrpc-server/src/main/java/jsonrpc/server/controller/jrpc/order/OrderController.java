@@ -71,21 +71,26 @@ public class OrderController  {
         return null;
     }
 
-
-    // ==============================================================================
-
+}
 
 
-    // Вообщем сделал базовый репозиторий, который умеет делать
-    // void refresh(Entity entity)
-    //
-    // Итого в сервисе:
-    //
-    // Entity saved = repository.save(Entity entity)
-    // Entity refreshed = EntityManager.refresh(Entity saved)
-    // return refreshed;
-    //
-    // соответственно после сохранения сущность из базы приезжает со всем графом дочерних объектов
+
+
+
+// ==============================================================================
+
+
+
+// Вообщем сделал базовый репозиторий, который умеет делать
+// void refresh(Entity entity)
+//
+// Итого в сервисе:
+//
+// Entity saved = repository.save(Entity entity)
+// Entity refreshed = EntityManager.refresh(Entity saved)
+// return refreshed;
+//
+// соответственно после сохранения сущность из базы приезжает со всем графом дочерних объектов
 
 
 
@@ -137,10 +142,10 @@ public class OrderController  {
 
 
 
-    // https://amydegregorio.com/2018/05/23/skipping-fields-with-modelmapper/
-    //
-    // by lambdas
-    // https://stackoverflow.com/questions/49003929/how-to-use-explicit-map-with-java-8-and-modelmapper
+// https://amydegregorio.com/2018/05/23/skipping-fields-with-modelmapper/
+//
+// by lambdas
+// https://stackoverflow.com/questions/49003929/how-to-use-explicit-map-with-java-8-and-modelmapper
 
 //
 //    @Override
@@ -199,8 +204,8 @@ public class OrderController  {
 //    }
 
 
-    // https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
-    // convert DTO from client to Entity
+// https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
+// convert DTO from client to Entity
 
 
 
@@ -222,14 +227,3 @@ public class OrderController  {
 
 
 
-
-
-
-
-
-
-
-
-
-
-}
