@@ -148,8 +148,8 @@ public class AppStartupRunner implements ApplicationRunner {
         Long productId = productRequest.save(productDto);
 
         productDto = productRequest.findById(productId);
-        productDto.setCategoryId(3L);
         productRequest.save(productDto);
+            productDto.setCategoryId(2L);
 
         } catch (HttpStatusCodeException e) {
             log.error("HTTP " + e.getStatusCode().toString() +"\n" +
