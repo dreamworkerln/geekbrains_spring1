@@ -139,17 +139,17 @@ public class AppStartupRunner implements ApplicationRunner {
 
         try {
 
-        System.out.println("Создадим новый продукт и затем изменим его:\n");
-        ProductDto productDto = new ProductDto();
-        productDto.setName("Валенки");
-        productDto.setCategoryId(1L);
-        productDto.setPrice(BigDecimal.valueOf(10));
-        productDto.setVcode("1z1z1z");
-        Long productId = productRequest.save(productDto);
+            System.out.println("Создадим новый продукт и затем изменим его:\n");
+            ProductDto productDto = new ProductDto();
+            productDto.setName("Валенки");
+            productDto.setCategoryId(1L);
+            productDto.setPrice(BigDecimal.valueOf(10));
+            productDto.setVcode("1z1z1z");
+            Long productId = productRequest.save(productDto);
 
-        productDto = productRequest.findById(productId);
-        productRequest.save(productDto);
+            productDto = productRequest.findById(productId);
             productDto.setCategoryId(2L);
+            productRequest.save(productDto);
 
         } catch (HttpStatusCodeException e) {
             log.error("HTTP " + e.getStatusCode().toString() +"\n" +
