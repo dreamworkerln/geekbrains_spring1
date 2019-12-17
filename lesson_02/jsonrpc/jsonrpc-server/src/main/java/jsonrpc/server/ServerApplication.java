@@ -1,7 +1,6 @@
 package jsonrpc.server;
 
 
-import jsonrpc.server.entities.order.Order;
 import jsonrpc.server.repository.base.CustomRepositoryImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +14,31 @@ import java.lang.invoke.MethodHandles;
 import java.util.Locale;
 
 @SpringBootApplication
-@EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)  // делаем нашу репу базовой репой
+// делаем нашу реализацию репо-интерфейса базовым для Spring Data JPA,
+// Spring будет генерить для него методы доступа(Find.One.By.Parent.Address и т.д.)
+// См мануал по @NoRepositoryBean
+// (providing an extended base interface for all repositories
+// in combination with a custom repository base class)
+//
+// + в CustomRepositoryImpl сделан метод refresh()
+// (идет вызов entityManager.refresh(entity)), позволяющий обновить кеш hibernate.
+// Это нужно при сохранении сущности с @OneToMany(cascade = CascadeType.ALL)
+//
+// Когда сохраняется сущность, где для ее дочерних объектов указаны только id,
+// (хотя эти дочерние объекты уже существуют в базе и все их поля полностью заполнены)
+// то при обращении к этой сущности после сохранения в текущей транзакции
+// у ее детей все поля будут null, кроме, соответственно, id.
+// Это происходит потому, что идет обращение к кешу hibernate, и пока не завершишь транзакцию,
+// через сущность до полностью подгруженных детей не достучишься.
+// Зато если после save() сделать refresh(), то пойдет запрос к базе и все данные детей подтянутся
+// и можно будет нормально бродить по полноценному графу объектов.
+@EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)
 @EnableScheduling
 public class ServerApplication {
 
     public static boolean SLEEP_IN_TRANSACTION = false;
 
-    public static Order orr;
+    //public static Order orr;
 
     private static Logger log = null;
 

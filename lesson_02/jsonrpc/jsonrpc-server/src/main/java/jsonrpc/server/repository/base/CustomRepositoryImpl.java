@@ -1,6 +1,5 @@
 package jsonrpc.server.repository.base;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
 import org.springframework.data.repository.NoRepositoryBean;
