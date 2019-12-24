@@ -18,7 +18,7 @@ import javax.validation.constraints.NotNull;
 public class ProductItem extends AbstractEntity {
 
     @NotNull
-    @OneToOne //@ManyToOne
+    @ManyToOne//@OneToOne //@ManyToOne
     @JoinColumn(name="product_id", referencedColumnName="id")
     protected Product product;
 
