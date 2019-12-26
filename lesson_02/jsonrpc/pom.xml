@@ -15,7 +15,9 @@
     <version>0.1.0</version>
 
     <modules>
-        <module>jsonrpc-server</module>
+        <module></module>
+        <module>resource-server</module>
+        <module>auth-server</module>
         <module>protocol</module>
         <module>utils</module>
         <module>zclient</module>

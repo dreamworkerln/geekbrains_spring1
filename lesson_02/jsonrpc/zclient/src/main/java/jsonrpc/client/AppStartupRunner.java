@@ -52,6 +52,16 @@ public class AppStartupRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
+
+
+        // OAuth2.0 INIT
+
+
+
+
+
+
         /*
         System.out.println("Завезем на склад 500 единиц товара с id=2:\n");
         storageRequest.put(2L, 500);
@@ -74,8 +84,9 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
 
-        System.out.println("Using client config: " + clientProperties.getServer());
-        System.out.println("\n");
+//        System.out.println("Using client config: " + clientProperties.getResourceServer());
+//        System.out.println("\n");
+        
         List<ProductDto> productDtoList;
 
 

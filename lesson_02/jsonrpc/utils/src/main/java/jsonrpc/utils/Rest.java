@@ -33,7 +33,7 @@ import static org.springframework.http.HttpStatus.Series.SERVER_ERROR;
 
 
 /**
- * RestTemplate Error handler - by default only suppress exception (client and server)
+ * RestTemplate Error handler - by default only suppress exception (client and resourceserver)
  */
 class RestTemplateResponseErrorHandler
         implements ResponseErrorHandler {
@@ -155,7 +155,7 @@ class RestTemplateFactory {
  * Bult-in curl, allowed enabling/disabling ssl(tls) сertificates check and custom timeouts(default 5000 ms)
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class Rest {
+public class Rest<T> {
 
     protected int timeout = 5000;
 
@@ -171,42 +171,36 @@ public class Rest {
 
     protected Map<String, String> customHeaders = new HashMap<>();
 
-    protected Rest() {
+    public Rest() {
 
         restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
     }
 
-    protected Rest(int timeout) {
+    public Rest(int timeout) {
 
         this.timeout = timeout;
         restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
     }
 
-    protected Rest(boolean throwOnError, int timeout) {
+    public Rest(boolean throwOnError, int timeout) {
 
         this.timeout = timeout;
         restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
     }
 
 
-    protected Rest(boolean checkCert, boolean throwOnError) {
+    public Rest(boolean checkCert, boolean throwOnError) {
 
         this.checkCert = checkCert;
         restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
     }
 
-    protected Rest(boolean checkCert, boolean throwOnError, int timeout) {
+    public Rest(boolean checkCert, boolean throwOnError, int timeout) {
 
         this.timeout = timeout;
         this.checkCert = checkCert;
         restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
     }
-
-    //
-
-
-
-
 
 
     /**
@@ -228,6 +222,57 @@ public class Rest {
         result =  restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
         return result;
     }
+
+    /**
+     * Perform get request
+     * @param url Url
+     * @return ResponseEntity<T>
+     */
+    public ResponseEntity<T> get(String url, Class<T> responseType) {
+
+        ResponseEntity<T> result;
+
+        //Set the headers you need send
+        final HttpHeaders headers = getHeaders();
+        //headers.set("User-Agent", userAgent);
+
+        //Create a new HttpEntity
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+
+        result =  restTemplate.exchange(url, HttpMethod.GET, entity, responseType);
+        return result;
+    }
+
+
+//    /**
+//     * Perform get request
+//     * @param url Url
+//     * @return ResponseEntity<T>
+//     */
+//    public ResponseEntity<T> get(String url, Class<T> responseType) {
+//
+//        System.out.println(responseType.getSimpleName());
+//
+//        ResponseEntity<T> result;
+//
+//        //Set the headers you need send
+//        final HttpHeaders headers = getHeaders();
+//        //headers.set("User-Agent", userAgent);
+//
+//        //Create a new HttpEntity
+//        HttpEntity<String> entity = new HttpEntity<>(headers);
+//
+//        restTemplate.getFor
+//
+//        result = restTemplate.getForEntity(url, responseType);
+//
+//        return result;
+//    }
+
+
+
+
+
 
 
     /**
@@ -270,6 +315,27 @@ public class Rest {
 
         result = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
 
+        return result;
+    }
+
+
+    /**
+     * Perform post request
+     * @param url Url
+     * @return ResponseEntity<T>
+     */
+    public ResponseEntity<T> post(String url, Class<T> responseType) {
+
+        ResponseEntity<T> result;
+
+        //Set the headers you need send
+        final HttpHeaders headers = getHeaders();
+
+        //Create a new HttpEntity
+        HttpEntity<String> entity = new HttpEntity<>(headers);
+        headers.setContentType(MediaType.APPLICATION_XML);
+
+        result =  restTemplate.exchange(url, HttpMethod.POST, entity, responseType);
         return result;
     }
 

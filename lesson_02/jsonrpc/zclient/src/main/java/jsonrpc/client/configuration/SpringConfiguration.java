@@ -4,24 +4,20 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jsonrpc.utils.Rest;
-import jsonrpc.utils.RestFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 @Configuration
 @ComponentScan("jsonrpc.protocol")
 public class SpringConfiguration {
 
-    private final ClientProperties clientProperties;
+    //private final ClientProperties clientProperties;
 
-    @Autowired
-    public SpringConfiguration(ClientProperties clientProperties) {
-        this.clientProperties = clientProperties;
-    }
+//    @Autowired
+//    public SpringConfiguration(ClientProperties clientProperties) {
+//        this.clientProperties = clientProperties;
+//    }
 
 
     @Bean
@@ -34,14 +30,14 @@ public class SpringConfiguration {
     }
 
 
-    @Bean
-    @Scope("prototype")
-    public Rest rest() {
-
-        final String TOKEN = clientProperties.getCredentials().getToken();
-
-        Rest result = RestFactory.getRest(true, true, 1000000);
-        result.setCustomHeader("token", TOKEN);
-        return result;
-    }
+//    @Bean
+//    @Scope("prototype")
+//    public Rest rest() {
+//
+//        //final String TOKEN = clientProperties.getCredentials().getToken();
+//
+//        Rest result = RestFactory.getRest(true, true, 1000000);
+//        //result.setCustomHeader("token", TOKEN);
+//        return result;
+//    }
 }
