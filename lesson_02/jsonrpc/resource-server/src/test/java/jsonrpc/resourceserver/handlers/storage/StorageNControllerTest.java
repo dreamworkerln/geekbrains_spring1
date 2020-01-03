@@ -9,7 +9,6 @@ import jsonrpc.protocol.dto.product.ProductItemDto;
 import jsonrpc.resourceserver.TestSuite;
 import jsonrpc.resourceserver.configuration.ConfigProperties;
 import jsonrpc.resourceserver.configuration.BeanConfiguration;
-import jsonrpc.utils.Rest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,9 +42,6 @@ public class StorageNControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private Rest rest;
-
     JrpcRequest jrpcRequest;
 
     @BeforeAll
@@ -57,7 +53,6 @@ public class StorageNControllerTest {
     @BeforeEach
     void beforeEach() {
 
-        rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest = new JrpcRequest(); //context.getBean(JrpcRequest.class);
     }
@@ -74,8 +69,8 @@ public class StorageNControllerTest {
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST\n" + json);
 
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
     }
 
     @Test
@@ -88,8 +83,8 @@ public class StorageNControllerTest {
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
 
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
         log.info("Падать, если к-л из элементов (999L) не найден или отдавать, что нашли без ошибки?");
 
     }
@@ -105,8 +100,8 @@ public class StorageNControllerTest {
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
 
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
 
     }
 
@@ -125,8 +120,8 @@ public class StorageNControllerTest {
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
 
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
     }
 
 }

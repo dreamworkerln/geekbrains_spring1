@@ -6,16 +6,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.protocol.http.OauthResponse;
 import jsonrpc.protocol.jrpc.request.JrpcRequest;
-import jsonrpc.utils.Rest;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 import java.time.Instant;
 
 @Component
@@ -30,16 +34,22 @@ public abstract class AbstractRequest {
 
     private final ApplicationContext context;
     private final ClientProperties clientProperties;
+    private final RestTemplate restTemplate;
     protected final ObjectMapper objectMapper;
+
 
     private final String apiURL;
 
-    public AbstractRequest(ApplicationContext context, ObjectMapper objectMapper, ClientProperties clientProperties) {
+    public AbstractRequest(ApplicationContext context, 
+                           ObjectMapper objectMapper,
+                           ClientProperties clientProperties,
+                           RestTemplate restTemplate) {
 
         // Контекст нужен, т.к. некоторые бины (JrpcRequest и  Rest) имеют scope == prototype
         this.context = context;
         this.objectMapper = objectMapper;
         this.clientProperties = clientProperties;
+        this.restTemplate = restTemplate;
 
         apiURL = String.format("http://%1$s:%2$s/api/%3$s/",
                 this.clientProperties.getResourceServer().getHostName(),
@@ -85,10 +95,16 @@ public abstract class AbstractRequest {
         }
 
         log.info("REQUEST\n" + json);
-        Rest<String> rest = new Rest<>(10000);
-        rest.setCustomHeader("Authorization", "Bearer " + clientCredentials.getAccessToken());
 
-        ResponseEntity<String> response = rest.post(apiURL, json);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + clientCredentials.getAccessToken());
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        RequestEntity<String> requestEntity = RequestEntity
+                .post(URI.create(apiURL))
+                .headers(headers)
+                .body(json);
+
+        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
 
         log.info("HTTP " + response.getStatusCode().toString() + "\n" + response.getBody());
         try {
@@ -111,31 +127,30 @@ public abstract class AbstractRequest {
 
         ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
 
-        Rest<OauthResponse> rest = new Rest<>(10000);
-
-
-        rest.setCredentials(new UsernamePasswordCredentials(
-                clientCredentials.getClientId(),
-                clientCredentials.getClientSecret()));
-
         String params = String.format("grant_type=%1$s&username=%2$s&password=%3$s",
                 grantType,
                 clientCredentials.getUsername(),
                 clientCredentials.getPassword());
 
+//        String getTokenURL = String.format("http://%1$s:%2$s/oauth/token?%3$s",
+//                this.clientProperties.getAuthServer().getHostName(),
+//                this.clientProperties.getAuthServer().getPort(),
+//                params);
 
-
-
-        //rest.setCustomHeader("grant_type", grantType);
-        //rest.setCustomHeader("username", clientCredentials.getUsername());
-        //rest.setCustomHeader("password", clientCredentials.getPassword());
-
-        String getTokenURL = String.format("http://%1$s:%2$s/oauth/token?%3$s",
+                String getTokenURL = String.format("http://%1$s:%2$s/oauth/token",
                 this.clientProperties.getAuthServer().getHostName(),
-                this.clientProperties.getAuthServer().getPort(),
-                params);
+                this.clientProperties.getAuthServer().getPort());
 
-        ResponseEntity<OauthResponse> response = rest.post(getTokenURL, OauthResponse.class);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setBasicAuth(clientCredentials.getClientId(), clientCredentials.getClientSecret());
+        RequestEntity<String> requestEntity = RequestEntity
+                .post(URI.create(getTokenURL))
+                .headers(headers)
+                .body(params);
+
+        ResponseEntity<OauthResponse> response = restTemplate.exchange(requestEntity, OauthResponse.class);
 
         OauthResponse oauthResponse = response.getBody();
         clientCredentials.setAccessToken(oauthResponse.getAccess_token());

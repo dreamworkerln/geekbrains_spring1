@@ -77,171 +77,75 @@ class RestTemplateResponseErrorHandler
 }
 
 
-class RestTemplateFactory {
-
-    static RestTemplate getRestTemplate(boolean checkCert, boolean throwOnError, int timeout) {
-
-        HttpComponentsClientHttpRequestFactory requestFactory;
-
-        RestTemplate result;
-
-        if (!checkCert) {
-
-
-            try {
-
-                TrustStrategy acceptingTrustStrategy = (X509Certificate[] chain, String authType) -> true;
-
-                SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
-                        .loadTrustMaterial(null, acceptingTrustStrategy)
-                        .build();
-
-
-                RequestConfig requestConfig = RequestConfig.custom()
-                        .setConnectTimeout(timeout)
-                        .setConnectionRequestTimeout(timeout)
-                        .setSocketTimeout(timeout)
-                        .build();
-
-
-                SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
-                CloseableHttpClient httpClient = HttpClients.custom()
-                        .setDefaultRequestConfig(requestConfig)
-                        .setSSLSocketFactory(csf)
-                        .build();
-
-                requestFactory =
-                        new HttpComponentsClientHttpRequestFactory();
-
-                requestFactory.setConnectTimeout(timeout);
-                requestFactory.setConnectionRequestTimeout(timeout);
-                requestFactory.setReadTimeout(timeout);
-                requestFactory.setHttpClient(httpClient);
-
-                result = new RestTemplate(requestFactory);
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-        else {
-            HttpComponentsClientHttpRequestFactory httpRequestFactory = new HttpComponentsClientHttpRequestFactory();
-            httpRequestFactory.setConnectionRequestTimeout(timeout);
-            httpRequestFactory.setConnectTimeout(timeout);
-            httpRequestFactory.setReadTimeout(timeout);
-
-            result = new RestTemplate(httpRequestFactory);
-        }
-
-        // Force using UTF-8 as default character encoding
-        result.getMessageConverters()
-                .add(0, new StringHttpMessageConverter(Charset.forName("UTF-8")));
-
-        // Add custom errorHandler that suppress any exceptions
-        if (!throwOnError) {
-            result.setErrorHandler(new RestTemplateResponseErrorHandler());
-        }
-
-        return result;
-    }
-
-}
-
-
-
 // ------------------------------------------------------------------------------------------
 
 /**
  * Bult-in curl, allowed enabling/disabling ssl(tls) сertificates check and custom timeouts(default 5000 ms)
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class Rest<T> {
+class Rest {
 
-    protected int timeout = 5000;
+/*    protected static final int TIMEOUT = 5000;
 
-    protected String userAgent = "ass-with-ears-2.0";
+    // protected String userAgent = "ass-with-ears-2.0";
 
-    protected Credentials credentials = null;
+    //protected Credentials credentials = null;
 
-    protected boolean checkCert = true;
+    protected static final boolean CHECK_SERT = true;
 
-    protected boolean throwOnError = true;
+    protected static final boolean THROW_ON_ERROR = true;
 
-    protected RestTemplate restTemplate;
+    // protected RestTemplate restTemplate;
 
-    protected Map<String, String> customHeaders = new HashMap<>();
+    //protected Map<String, String> customHeaders = new HashMap<>();
 
-    public Rest() {
+    public RestTemplate getRestTemplate() {
 
-        restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
+        return RestTemplateFactory.getRestTemplate(CHECK_SERT, THROW_ON_ERROR, TIMEOUT);
     }
 
-    public Rest(int timeout) {
+    public RestTemplate getRestTemplate(int timeout) {
 
-        this.timeout = timeout;
-        restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
+        return RestTemplateFactory.getRestTemplate(CHECK_SERT, THROW_ON_ERROR, timeout);
     }
 
-    public Rest(boolean throwOnError, int timeout) {
+    public RestTemplate getRestTemplate(boolean throwOnError, int timeout) {
 
-        this.timeout = timeout;
-        restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
-    }
-
-
-    public Rest(boolean checkCert, boolean throwOnError) {
-
-        this.checkCert = checkCert;
-        restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
-    }
-
-    public Rest(boolean checkCert, boolean throwOnError, int timeout) {
-
-        this.timeout = timeout;
-        this.checkCert = checkCert;
-        restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
+        //this.timeout = timeout;
+        return  RestTemplateFactory.getRestTemplate(CHECK_SERT, throwOnError, timeout);
     }
 
 
-    /**
-     * Perform get request
-     * @param url Url
-     * @return ResponseEntity<String>
-     */
-    public ResponseEntity<String> get(String url) {
+    public RestTemplate getRestTemplate(boolean checkCert, boolean throwOnError) {
 
-        ResponseEntity<String> result;
-
-        //Set the headers you need send
-        final HttpHeaders headers = getHeaders();
-        //headers.set("User-Agent", userAgent);
-
-        //Create a new HttpEntity
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        result =  restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-        return result;
+        return  RestTemplateFactory.getRestTemplate(checkCert, throwOnError, TIMEOUT);
     }
 
-    /**
-     * Perform get request
-     * @param url Url
-     * @return ResponseEntity<T>
-     */
-    public ResponseEntity<T> get(String url, Class<T> responseType) {
+    public RestTemplate getRestTemplate(boolean checkCert, boolean throwOnError, int timeout) {
 
-        ResponseEntity<T> result;
+        return  RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
+    }*/
 
-        //Set the headers you need send
-        final HttpHeaders headers = getHeaders();
-        //headers.set("User-Agent", userAgent);
-
-        //Create a new HttpEntity
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        result =  restTemplate.exchange(url, HttpMethod.GET, entity, responseType);
-        return result;
-    }
+//
+//    /**
+//     * Perform get request
+//     * @param url Url
+//     * @return ResponseEntity<String>
+//     */
+//    public static ResponseEntity<String> get(RequestEntity<String> request, RestTemplate template) {
+//
+//        return template.exchange(request, String.class);
+//    }
+//
+//    /**
+//     * Perform get request
+//     * @param url Url
+//     * @return ResponseEntity<T>
+//     */
+//    public static <T,R> ResponseEntity<R> get(RequestEntity<T> request, RestTemplate template, Class<R> responseType) {
+//
+//        return template.exchange(request, responseType);
+//    }
 
 
 //    /**
@@ -275,79 +179,90 @@ public class Rest<T> {
 
 
 
-    /**
-     * Perform get request
-     * @param url Url
-     * @return ResponseEntity<byte[]>
-     */
-    public ResponseEntity<byte[]> download(String url) {
-
-        ResponseEntity<byte[]> result;
-
-        HttpHeaders headers = getHeaders();
-        //headers.set("User-Agent", userAgent);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        result = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
-
-        return result;
-    }
-
-
-
-    /**
-     *
-     * @param url Url
-     * @param data String
-     * @return ResponseEntity<String>
-     */
-    public ResponseEntity<String> post(String url, String data) {
-
-        ResponseEntity<String> result;
-
-        //Set the headers you need send
-        HttpHeaders headers = getHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        //Create a new HttpEntity
-        HttpEntity<String> entity = new HttpEntity<>(data, headers);
-
-        result = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
-
-        return result;
-    }
+//    /**
+//     * Perform get request
+//     * @param url Url
+//     * @return ResponseEntity<byte[]>
+//     */
+//    public ResponseEntity<byte[]> download(String url, HttpHeaders headers, RestTemplate restTemplate) {
+//
+//        ResponseEntity<byte[]> result;
+//
+//        HttpHeaders headers = getHeaders();
+//        //headers.set("User-Agent", userAgent);
+//        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_OCTET_STREAM));
+//
+//        HttpEntity<String> entity = new HttpEntity<>(headers);
+//        result = restTemplate.exchange(url, HttpMethod.GET, entity, byte[].class);
+//
+//        return result;
+//    }
 
 
-    /**
-     * Perform post request
-     * @param url Url
-     * @return ResponseEntity<T>
-     */
-    public ResponseEntity<T> post(String url, Class<T> responseType) {
 
-        ResponseEntity<T> result;
+//    /**
+//     *
+//     * @param url Url
+//     * @param data String
+//     * @return ResponseEntity<String>
+//     */
+//    public ResponseEntity<String> post(String url, String data, HttpHeaders headers, RestTemplate restTemplate) {
+//
+//        ResponseEntity<String> result;
+//
+//        //Set the headers you need send
+//        HttpHeaders headers = getHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        //Create a new HttpEntity
+//        HttpEntity<String> entity = new HttpEntity<>(data, headers);
+//
+//        result = restTemplate.exchange(url, HttpMethod.POST, entity, String.class);
+//
+//        return result;
+//    }
 
-        //Set the headers you need send
-        final HttpHeaders headers = getHeaders();
 
-        //Create a new HttpEntity
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        headers.setContentType(MediaType.APPLICATION_XML);
-
-        result =  restTemplate.exchange(url, HttpMethod.POST, entity, responseType);
-        return result;
-    }
-
-
-    public void setCustomHeader(String name, String value) {
-
-        customHeaders.put(name, value);
-    }
+//
+//    /**
+//     * Perform post request
+//     * @param url Url
+//     * @return ResponseEntity<T>
+//     */
+//    public ResponseEntity<T> post(String url, HttpHeaders headers, RestTemplate restTemplate, Class<T> responseType) {
+//
+//        ResponseEntity<T> result;
+//
+//        //Set the headers you need send
+//        final HttpHeaders headers = getHeaders();
+//
+//        //Create a new HttpEntity
+//        HttpEntity<String> entity = new HttpEntity<>(headers);
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//
+//        restTemplate.exchange()
+//
+//        result =  restTemplate.exchange(url, HttpMethod.POST, entity, responseType);
+//        return result;
+//    }
 
 
     // -------------------------------------------------------------------------
 
+
+//    public static addCredentials(HttpHeaders headers) {
+//
+//        String auth = credentials.getUserPrincipal().getName() + ":" + credentials.getPassword();
+//        String encodedAuth = Base64.encodeBase64String(auth.getBytes(Charset.forName("US-ASCII")));
+//
+//        String authHeader = "Basic " + encodedAuth;
+//        result.set("Authorization", authHeader);
+//
+//
+//
+//    }
+
+    /*
 
     protected HttpHeaders getHeaders() {
 
@@ -374,25 +289,20 @@ public class Rest<T> {
         
         return result;
     }
+    */
+
+
 
 
 
     // -------------------------------------------------------------------------
 
 
-    public String getUserAgent() {
-        return userAgent;
-    }
-
-    public void setUserAgent(String userAgent) {
-        this.userAgent = userAgent;
-    }
-
-    public Credentials getCredentials() {
-        return credentials;
-    }
-
-    public void setCredentials(Credentials credentials) {
-        this.credentials = credentials;
-    }
+//    public String getUserAgent() {
+//        return userAgent;
+//    }
+//
+//    public void setUserAgent(String userAgent) {
+//        this.userAgent = userAgent;
+//    }
 }

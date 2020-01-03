@@ -15,9 +15,8 @@
     <version>0.1.0</version>
 
     <modules>
-        <module></module>
-        <module>resource-server</module>
         <module>auth-server</module>
+        <module>resource-server</module>
         <module>protocol</module>
         <module>utils</module>
         <module>zclient</module>

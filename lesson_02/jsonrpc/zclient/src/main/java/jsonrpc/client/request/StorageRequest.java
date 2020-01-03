@@ -10,6 +10,7 @@ import jsonrpc.protocol.dto.product.ProductItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,9 +23,10 @@ public class StorageRequest extends AbstractRequest {
     @Autowired
     public StorageRequest(ApplicationContext context,
                           ObjectMapper objectMapper,
-                          ClientProperties clientProperties) {
+                          ClientProperties clientProperties,
+                          RestTemplate restTemplate) {
 
-        super(context, objectMapper, clientProperties);
+        super(context, objectMapper, clientProperties, restTemplate);
     }
 
 

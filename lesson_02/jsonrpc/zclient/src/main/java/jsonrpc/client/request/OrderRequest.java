@@ -11,6 +11,7 @@ import jsonrpc.protocol.dto.order.OrderItemDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 
 @Service
@@ -20,9 +21,10 @@ public class OrderRequest extends AbstractRequest {
     @Autowired
     public OrderRequest(ApplicationContext context,
                         ObjectMapper objectMapper,
-                        ClientProperties clientProperties) {
+                        ClientProperties clientProperties,
+                        RestTemplate restTemplate) {
 
-        super(context, objectMapper, clientProperties);
+        super(context, objectMapper, clientProperties, restTemplate);
     }
 
 
