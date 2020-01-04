@@ -9,7 +9,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 import javax.annotation.PreDestroy;
 import java.lang.invoke.MethodHandles;
@@ -37,11 +36,6 @@ import java.util.Locale;
 // Зато если после save() сделать refresh(), то пойдет запрос к базе и все данные детей подтянутся
 // и можно будет нормально бродить по полноценному графу объектов.
 @EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)
-@EnableResourceServer
-@EnableGlobalMethodSecurity(
-        prePostEnabled = true,
-        securedEnabled = true,
-        jsr250Enabled = true)
 @EnableScheduling
 public class ServerApplication {
 

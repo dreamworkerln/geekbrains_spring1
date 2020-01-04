@@ -7,7 +7,7 @@ import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.resourceserver.TestSuite;
 import jsonrpc.resourceserver.configuration.ConfigProperties;
-import jsonrpc.resourceserver.configuration.BeanConfiguration;
+import jsonrpc.resourceserver.configuration.SpringConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.ResponseEntity;
 
 import java.lang.invoke.MethodHandles;
 
@@ -29,7 +28,7 @@ import java.lang.invoke.MethodHandles;
 // не укажешь бины - Spring их и не найдет, явно указываем все требуемые для тестов бины
 // (транзистивная зависимость автоматически не разрешается)
 @SpringBootTest(classes = {
-        BeanConfiguration.class,
+        SpringConfiguration.class,
         OrderDto.class,
         OrderItemDto.class,
         ConfigProperties.class})

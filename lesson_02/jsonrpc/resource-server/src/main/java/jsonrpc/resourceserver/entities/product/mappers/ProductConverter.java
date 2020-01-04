@@ -30,8 +30,10 @@ public class ProductConverter extends AbstractConverter<Product,ProductDto, Prod
         setMappers(productMapper::toEntity,productMapper::toEntityList,
                 productMapper::toDto,productMapper::toDtoList);
 
-        setJsonToDto(o -> objectMapper.treeToValue(o, ProductDto.class),
-                o -> objectMapper.treeToValue(o,ProductSpecDto.class));
+        setClasses(Product.class, ProductDto.class, ProductSpecDto.class);
+
+//        setJsonToDto(o -> objectMapper.treeToValue(o, ProductDto.class),
+//                o -> objectMapper.treeToValue(o,ProductSpecDto.class));
     }
 
     @Override

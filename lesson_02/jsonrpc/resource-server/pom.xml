@@ -127,34 +127,6 @@
         </dependency>
 
 
-        <!--&lt;!&ndash;fix slf4j class duplicate &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter</artifactId>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>org.springframework.boot</groupId>-->
-                    <!--<artifactId>spring-boot-starter-logging</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-        <!--</dependency>-->
-
-        <!-- https://mvnrepository.com/artifact/org.modelmapper/modelmapper -->
-        <!--<dependency>-->
-            <!--<groupId>org.modelmapper</groupId>-->
-            <!--<artifactId>modelmapper</artifactId>-->
-            <!--<version>2.3.5</version>-->
-        <!--</dependency>-->
-
-        <!-- actually not used, spring-boot-starter-data-jpa wanna some database to use -->
-        <!-- https://mvnrepository.com/artifact/com.h2database/h2 -->
-        <!--<dependency>-->
-            <!--<groupId>com.h2database</groupId>-->
-            <!--<artifactId>h2</artifactId>-->
-            <!--<version>1.4.199</version>-->
-            <!--<scope>runtime</scope>-->
-        <!--</dependency>-->
-
         <!--module -->
         <dependency>
             <groupId>ru.geekbrains.spring1.lesson02</groupId>
@@ -177,19 +149,10 @@
             <version>1.0.1</version>
         </dependency>
 
-        <!--Уже есть внутри spring ?-->
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.fasterxml.jackson.datatype/jackson-datatype-jsr310 &ndash;&gt;-->
-        <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.datatype</groupId>-->
-            <!--<artifactId>jackson-datatype-jsr310</artifactId>-->
-            <!--<version>2.10.0</version>-->
-        <!--</dependency>-->
-
         <!--К-то срань для типизации самодельных конфигураций, хз как ее использовать-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
-            <!--<version>2.1.7.RELEASE</version>-->
             <optional>true</optional>
         </dependency>
 
@@ -197,22 +160,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-
+        
         <dependency>
-            <groupId>org.springframework.security.oauth.boot</groupId>
-            <artifactId>spring-security-oauth2-autoconfigure</artifactId>
-            <version>2.2.2.RELEASE</version>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.9.1</version>
         </dependency>
-
-
-        <!--???????????-->
-        <!--<dependency>-->
-            <!--<groupId>org.testng</groupId>-->
-            <!--<artifactId>testng</artifactId>-->
-            <!--<version>7.0.0</version>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
 
     </dependencies>
 

@@ -29,7 +29,7 @@ public class AdminController {
     // curl -v -u clientId:secret -X POST localhost:9001/oauth/token --data "grant_type=password&username=admin&password=nooneguessthis" ; echo
 
     // Refresh
-    // curl -u clientId:secret -i localhost:9001/oauth/token  --data "grant_type=refresh_token&refresh_token=[refreshToken]" ; echo
+    // curl -u clientId:secret -i localhost:9001/oauth/token  --data "grant_type=refreshToken&refreshToken=[refreshToken]" ; echo
 
     //Access resource
     //curl -i localhost:9101/ddt -H "Authorization: Bearer [userAccessToken]" ; echo
@@ -38,7 +38,7 @@ public class AdminController {
     // curl -i "localhost:9001/admin/tokens/revokeAccessToken/[userAccessToken]" -H "Authorization: Bearer [adminAccessToken]" ; echo
 
     // trash
-    // curl -u clientId:secret  -i localhost:9001/oauth/token  --data "grant_type=refresh_token&refresh_token=REFRESH_TOKEN" ; echo
+    // curl -u clientId:secret  -i localhost:9001/oauth/token  --data "grant_type=refreshToken&refreshToken=REFRESH_TOKEN" ; echo
     // curl -u admin:nooneguessthis -i localhost:9001/admin/tokens/clientId ; echo
 
 

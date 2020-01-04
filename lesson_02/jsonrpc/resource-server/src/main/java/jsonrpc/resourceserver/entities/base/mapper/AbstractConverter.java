@@ -21,8 +21,8 @@ import javax.validation.ConstraintViolationException;
 public abstract class AbstractConverter<E extends AbstractEntity,D extends AbstractDto,S> {
 
 
-    private ThrowingFunction<JsonNode, D, Exception> jsonToDto;
-    private ThrowingFunction<JsonNode, S, Exception> jsonToDtoSpec;
+    //private ThrowingFunction<JsonNode, D, Exception> jsonToDto;
+    //private ThrowingFunction<JsonNode, S, Exception> jsonToDtoSpec;
 
     private Function<D, E> toEntity;
     private Function<List<D>, List<E>> toEntityList;
@@ -31,6 +31,11 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
 
     private   Validator    validator;
     protected ObjectMapper objectMapper;
+
+    protected Class<E> entityClass;
+    protected Class<D> dtoClass;
+    protected Class<S> specClass;
+
 
 
     @Autowired
@@ -102,14 +107,21 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
     // =================================================================================
 
 
-    /**
-     * Assign jackson conversion mapping from json to Dto
-     */
-    protected void setJsonToDto(ThrowingFunction<JsonNode, D, Exception>  jsonToDto,
-                                ThrowingFunction<JsonNode, S, Exception>  jsonToDtoSpec) {
+//    /**
+//     * Assign jackson conversion mapping from json to Dto
+//     */
+//    protected void setJsonToDto(ThrowingFunction<JsonNode, D, Exception>  jsonToDto,
+//                                ThrowingFunction<JsonNode, S, Exception>  jsonToDtoSpec) {
+//
+//        this.jsonToDto = jsonToDto;
+//        this.jsonToDtoSpec = jsonToDtoSpec;
+//    }
 
-        this.jsonToDto = jsonToDto;
-        this.jsonToDtoSpec = jsonToDtoSpec;
+    protected void setClasses(Class<E> entityClass, Class<D> dtoClass, Class<S> specClass) {
+
+        this.entityClass = entityClass;
+        this.dtoClass = dtoClass;
+        this.specClass = specClass;
     }
 
 
@@ -135,7 +147,7 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
     // Json => Dto => Entity
     public E toEntity(JsonNode params)  {
         try {
-            D dto = jsonToDto.apply(params);
+            D dto = objectMapper.treeToValue(params, dtoClass);                                               //jsonToDto.apply(params);
             E result = toEntity.apply(dto);
             validate(result);
             return result;
@@ -153,10 +165,8 @@ public abstract class AbstractConverter<E extends AbstractEntity,D extends Abstr
     public Optional<S> toSpecDto(JsonNode params) {
 
         try {
-            Optional<S> result = Optional.ofNullable(jsonToDtoSpec.apply(params));
-            if (result.isPresent()) {
-                validateSpecDto(result.get());
-            }
+            Optional<S> result = Optional.ofNullable(objectMapper.treeToValue(params, specClass));
+            result.ifPresent(this::validateSpecDto);
             return result;
         }
         catch (ValidationException e) {

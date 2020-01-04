@@ -18,16 +18,6 @@ import org.springframework.web.client.RestTemplate;
 public class OrderRequest extends AbstractRequest {
 
 
-    @Autowired
-    public OrderRequest(ApplicationContext context,
-                        ObjectMapper objectMapper,
-                        ClientProperties clientProperties,
-                        RestTemplate restTemplate) {
-
-        super(context, objectMapper, clientProperties, restTemplate);
-    }
-
-
     public OrderDto findById(long id) throws JsonProcessingException {
 
         String uri = HandlerName.OrderN.path + "." + HandlerName.OrderN.findById;

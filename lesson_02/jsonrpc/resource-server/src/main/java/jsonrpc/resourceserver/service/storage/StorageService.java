@@ -19,6 +19,7 @@ import static jsonrpc.resourceserver.ServerApplication.SLEEP_IN_TRANSACTION;
 
 @Service
 @Transactional
+@
 public class StorageService {
 
     //private final ProductRepository productRepository;

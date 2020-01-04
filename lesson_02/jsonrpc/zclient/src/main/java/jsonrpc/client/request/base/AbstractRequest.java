@@ -3,12 +3,15 @@ package jsonrpc.client.request.base;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.*;
 import jsonrpc.client.configuration.ClientProperties;
+import jsonrpc.client.request.TokenAdmin;
+import jsonrpc.protocol.http.GrantType;
 import jsonrpc.protocol.http.OauthResponse;
 import jsonrpc.protocol.jrpc.request.JrpcRequest;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpHeaders;
@@ -18,9 +21,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
+import java.security.Key;
 import java.time.Instant;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 @Scope("prototype")
@@ -32,30 +38,53 @@ public abstract class AbstractRequest {
     private final static String API_VERSION = "1.0";
 
 
-    private final ApplicationContext context;
-    private final ClientProperties clientProperties;
-    private final RestTemplate restTemplate;
-    protected final ObjectMapper objectMapper;
+    private ApplicationContext context;
+    private ClientProperties clientProperties;
+    private RestTemplate restTemplate;
+    private TokenAdmin tokenAdmin;
+
+    protected ObjectMapper objectMapper;
 
 
-    private final String apiURL;
 
-    public AbstractRequest(ApplicationContext context, 
-                           ObjectMapper objectMapper,
-                           ClientProperties clientProperties,
-                           RestTemplate restTemplate) {
+    private String apiURL;
 
-        // Контекст нужен, т.к. некоторые бины (JrpcRequest и  Rest) имеют scope == prototype
+    @Autowired
+    public void setContext(ApplicationContext context) {
         this.context = context;
-        this.objectMapper = objectMapper;
-        this.clientProperties = clientProperties;
-        this.restTemplate = restTemplate;
+    }
 
+    @Autowired
+    public void setClientProperties(ClientProperties clientProperties) {
+        this.clientProperties = clientProperties;
+    }
+
+    @Autowired
+    public void setRestTemplate(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+    }
+
+    @Autowired
+    public void setTokenAdmin(TokenAdmin tokenAdmin) {
+        this.tokenAdmin = tokenAdmin;
+    }
+
+    @Autowired
+    public void setObjectMapper(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
+
+    @PostConstruct
+    private void postConstruct() {
         apiURL = String.format("http://%1$s:%2$s/api/%3$s/",
                 this.clientProperties.getResourceServer().getHostName(),
                 this.clientProperties.getResourceServer().getPort(),
                 API_VERSION);
+
     }
+
+
+
 
 
     protected JsonNode performRequest(long id, String uri, Object params) {
@@ -64,14 +93,18 @@ public abstract class AbstractRequest {
 
         // Oauth2.0 authorization -------------------------------------------
         if (clientCredentials.getAccessToken() == null ||
-            clientCredentials.getRefreshToken() == null) {
+                clientCredentials.getRefreshToken() == null) {
 
-            log.info("OAUTH get TOKEN");
-
+            // get tokens (really get only lame refresh token)
             obtainToken();
+
+            // approve this refresh token from "simulated confidential client (maybe mobile app)"
+            tokenAdmin.approve(clientCredentials.getRefreshId());
+
+            // then get access+refresh tokens pair with normal access level
+            refreshToken();
         }
-        else if (clientCredentials.getObtained().getEpochSecond() + clientCredentials.getAccessTokenExpire() <=
-                Instant.now().getEpochSecond()) {
+        else if (clientCredentials.getAccessTokenExpiration().toEpochMilli() < Instant.now().toEpochMilli()) {
 
             log.info("OAUTH refresh TOKEN");
             refreshToken();
@@ -118,54 +151,108 @@ public abstract class AbstractRequest {
 
 
 
-    private void obtainTokenAbstract(String grantType) {
-
-        if(!grantType.equals("password") && !grantType.equals("refresh_token")) {
-            throw new IllegalArgumentException("grantType not recognized");
-        }
-
+    private void obtainTokenAbstract(GrantType grantType) {
 
         ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
 
-        String params = String.format("grant_type=%1$s&username=%2$s&password=%3$s",
-                grantType,
-                clientCredentials.getUsername(),
-                clientCredentials.getPassword());
+        String params = String.format("grant_type=%1$s", grantType.getValue());
 
-//        String getTokenURL = String.format("http://%1$s:%2$s/oauth/token?%3$s",
-//                this.clientProperties.getAuthServer().getHostName(),
-//                this.clientProperties.getAuthServer().getPort(),
-//                params);
-
-                String getTokenURL = String.format("http://%1$s:%2$s/oauth/token",
+        String getTokenURL = String.format("http://%1$s:%2$s/oauzz/token",
                 this.clientProperties.getAuthServer().getHostName(),
                 this.clientProperties.getAuthServer().getPort());
 
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setBasicAuth(clientCredentials.getClientId(), clientCredentials.getClientSecret());
-        RequestEntity<String> requestEntity = RequestEntity
-                .post(URI.create(getTokenURL))
-                .headers(headers)
-                .body(params);
+        RequestEntity<String> requestEntity = null;
+        if (grantType == GrantType.PASSWORD) {
 
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.setBasicAuth(clientCredentials.getUsername(), clientCredentials.getPassword());
+            requestEntity = RequestEntity
+                    .post(URI.create(getTokenURL))
+                    .headers(headers)
+                    .body(params);
+        }
+        else if (grantType == GrantType.REFRESH) {
+
+            String authorization = "Bearer " + clientCredentials.getRefreshToken();
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", authorization);
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            requestEntity = RequestEntity
+                    .post(URI.create(getTokenURL))
+                    .headers(headers)
+                    .body(params);
+        }
+
+        assert requestEntity != null;
         ResponseEntity<OauthResponse> response = restTemplate.exchange(requestEntity, OauthResponse.class);
 
         OauthResponse oauthResponse = response.getBody();
-        clientCredentials.setAccessToken(oauthResponse.getAccess_token());
-        clientCredentials.setRefreshToken(oauthResponse.getAccess_token());
-        clientCredentials.setAccessTokenExpire(oauthResponse.getExpires_in());
+        clientCredentials.setAccessToken(oauthResponse.getAccessToken());
+        clientCredentials.setRefreshToken(oauthResponse.getRefreshToken());
         clientCredentials.setObtained(Instant.now());
+
+        Claims claims = getClaims(oauthResponse.getAccessToken());
+
+        if (claims != null) {
+            clientCredentials.setAccessTokenExpiration(claims.getExpiration().toInstant());
+        }
+
+        claims = getClaims(oauthResponse.getRefreshToken());
+        if (claims != null) {
+            clientCredentials.setRefreshId(Long.valueOf(claims.getId()));
+        }
+
+
+
+        log.info("access_token: {}", clientCredentials.getAccessToken());
+        log.info("access_token expiration: {}", clientCredentials.getAccessTokenExpiration());
+        log.info("refresh_token: {}", clientCredentials.getRefreshToken());
+
     }
-    
+
 
     private void obtainToken() {
-        obtainTokenAbstract("password");
+        log.info("OAUTH GET TOKEN");
+        obtainTokenAbstract(GrantType.PASSWORD);
     }
 
     private void refreshToken() {
-        obtainTokenAbstract("refresh_token");
+        log.info("OAUTH REFRESH TOKEN");
+        obtainTokenAbstract(GrantType.REFRESH);
+    }
+
+
+
+    // get claims without checking key signing
+    private Claims getClaims(String token) {
+
+        final AtomicReference<Claims> result = new AtomicReference<>();
+
+        SigningKeyResolver signingKeyResolver = new SigningKeyResolverAdapter() {
+            @Override
+            public Key resolveSigningKey(JwsHeader header, Claims claims) {
+                result.set(claims);
+                // Examine header and claims
+                return null; // will throw exception, can be caught in caller
+            }
+        };
+
+        try {
+
+            Jwts.parser()
+                    .setSigningKeyResolver(signingKeyResolver)
+                    .parseClaimsJws(token)
+                    .getBody();
+        }
+        catch (Exception e) {
+            // no signing key on client. 
+            // We trust that this JWT came from the trusted server and has been verified(issued) there.
+        }
+        return result.get();
     }
 
 }

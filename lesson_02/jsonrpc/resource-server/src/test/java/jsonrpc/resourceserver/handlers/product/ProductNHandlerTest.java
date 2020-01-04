@@ -8,7 +8,7 @@ import jsonrpc.protocol.jrpc.request.JrpcRequest;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.resourceserver.TestSuite;
 import jsonrpc.resourceserver.configuration.ConfigProperties;
-import jsonrpc.resourceserver.configuration.BeanConfiguration;
+import jsonrpc.resourceserver.configuration.SpringConfiguration;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
-import org.springframework.http.ResponseEntity;
 
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
@@ -26,7 +25,7 @@ import java.util.Arrays;
 
 @EnableConfigurationProperties
 @SpringBootTest(classes = {
-        BeanConfiguration.class,
+        SpringConfiguration.class,
         ConfigProperties.class
 })
 //        JrpcRequest.class
@@ -41,7 +40,6 @@ public class ProductNHandlerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
 
     JrpcRequest jrpcRequest;
 

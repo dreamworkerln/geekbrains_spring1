@@ -15,7 +15,9 @@ import javax.validation.ValidatorFactory;
 
 @Configuration
 @ComponentScan("jsonrpc.protocol")  // scan components from protocol module
-public class BeanConfiguration {
+public class SpringConfiguration {
+
+    public static final String ISSUER = "authserver";
 
 
     @Bean

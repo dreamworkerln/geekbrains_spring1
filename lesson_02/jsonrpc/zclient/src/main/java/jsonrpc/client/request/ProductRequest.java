@@ -27,16 +27,6 @@ public class ProductRequest extends AbstractRequest {
 
     private static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
-    @Autowired
-    public ProductRequest(ApplicationContext context,
-                          ObjectMapper objectMapper,
-                          ClientProperties clientProperties,
-                          RestTemplate restTemplate) {
-
-        super(context, objectMapper, clientProperties, restTemplate);
-    }
-
-
     public ProductDto findById(Long id) throws JsonProcessingException {
 
         String uri = HandlerName.ProductN.path + "." + HandlerName.ProductN.findById;

@@ -26,7 +26,9 @@ public class StorageConverter extends AbstractConverter<ProductItem,ProductItemD
         setMappers(productMapper::toItemEntity,productMapper::toItemEntityList,
                 productMapper::toItemDto,productMapper::toItemDtoList);
 
-        setJsonToDto(o -> objectMapper.treeToValue(o, ProductItemDto.class),
-                null);
+        setClasses(ProductItem.class, ProductItemDto.class, null);
+
+//        setJsonToDto(o -> objectMapper.treeToValue(o, ProductItemDto.class),
+//                null);
     }
 }

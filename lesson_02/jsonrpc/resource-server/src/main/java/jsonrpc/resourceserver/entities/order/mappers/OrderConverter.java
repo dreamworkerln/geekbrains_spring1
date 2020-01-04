@@ -24,7 +24,8 @@ public class OrderConverter extends AbstractConverter<Order,OrderDto, Void> {
     void postConstruct() {
         // Autowire вручную
         setMappers(orderMapper::toEntity,null,orderMapper::toDto,null);
-        setJsonToDto(o -> objectMapper.treeToValue(o, OrderDto.class),null);
+        //setJsonToDto(o -> objectMapper.treeToValue(o, OrderDto.class),null);
+        setClasses(Order.class, OrderDto.class, null);
     }
 
     @Override

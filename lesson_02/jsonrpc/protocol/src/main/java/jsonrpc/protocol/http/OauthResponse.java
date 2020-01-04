@@ -5,14 +5,24 @@ import lombok.Data;
 @Data
 public class OauthResponse {
 
-    private String access_token;
-    private String token_type;
-    private String refresh_token;
-    private Integer expires_in;
-    private String[] scope;
 
-    public void setScope(String scope) {
+    private String accessToken;
+    private String refreshToken;
 
-        this.scope = scope.split(" ");
+    public OauthResponse() {}
+
+    public OauthResponse(String accessToken, String refreshToken) {
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
+
+
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
     }
 }

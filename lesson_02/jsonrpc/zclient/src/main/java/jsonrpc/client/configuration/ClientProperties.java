@@ -70,14 +70,13 @@ public class ClientProperties {
         @NotBlank
         private String password;
 
-        @NotBlank
         private String clientId;
-        @NotBlank
         private String clientSecret;
 
         private String accessToken;
         private String refreshToken;
-        private int accessTokenExpire;
+        private Instant accessTokenExpiration = Instant.EPOCH;
+        private Long refreshId;
 
         private Instant obtained;
 
@@ -120,12 +119,12 @@ public class ClientProperties {
             this.refreshToken = refreshToken;
         }
 
-        public int getAccessTokenExpire() {
-            return accessTokenExpire;
+        public Instant getAccessTokenExpiration() {
+            return accessTokenExpiration;
         }
 
-        public void setAccessTokenExpire(int accessTokenExpire) {
-            this.accessTokenExpire = accessTokenExpire;
+        public void setAccessTokenExpiration(Instant accessTokenExpiration) {
+            this.accessTokenExpiration = accessTokenExpiration;
         }
 
         public String getClientId() {
@@ -150,6 +149,14 @@ public class ClientProperties {
 
         public void setObtained(Instant obtained) {
             this.obtained = obtained;
+        }
+
+        public Long getRefreshId() {
+            return refreshId;
+        }
+
+        public void setRefreshId(Long refreshId) {
+            this.refreshId = refreshId;
         }
 
         @Override

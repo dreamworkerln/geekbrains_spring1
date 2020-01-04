@@ -20,16 +20,6 @@ import java.util.List;
 public class StorageRequest extends AbstractRequest {
 
 
-    @Autowired
-    public StorageRequest(ApplicationContext context,
-                          ObjectMapper objectMapper,
-                          ClientProperties clientProperties,
-                          RestTemplate restTemplate) {
-
-        super(context, objectMapper, clientProperties, restTemplate);
-    }
-
-
     public ProductItemDto getById(long id) throws JsonProcessingException {
 
         String uri = HandlerName.StorageN.path + "." + HandlerName.StorageN.findByProductId;

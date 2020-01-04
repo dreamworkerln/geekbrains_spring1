@@ -35,7 +35,7 @@ public class SpringConfiguration {
     @Bean
     public RestTemplate restTemplate() {
 
-        return RestTemplateFactory.getRestTemplate();
+        return RestTemplateFactory.getRestTemplate(100000);
     }
 
 

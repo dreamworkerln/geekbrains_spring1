@@ -16,6 +16,7 @@
 
     <modules>
         <module>auth-server</module>
+        <module>authjwt-server</module>
         <module>resource-server</module>
         <module>protocol</module>
         <module>utils</module>
