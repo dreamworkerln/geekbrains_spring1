@@ -26,11 +26,18 @@ public class ProductSpecBuilder {
             // BETWEEN
             if (p.getPriceMin() != null && p.getPriceMax() != null) {
 
+//                specA = specA
+//                    .and((root, query, builder) -> builder.lessThan(root.get(priceName), p.getPriceMax()))
+//                    .and((root, query, builder) -> builder.greaterThanOrEqualTo(root.get(priceName), p.getPriceMin()));
+
                 specA = specA.and(
-                        (root, query, builder) -> {
-                            //query.orderBy(builder.desc(root.get(priceName)));
-                            return builder.between(root.get(priceName), p.getPriceMin(), p.getPriceMax());
-                        });
+                    (root, query, builder) -> builder.between(root.get(priceName), p.getPriceMin(), p.getPriceMax()));
+
+
+//                specA = specA.and(
+//                        (root, query, builder) -> {
+//                            return builder.between(root.get(priceName), p.getPriceMin(), p.getPriceMax());
+//                        });
             }
 
             // PRICE LESS THAN MAX

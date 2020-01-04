@@ -126,7 +126,7 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n");
 
 
-        System.out.println("Список товаров с ценой от 0 до 50 категории [1], цена ASC:\n");
+        System.out.println("Список товаров с ценой от 0 до 50 категории [1,2], цена ASC:\n");
         ProductSpecDto spec = new ProductSpecDto();
         spec.getCategoryList().add(1L);
         spec.getCategoryList().add(2L);
@@ -145,12 +145,26 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println(productDtoList);
         System.out.println("\n");
 
-        System.out.println("Список товаров по 3 элемента\n");
+        System.out.println("Список всех товаров, пакетами по 3 элемента\n");
         spec = new ProductSpecDto();
+        spec.setPriceOrderBy(ProductSpecDto.OrderBy.ASC);
         spec.setLimit(3);
-        productDtoList = productRequest.findFirst(spec);
-        System.out.println(productDtoList);
-        System.out.println("\n");
+
+        BigDecimal price;
+        do {
+            productDtoList = productRequest.findFirst(spec);
+            if (productDtoList.size() > 0) {
+                System.out.println(productDtoList);
+                System.out.println("\n");
+
+                price = productDtoList.get(productDtoList.size() - 1).getPrice();
+                // цены на товары скорее всего будут различаться более, чем на 0.0001
+                price = price.add(new BigDecimal(0.0001)).setScale(4,BigDecimal.ROUND_HALF_UP);
+                spec.setPriceMin(price);
+            }
+        }
+        while (productDtoList.size() > 0);
+
 
 
         System.out.println("Запасы на складе:\n");
@@ -228,7 +242,7 @@ public class AppStartupRunner implements ApplicationRunner {
             // (о времени, сервер все равно нам не доверяет и использует свои данные)
             orderDto.setCreated(null);
             orderDto.setUpdated(null);
-            orderDto.getItemList().stream().forEach(oi -> {
+            orderDto.getItemList().forEach(oi -> {
                 oi.setCreated(null);
                 oi.setUpdated(null);
             });

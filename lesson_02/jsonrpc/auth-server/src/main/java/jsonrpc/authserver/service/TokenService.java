@@ -45,8 +45,8 @@ public class TokenService {
 
     /**
      * Create new tokens, delete previous(on refreshing)
-     * @param userDetails UserDetails
-     * @param refreshToken current refresh_token of available
+     * @param userName
+     * @param refreshToken current refresh_token if available
      * @return
      */
     public OauthResponse issueTokens(String userName, Token refreshToken) {

@@ -47,7 +47,7 @@ public class Utils {
 
 
     public static Set<String> rolesToSet(Object authorities) {
-        //SuppressWarnings("unchecked")
+        //noinspection unchecked
         return new HashSet<>(((List<String>) authorities));
     }
 
@@ -63,8 +63,9 @@ public class Utils {
     }
 
     public static Set<GrantedAuthority> rolesToGrantedAuthority(Object authorities) {
-        return  ((List<String>)authorities)
-                .stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+        //noinspection unchecked
+        return ((List<String>)authorities)
+               .stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
     }
 
 
