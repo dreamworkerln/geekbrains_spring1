@@ -68,3 +68,15 @@ refresh_token
   
 curl -X POST /api/... -H "Authorization: Bearer YOU_ACCESS_TOKEN_FROM_STEP_3"  
   
+  
+  
+Possible improvements:
+Provide blacklist token controller/service on auth-server that allows resource-server
+obtain revoked tokens informations.
+  
+Just api:
+
+curl /oauzz/token/revoked_from --data id=LAST_KNOWN_TO_RESOURCE_SERVER_REVOKED_TOKEN_ID
+  
+that return all revoked access_token from known to resource server id and to current moment.
+  
