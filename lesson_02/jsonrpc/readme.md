@@ -5,28 +5,28 @@ Build:
 cd lesson_02/jsonrpc/  
 mvn -DskipTests clean package 
 
-configure postgres database: 
-manual create 
-user shop/shoppassword 
-database shop 
-schema shop
-schema oauzz
+configure postgres database:  
+manual create  
+user shop/shoppassword  
+database shop  
+schema shop  
+schema oauzz  
  
 
 Launch auth-server:  
 cd lesson_02/jsonrpc/auth-server/target  
-java -jar auth-server-0.1.jar
-
+java -jar auth-server-0.1.jar  
+  
 Launch resource-server:  
-cd lesson_02/jsonrpc/resource-server/target 
+cd lesson_02/jsonrpc/resource-server/target  
 java -jar resource-server-0.1.jar  
-
+  
 Launch client:  
 cd lesson_02/jsonrpc/zclient/target  
-java -jar client-0.1.jar
-
-
-
+java -jar client-0.1.jar  
+  
+  
+  
 // =====================================================  
 
 Principles
@@ -36,22 +36,24 @@ No clientId/client_secret.
 
 1. Go on auth server 
  
-curl -u user:password -X POST /oauzz/token
+curl -u user:password -X POST /oauzz/token/get
 
 will return only 1 json refresh_token that rotten in 30 min.
       
   
        
-2. Then from other confidential device - mobile app with fixed sim phone number, known to auth-server 
-go on auth-server (in demo client will be simulated)
+2. Then from other confidential client approve you refresh_token.
+(For example mobile app with validated sim phone number.  
+Phone number is validated by sms-gateway service check.   
+Not implemented, demo client is trusted client to server.) 
 
-curl -u user:password -X POST admin/token/approve --data id=YOU_REFRESH_TOKEN_FROM_STEP_1.id  
- 
-this will approve previously obtained refresh_token
-
+curl -u user:password -X POST /oauzz/token/approve --data id=YOU_REFRESH_TOKEN_FROM_STEP_1.id  
+May use Bearer access_token instead BasicAuth if already have one(from another (confidential) device)  
+This will approve previously obtained refresh_token.  
   
-      
-3. Go on auth server  
+  
+  
+3. Go on auth server and refresh you refresh_token   
 
 curl -X POST /oauzz/token -H "Authorization: Bearer YOU_REFRESH_TOKEN_FROM_STEP_1"
 
