@@ -1,3 +1,5 @@
+JWT with handmade OAUTH v0.1
+
 HOW TO compile & run  
 (java 1.8)
 
@@ -79,5 +81,5 @@ Just api:
 
 curl /oauzz/token/revoked_from --data id=LAST_KNOWN_TO_RESOURCE_SERVER_REVOKED_TOKEN_ID
   
-that return all revoked access_token from known to resource server id and to current moment.
+that return all revoked access_tokens from known to resource server id and to current moment.
   
