@@ -66,5 +66,5 @@ refresh_token
      
 4. Go to resource server
   
-curl -X POST /api/... -H "Authorization: Bearer YOU_REFRESH_TOKEN_FROM_STEP_3"  
+curl -X POST /api/... -H "Authorization: Bearer YOU_ACCESS_TOKEN_FROM_STEP_3"  
   
