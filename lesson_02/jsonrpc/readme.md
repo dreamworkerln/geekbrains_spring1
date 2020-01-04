@@ -47,6 +47,7 @@ Phone number is validated by sms-gateway service check.
 Not implemented, demo client is trusted client to server.)  
   
 curl -u user:password -X POST /oauzz/token/approve --data id=YOU_REFRESH_TOKEN_FROM_STEP_1.id  
+  
 May use Bearer access_token instead BasicAuth if already have one(from another (confidential) device)  
 This will approve previously obtained refresh_token.  
   
