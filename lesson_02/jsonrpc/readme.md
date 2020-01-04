@@ -66,10 +66,11 @@ refresh_token
      
 4. Go to resource server
   
-curl -X POST /api/... -H "Authorization: Bearer YOU_ACCESS_TOKEN_FROM_STEP_3"  
+curl -X POST /api/... -H "Authorization: Bearer YOU_ACCESS_TOKEN_FROM_STEP_3" 
   
   
-  
+// ------------------------------------------------------------------------------------  
+    
 Possible improvements:
 Provide blacklist token controller/service on auth-server that allows resource-server
 obtain revoked tokens informations.
