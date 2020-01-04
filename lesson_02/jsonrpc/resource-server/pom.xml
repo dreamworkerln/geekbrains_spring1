@@ -7,14 +7,6 @@
     <packaging>jar</packaging>
     <version>0.1.0</version>
 
-    <!--
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.8.RELEASE</version>
-    </parent>
-    -->
-
     <parent>
         <artifactId>jsonrpc</artifactId>
         <groupId>ru.geekbrains.spring1.lesson02</groupId>
@@ -181,7 +173,7 @@
                 <version>2.22.0</version>
             </plugin>
         </plugins>
-        <finalName>server-0.1</finalName>
+        <finalName>resource-server-0.1</finalName>
     </build>
 
 </project>

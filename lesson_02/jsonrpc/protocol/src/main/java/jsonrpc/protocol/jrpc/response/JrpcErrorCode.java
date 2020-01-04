@@ -10,7 +10,12 @@ public enum JrpcErrorCode {
     INVALID_REQUEST(-32600),
     METHOD_NOT_FOUND(-32601),
     INVALID_PARAMS(-32602),
-    INTERNAL_SERVER_ERROR(-32603);
+    INTERNAL_SERVER_ERROR(-32603),
+    //
+    // handmade
+    UNAUTHORIZED(-32609),
+    FORBIDDEN(-32610);
+
 
     private int code;
 

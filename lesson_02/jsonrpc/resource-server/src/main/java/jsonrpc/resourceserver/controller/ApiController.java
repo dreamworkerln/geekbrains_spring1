@@ -14,12 +14,14 @@ import jsonrpc.resourceserver.service.InvalidLogicException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.expression.ParseException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 
@@ -114,12 +116,6 @@ public class ApiController {
 
         try {
 
-//            // Аутентифицируем пользователя
-//            if (StringUtils.isBlank(token) || !token.equals(ACCESS_TOKEN)) {
-//                throw new IllegalAccessException("Forbidden");
-//            }
-
-
             // JrpcRequestHeader не содержит свойство params, поэтому десереализация происходит без проблем
             // вытаскиваем все поля, кроме params
             JrpcRequestHeader jsonRpcHeader = objectMapper.readValue(request, JrpcRequestHeader.class);
@@ -175,10 +171,15 @@ public class ApiController {
 
         }
         // Access denied
-        catch (IllegalAccessException e) {
+        catch (AccessDeniedException e) {
             log.error("Forbidden",e);
             // тут jrpc не инкапсулируется
             httpResponse = HttpResponseFactory.getForbidden();
+        }
+        // jrpc call error (method not found, etc)
+        catch (JrpcException e) {
+            log.error("JrpcError",e);
+            httpResponse = HttpResponseFactory.getError(e);
         }
 
         // invalid request json
@@ -194,7 +195,6 @@ public class ApiController {
         }
         // params not passed validation
         catch (ConstraintViolationException e) {
-
             String message = "Param validation violation: " + e.getConstraintViolations().toString();
             log.error(message, e);
             JrpcException ex = new JrpcException(message, JrpcErrorCode.INVALID_PARAMS, e);
@@ -214,20 +214,22 @@ public class ApiController {
             httpResponse = HttpResponseFactory.getError(ex);
         }
 
-        // ????
-        catch (IllegalArgumentException e) {
-            log.error("Illegal argument ???: " + e.getMessage(), e);
-            throw new RuntimeException("Illegal argument", e);
-//            JrpcException ex = new JrpcException("Illegal argument", JrpcErrorCode.INVALID_PARAMS, e);
-//            httpResponse = HttpResponseFactory.getError(ex);
-        }
+//        // ????
+//        catch (IllegalArgumentException e) {
+//            log.error("Illegal argument ???: " + e.getMessage(), e);
+//            throw new RuntimeException("Illegal argument", e);
+////            JrpcException ex = new JrpcException("Illegal argument", JrpcErrorCode.INVALID_PARAMS, e);
+////            httpResponse = HttpResponseFactory.getError(ex);
+//        }
         catch (Throwable e) {
             log.error("Internal resourceserver error in controller: " + e.getMessage(), e);
             httpResponse = HttpResponseFactory.getError(HttpStatus.INTERNAL_SERVER_ERROR, e);
         }
 
         // add request id to response (if have one)
-        httpResponse.getResult().setId(id);
+        if (httpResponse.getResult()!= null) {
+            httpResponse.getResult().setId(id);
+        }
 
         return new ResponseEntity<>(httpResponse.getResult(), httpResponse.getStatus());
     }
@@ -254,9 +256,15 @@ public class ApiController {
 
                 Object bean = entry.getValue();
                 Class<?> beanClass = bean.getClass();
-
                 JrpcController jrpcController = beanClass.getAnnotation(JrpcController.class);
 
+                // bean is an AOP proxy
+                if (jrpcController == null) {
+                    beanClass = AopProxyUtils.ultimateTargetClass(bean);
+                    jrpcController = beanClass.getAnnotation(JrpcController.class);
+
+                }
+                
                 // Ищем в бине метод, помеченный аннотацией @JrpcMethod
                 for (Method method : beanClass.getDeclaredMethods()) {
                     if (method.isAnnotationPresent(JrpcMethod.class)) {

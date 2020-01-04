@@ -6,6 +6,7 @@ import jsonrpc.resourceserver.entities.storage.StorageItem;
 import jsonrpc.resourceserver.repository.StorageRepository;
 import jsonrpc.resourceserver.service.InvalidLogicException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +20,6 @@ import static jsonrpc.resourceserver.ServerApplication.SLEEP_IN_TRANSACTION;
 
 @Service
 @Transactional
-@
 public class StorageService {
 
     //private final ProductRepository productRepository;

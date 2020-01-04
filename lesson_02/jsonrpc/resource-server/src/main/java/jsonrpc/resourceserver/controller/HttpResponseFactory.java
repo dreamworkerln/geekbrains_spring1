@@ -21,10 +21,16 @@ class HttpResponseFactory {
         return new HttpResponse(HttpStatus.OK, new JrpcResponse(json));
     }
 
+    static HttpResponse getUnauthorized() {
 
-    // no jrpc encapsulation
+        JrpcErrorResponse error = new JrpcErrorResponse("Unauthorized", JrpcErrorCode.UNAUTHORIZED);
+        return new HttpResponse(HttpStatus.UNAUTHORIZED, error);
+    }
+
     static HttpResponse getForbidden() {
-        return new HttpResponse(HttpStatus.FORBIDDEN);
+
+        JrpcErrorResponse error = new JrpcErrorResponse("Unauthorized", JrpcErrorCode.FORBIDDEN);
+        return new HttpResponse(HttpStatus.FORBIDDEN, error);
     }
 
 

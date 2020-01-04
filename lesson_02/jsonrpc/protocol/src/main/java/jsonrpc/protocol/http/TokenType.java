@@ -8,19 +8,19 @@ public enum TokenType {
     REFRESH("refresh_token", 3600*24*30);
 
     private long ttl;
-    private String value;
+    private String name;
 
 
-    TokenType(String value, long ttl) {
+    TokenType(String name, long ttl) {
         this.ttl = ttl;
-        this.value = value;
+        this.name = name;
     }
 
     public long getTtl() {
         return ttl;
     }
 
-    public String getValue() {
-        return value;
+    public String getName() {
+        return name;
     }
 }

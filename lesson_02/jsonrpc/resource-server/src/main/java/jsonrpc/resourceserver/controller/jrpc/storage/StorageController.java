@@ -9,6 +9,7 @@ import jsonrpc.resourceserver.entities.storage.StorageConverter;
 import jsonrpc.resourceserver.service.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import java.lang.invoke.MethodHandles;
 import java.util.List;
@@ -62,6 +63,7 @@ public class StorageController {
     }
 
 
+    @Secured("ROLE_ADMIN")
     @JrpcMethod(method = HandlerName.StorageN.put)
     public JsonNode put(JsonNode params) {
 
@@ -71,6 +73,7 @@ public class StorageController {
     }
 
 
+    @Secured("ROLE_ADMIN")
     @JrpcMethod(method = HandlerName.StorageN.remove)
     public JsonNode remove(JsonNode params) {
 
@@ -80,6 +83,7 @@ public class StorageController {
     }
 
 
+    @Secured("ROLE_ADMIN")
     @JrpcMethod(method = HandlerName.StorageN.delete)
     public JsonNode delete(JsonNode params) {
 

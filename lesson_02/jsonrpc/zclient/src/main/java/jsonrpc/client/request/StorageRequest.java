@@ -33,10 +33,6 @@ public class StorageRequest extends AbstractRequest {
     public List<ProductItemDto> getByIdList(List<Long> list) throws JsonProcessingException {
 
         String uri = HandlerName.StorageN.path + "." + HandlerName.StorageN.findAllByProductId;
-
-        // ASAP EDC !!! CHECK
-        //Arrays.asList(1L, 2L, 3L, 999L)
-        //new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L))
         JsonNode response = performRequest(1000L, uri, list);
         return Arrays.asList(objectMapper.treeToValue(response, ProductItemDto[].class));
     }

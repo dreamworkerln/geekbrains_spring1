@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -23,10 +24,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static jsonrpc.resourceserver.configuration.SpringConfiguration.ISSUER;
+import static jsonrpc.utils.Utils.rolesToGrantedAuthority;
 
 //@Component
 //RegistrationBean
@@ -60,18 +64,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             String jwtToken = requestTokenHeader.substring(7);
 
             try {
-                // validating token
+                // decode & validate token
                 Claims claims = jwtTokenService.decodeJWT(jwtToken);
 
-                // checking access rights / token validity
+                // checking token type / validity
                 if (claims.getIssuer().equals(ISSUER) &&
-                        claims.get("type").equals(TokenType.ACCESS.getValue()) &&
+                        claims.get("type").equals(TokenType.ACCESS.getName()) &&
                         claims.getExpiration().toInstant().toEpochMilli() >= Instant.now().toEpochMilli()) {
 
-                    @SuppressWarnings("unchecked")
-                    List<SimpleGrantedAuthority> authorities = ((List<String>)claims.get("authorities"))
-                            .stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
 
+                    Set<GrantedAuthority> authorities = rolesToGrantedAuthority(claims.get("authorities"));
                     UserDetails userDetails = new User(claims.getSubject(), "[PROTECTED]", authorities);
 
                     // if jwt is valid configure Spring Security to manually set authentication

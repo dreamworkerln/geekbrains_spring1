@@ -1,7 +1,15 @@
 package jsonrpc.utils;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -33,6 +41,30 @@ public class Utils {
 
     public static String boolToStr(boolean b) {
         return b ? "1" : "0";
+    }
+
+
+
+
+    public static Set<String> rolesToSet(Object authorities) {
+        //SuppressWarnings("unchecked")
+        return new HashSet<>(((List<String>) authorities));
+    }
+
+    public static Set<String> grantedAuthorityToSet(Collection<? extends GrantedAuthority> authorities) {
+
+        return authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+    }
+
+
+    public static Set<GrantedAuthority> rolesToGrantedAuthority(Set<String> authorities) {
+
+        return null;
+    }
+
+    public static Set<GrantedAuthority> rolesToGrantedAuthority(Object authorities) {
+        return  ((List<String>)authorities)
+                .stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
     }
 
 

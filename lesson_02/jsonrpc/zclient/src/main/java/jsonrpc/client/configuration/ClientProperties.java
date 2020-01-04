@@ -75,7 +75,7 @@ public class ClientProperties {
 
         private String accessToken;
         private String refreshToken;
-        private Instant accessTokenExpiration = Instant.EPOCH;
+        private Instant accessTokenExpiration = Instant.MIN;
         private Long refreshId;
 
         private Instant obtained;

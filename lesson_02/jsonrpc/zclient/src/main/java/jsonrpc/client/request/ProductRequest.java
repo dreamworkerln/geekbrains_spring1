@@ -39,10 +39,6 @@ public class ProductRequest extends AbstractRequest {
 
         String uri = HandlerName.ProductN.path + "." + HandlerName.ProductN.findAllById;
 
-        // ASAP EDC !!!! CHECK
-        // Arrays.asList(1L, 2L, 3L, 999L)
-        // new ArrayList<>(Arrays.asList(1L, 2L, 3L, 999L))
-
         JsonNode response = performRequest(1000L, uri, list);
         // https://stackoverflow.com/questions/6349421/how-to-use-jackson-to-deserialise-an-array-of-objects
         return Arrays.asList(objectMapper.treeToValue(response, ProductDto[].class));

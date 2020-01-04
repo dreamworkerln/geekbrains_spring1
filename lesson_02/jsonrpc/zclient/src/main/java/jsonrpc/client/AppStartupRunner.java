@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 import java.lang.invoke.MethodHandles;
@@ -52,6 +53,35 @@ public class AppStartupRunner implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
+        // Обнесем склад
+
+        try {
+            System.out.println("Обнесем склад с товаром id=1:\n");
+            storageRequest.remove(2L, 99999);
+            System.out.println("\n");
+        }
+        catch (HttpClientErrorException.Forbidden e) {
+
+            System.out.println(e.getMessage());
+            System.out.println("\n");
+
+            System.out.println("login as ADMIN\n");
+
+            // перелогинимся
+            clientProperties.getCredentials().setAccessToken(null);
+            clientProperties.getCredentials().setRefreshToken(null);
+
+            clientProperties.getCredentials().setUsername("admin");
+            clientProperties.getCredentials().setPassword("password");
+
+
+        }
+
+
+
+
+
 
 
 
