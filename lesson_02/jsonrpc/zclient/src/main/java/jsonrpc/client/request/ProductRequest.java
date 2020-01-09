@@ -33,7 +33,7 @@ public class ProductRequest extends AbstractRequest {
                           ClientProperties clientProperties,
                           RestTemplate restTemplate) {
 
-        super(objectMapper, clientProperties, restTemplate);
+        super(context, objectMapper, clientProperties, restTemplate);
     }
 
 

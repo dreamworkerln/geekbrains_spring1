@@ -8,7 +8,6 @@ import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.resourceserver.TestSuite;
 import jsonrpc.resourceserver.configuration.ConfigProperties;
 import jsonrpc.resourceserver.configuration.BeanConfiguration;
-import jsonrpc.utils.Rest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,7 +47,6 @@ class OrderNControllerTest {
 
     private ObjectMapper objectMapper;
     private JrpcRequest jrpcRequest;
-    private Rest rest;
 
     @BeforeAll
     static void setup() {
@@ -61,7 +59,6 @@ class OrderNControllerTest {
     @BeforeEach
     void beforeEach() {
 
-        rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
         //jrpcRequest = context.getBean(JrpcRequest.class);
     }
@@ -82,8 +79,8 @@ class OrderNControllerTest {
         log.info("REQUEST\n" + json);
 
         // perform request
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
     }
 
 
@@ -106,8 +103,8 @@ class OrderNControllerTest {
 
         //json = String.format(json, id);
 
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
     }
 
     @Test

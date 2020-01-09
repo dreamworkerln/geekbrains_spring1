@@ -121,7 +121,30 @@ class Rest {
         return  RestTemplateFactory.getRestTemplate(checkCert, throwOnError, TIMEOUT);
     }
 
+<<<<<<< HEAD
+    public Rest(boolean checkCert, boolean throwOnError, int timeout) {
+
+        this.timeout = timeout;
+        this.checkCert = checkCert;
+        restTemplate = RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
+    }
+
+
+    public RestTemplate getRestTemplate() {
+        return restTemplate;
+    }
+
+    /**
+     * Perform get request
+     * @param url Url
+     * @return ResponseEntity<String>
+     */
+    public ResponseEntity<String> get(String url) {
+
+        ResponseEntity<String> result;
+=======
     public RestTemplate getRestTemplate(boolean checkCert, boolean throwOnError, int timeout) {
+>>>>>>> e22a44397d0ea797c3685b8ab02e43afbc712c7c
 
         return  RestTemplateFactory.getRestTemplate(checkCert, throwOnError, timeout);
     }*/
@@ -298,6 +321,12 @@ class Rest {
     // -------------------------------------------------------------------------
 
 
+<<<<<<< HEAD
+    public void setCredentials(Credentials credentials) {
+        this.credentials = credentials;
+    }
+
+=======
 //    public String getUserAgent() {
 //        return userAgent;
 //    }
@@ -305,4 +334,5 @@ class Rest {
 //    public void setUserAgent(String userAgent) {
 //        this.userAgent = userAgent;
 //    }
+>>>>>>> e22a44397d0ea797c3685b8ab02e43afbc712c7c
 }

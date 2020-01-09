@@ -9,7 +9,6 @@ import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.resourceserver.TestSuite;
 import jsonrpc.resourceserver.configuration.ConfigProperties;
 import jsonrpc.resourceserver.configuration.BeanConfiguration;
-import jsonrpc.utils.Rest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -43,7 +42,6 @@ public class ProductNHandlerTest {
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private Rest rest;
 
     JrpcRequest jrpcRequest;
 
@@ -56,7 +54,7 @@ public class ProductNHandlerTest {
     @BeforeEach
     void beforeEach() {
 
-        rest = context.getBean(Rest.class);
+        //rest = context.getBean(Rest.class);
         objectMapper = context.getBean(ObjectMapper.class);
         jrpcRequest =  new JrpcRequest();//context.getBean(JrpcRequest.class);
     }
@@ -89,8 +87,8 @@ public class ProductNHandlerTest {
         log.info("REQUEST:\n" + json);
 
         // perform request
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
 
     }
 
@@ -108,9 +106,9 @@ public class ProductNHandlerTest {
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
 
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
-        log.info("Падать, если к-л из элементов (999L) не найден или отдавать, что нашли без ошибки?");
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //log.info("Падать, если к-л из элементов (999L) не найден или отдавать, что нашли без ошибки?");
 
     }
 
@@ -129,8 +127,8 @@ public class ProductNHandlerTest {
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
 
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
 
     }
 
@@ -153,7 +151,7 @@ public class ProductNHandlerTest {
         String json = objectMapper.writeValueAsString(jrpcRequest);
         log.info("REQUEST:\n" + json);
 
-        ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
-        log.info(response.getStatusCode().toString() + "\n" + response.getBody());
+        //ResponseEntity<String> response = rest.post("http://localhost:8084/api", json);
+        //log.info(response.getStatusCode().toString() + "\n" + response.getBody());
     }
 }

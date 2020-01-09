@@ -24,7 +24,7 @@ public class OrderRequest extends AbstractRequest {
                         ClientProperties clientProperties,
                         RestTemplate restTemplate) {
 
-        super(objectMapper, clientProperties, restTemplate);
+        super(context, objectMapper, clientProperties, restTemplate);
     }
 
 

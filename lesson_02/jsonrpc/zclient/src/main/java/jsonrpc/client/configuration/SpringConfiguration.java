@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jsonrpc.utils.Rest;
+import jsonrpc.utils.RestTemplateFactory;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -31,23 +32,11 @@ public class SpringConfiguration {
         return mapper;
     }
 
-
     @Bean
     public RestTemplate restTemplate() {
 
-        return new Rest(10000).getRestTemplate();
+        return RestTemplateFactory.getRestTemplate();
     }
-
-//            RestTemplateBuilder restTemplateBuilder) {
-//
-//        return restTemplateBuilder
-//                .setConnectTimeout(Duration.ofSeconds(500))
-//                .setReadTimeout(Duration.ofSeconds(500))
-//                .build();
-//    }
-
-
-    //@ComponentScan({ "x.y.z", "x.y.z.dao" })
 
 
 //    @Bean
