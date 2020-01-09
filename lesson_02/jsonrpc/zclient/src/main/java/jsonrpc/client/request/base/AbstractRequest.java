@@ -6,16 +6,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.protocol.http.OauthResponse;
 import jsonrpc.protocol.jrpc.request.JrpcRequest;
-import jsonrpc.utils.Rest;
-import org.apache.http.auth.UsernamePasswordCredentials;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.lang.invoke.MethodHandles;
+import java.net.URI;
 import java.time.Instant;
 
 @Component
@@ -27,17 +31,18 @@ public abstract class AbstractRequest {
     //private final static String JRPC_VERSION = "2.0";
     private final static String API_VERSION = "1.0";
 
+    private final RestTemplate restTemplate;
 
-    private final ApplicationContext context;
+
     private final ClientProperties clientProperties;
     protected final ObjectMapper objectMapper;
 
     private final String apiURL;
 
-    public AbstractRequest(ApplicationContext context, ObjectMapper objectMapper, ClientProperties clientProperties) {
+    @Autowired
+    public AbstractRequest(ObjectMapper objectMapper, ClientProperties clientProperties, RestTemplate restTemplate) {
 
         // Контекст нужен, т.к. некоторые бины (JrpcRequest и  Rest) имеют scope == prototype
-        this.context = context;
         this.objectMapper = objectMapper;
         this.clientProperties = clientProperties;
 
@@ -45,7 +50,59 @@ public abstract class AbstractRequest {
                 this.clientProperties.getResourceServer().getHostName(),
                 this.clientProperties.getResourceServer().getPort(),
                 API_VERSION);
+
+        this.restTemplate = restTemplate;
     }
+
+
+    private void obtainTokenAbstract(String grantType) {
+
+        if(!grantType.equals("password") && !grantType.equals("refresh_token")) {
+            throw new IllegalArgumentException("grantType not recognized");
+        }
+
+
+        ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
+
+        String params = String.format("grant_type=%1$s&username=%2$s&password=%3$s",
+                grantType,
+                clientCredentials.getUsername(),
+                clientCredentials.getPassword());
+
+        String getTokenURL = String.format("http://%1$s:%2$s/oauth/token?%3$s",
+                this.clientProperties.getAuthServer().getHostName(),
+                this.clientProperties.getAuthServer().getPort(),
+                params);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBasicAuth(clientCredentials.getClientId(), clientCredentials.getClientSecret());
+        RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.POST, URI.create(getTokenURL));
+
+        ResponseEntity<OauthResponse> response = restTemplate.exchange(requestEntity, OauthResponse.class);
+        OauthResponse oauthResponse = response.getBody();
+        clientCredentials.setAccessToken(oauthResponse.getAccess_token());
+        clientCredentials.setRefreshToken(oauthResponse.getRefresh_token());
+        // когда протухнет (в будущем)
+        clientCredentials.setAccessTokenExpire(
+                Instant.ofEpochSecond(Instant.now().getEpochSecond() + oauthResponse.getExpires_in()));
+
+        System.out.println("access :" + oauthResponse.getAccess_token());
+        System.out.println("refresh :" + oauthResponse.getRefresh_token());
+    }
+    
+
+    private void obtainToken() {
+        obtainTokenAbstract("password");
+    }
+
+    private void refreshToken() {
+        obtainTokenAbstract("refresh_token");
+    }
+
+
+    // ----------------------------------------------------------------------------------
+
+
 
 
     protected JsonNode performRequest(long id, String uri, Object params) {
@@ -53,25 +110,39 @@ public abstract class AbstractRequest {
         ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
 
         // Oauth2.0 authorization -------------------------------------------
+
+        // No token
         if (clientCredentials.getAccessToken() == null ||
             clientCredentials.getRefreshToken() == null) {
 
             log.info("OAUTH get TOKEN");
 
             obtainToken();
-        }
-        else if (clientCredentials.getObtained().getEpochSecond() + clientCredentials.getAccessTokenExpire() <=
-                Instant.now().getEpochSecond()) {
 
-            log.info("OAUTH refresh TOKEN");
-            refreshToken();
+            obtainToken();
+        }
+        // Access token rotten
+        else if (Instant.now().compareTo(clientCredentials.getAccessTokenExpire()) <= 0) {
+
+            try {
+                log.info("OAUTH refresh TOKEN");
+                refreshToken();
+            }
+            // refresh token rotten
+            catch (Exception ignore) {
+
+                // refresh token rotten or unauthorized - last resort
+                log.info("Refresh token rotten - OAUTH get TOKEN");
+
+                obtainToken();
+                // catch() - unauthorized
+            }
         }
         // --------------------------------------------------------------------
 
 
         JsonNode result;
 
-        // JrpcRequest не был запихнут в @Bean //context.getBean(JrpcRequest.class);
         JrpcRequest jrpcRequest = new JrpcRequest();
         jrpcRequest.setMethod(uri);
         jrpcRequest.setId(id);
@@ -85,10 +156,16 @@ public abstract class AbstractRequest {
         }
 
         log.info("REQUEST\n" + json);
-        Rest<String> rest = new Rest<>(10000);
-        rest.setCustomHeader("Authorization", "Bearer " + clientCredentials.getAccessToken());
 
-        ResponseEntity<String> response = rest.post(apiURL, json);
+
+
+
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + clientCredentials.getAccessToken());
+        RequestEntity requestEntity = new RequestEntity(headers, HttpMethod.POST, URI.create(apiURL));
+
+        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
 
         log.info("HTTP " + response.getStatusCode().toString() + "\n" + response.getBody());
         try {
@@ -97,60 +174,6 @@ public abstract class AbstractRequest {
             throw new RuntimeException(e);
         }
         return result;
-    }
-
-
-
-
-    private void obtainTokenAbstract(String grantType) {
-
-        if(!grantType.equals("password") && !grantType.equals("refresh_token")) {
-            throw new IllegalArgumentException("grantType not recognized");
-        }
-
-
-        ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
-
-        Rest<OauthResponse> rest = new Rest<>(10000);
-
-
-        rest.setCredentials(new UsernamePasswordCredentials(
-                clientCredentials.getClientId(),
-                clientCredentials.getClientSecret()));
-
-        String params = String.format("grant_type=%1$s&username=%2$s&password=%3$s",
-                grantType,
-                clientCredentials.getUsername(),
-                clientCredentials.getPassword());
-
-
-
-
-        //rest.setCustomHeader("grant_type", grantType);
-        //rest.setCustomHeader("username", clientCredentials.getUsername());
-        //rest.setCustomHeader("password", clientCredentials.getPassword());
-
-        String getTokenURL = String.format("http://%1$s:%2$s/oauth/token?%3$s",
-                this.clientProperties.getAuthServer().getHostName(),
-                this.clientProperties.getAuthServer().getPort(),
-                params);
-
-        ResponseEntity<OauthResponse> response = rest.post(getTokenURL, OauthResponse.class);
-
-        OauthResponse oauthResponse = response.getBody();
-        clientCredentials.setAccessToken(oauthResponse.getAccess_token());
-        clientCredentials.setRefreshToken(oauthResponse.getAccess_token());
-        clientCredentials.setAccessTokenExpire(oauthResponse.getExpires_in());
-        clientCredentials.setObtained(Instant.now());
-    }
-    
-
-    private void obtainToken() {
-        obtainTokenAbstract("password");
-    }
-
-    private void refreshToken() {
-        obtainTokenAbstract("refresh_token");
     }
 
 }

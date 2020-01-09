@@ -77,9 +77,7 @@ public class ClientProperties {
 
         private String accessToken;
         private String refreshToken;
-        private int accessTokenExpire;
-
-        private Instant obtained;
+        private Instant accessTokenExpire;
 
 
 //        public String getAuthMethod() {
@@ -120,14 +118,6 @@ public class ClientProperties {
             this.refreshToken = refreshToken;
         }
 
-        public int getAccessTokenExpire() {
-            return accessTokenExpire;
-        }
-
-        public void setAccessTokenExpire(int accessTokenExpire) {
-            this.accessTokenExpire = accessTokenExpire;
-        }
-
         public String getClientId() {
             return clientId;
         }
@@ -144,12 +134,12 @@ public class ClientProperties {
             this.clientSecret = clientSecret;
         }
 
-        public Instant getObtained() {
-            return obtained;
+        public Instant getAccessTokenExpire() {
+            return accessTokenExpire;
         }
 
-        public void setObtained(Instant obtained) {
-            this.obtained = obtained;
+        public void setAccessTokenExpire(Instant accessTokenExpire) {
+            this.accessTokenExpire = accessTokenExpire;
         }
 
         @Override

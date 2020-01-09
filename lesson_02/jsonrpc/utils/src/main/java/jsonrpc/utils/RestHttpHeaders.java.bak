@@ -1,0 +1,22 @@
+package jsonrpc.utils;
+
+import org.apache.commons.codec.binary.Base64;
+import org.apache.http.auth.Credentials;
+import org.springframework.http.HttpHeaders;
+
+import java.nio.charset.Charset;
+
+public class RestHttpHeaders extends HttpHeaders {
+
+    public void setBasicAuth(Credentials credentials) {
+
+        if (credentials != null) {
+
+            String auth = credentials.getUserPrincipal().getName() + ":" + credentials.getPassword();
+            String encodedAuth = Base64.encodeBase64String(auth.getBytes(Charset.forName("US-ASCII")));
+
+            String authHeader = "Basic " + encodedAuth;
+            this.set("Authorization", authHeader);
+        }
+    }
+}

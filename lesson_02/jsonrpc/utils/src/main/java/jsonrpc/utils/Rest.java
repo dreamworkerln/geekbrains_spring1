@@ -203,6 +203,10 @@ public class Rest<T> {
     }
 
 
+    public RestTemplate getRestTemplate() {
+        return restTemplate;
+    }
+
     /**
      * Perform get request
      * @param url Url
@@ -395,4 +399,5 @@ public class Rest<T> {
     public void setCredentials(Credentials credentials) {
         this.credentials = credentials;
     }
+
 }

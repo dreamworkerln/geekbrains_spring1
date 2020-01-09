@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.lang.invoke.MethodHandles;
 import java.util.Arrays;
@@ -29,9 +30,10 @@ public class ProductRequest extends AbstractRequest {
     @Autowired
     public ProductRequest(ApplicationContext context,
                           ObjectMapper objectMapper,
-                          ClientProperties clientProperties) {
+                          ClientProperties clientProperties,
+                          RestTemplate restTemplate) {
 
-        super(context, objectMapper, clientProperties);
+        super(objectMapper, clientProperties, restTemplate);
     }
 
 
