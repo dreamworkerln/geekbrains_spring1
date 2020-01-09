@@ -55,7 +55,7 @@ This will approve previously obtained refresh_token.
   
   
   
-3. Go on auth server and refresh you refresh_token  
+3. Go on auth_server and refresh you refresh_token  
   
 curl -X POST /oauzz/token -H "Authorization: Bearer YOU_REFRESH_TOKEN_FROM_STEP_1"  
   
@@ -75,12 +75,5 @@ curl -X POST /api/... -H "Authorization: Bearer YOU_ACCESS_TOKEN_FROM_STEP_3"
     
 Possible improvements:
 Provide blacklist token controller/service on auth-server that allows resource-server
-obtain revoked tokens informations.
-  
-Just api:
-
-curl /oauzz/token/revoked_from --data id=LAST_KNOWN_TO_RESOURCE_SERVER_REVOKED_TOKEN_ID  
-  
-that return all revoked access_tokens from known to resource server id and to current moment.  
-(+ supply push notification from auth-server or use message-broker like rabbit-mq, etc)  
+obtain revoked tokens informations -- seems done, need tests  
   
