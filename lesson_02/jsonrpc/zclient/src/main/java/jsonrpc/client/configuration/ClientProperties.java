@@ -1,5 +1,7 @@
 package jsonrpc.client.configuration;
 
+import io.jsonwebtoken.Claims;
+import jsonrpc.client.request.base.MyToken;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
@@ -73,19 +75,8 @@ public class ClientProperties {
         private String clientId;
         private String clientSecret;
 
-        private String accessToken;
-        private String refreshToken;
-        private Instant accessTokenExpiration = Instant.MIN;
-        private Long refreshId;
-
-        private Instant obtained;
-
-
-//        public String getAuthMethod() {
-//            return authMethod;
-//        }
-
-//        public void setAuthMethod(String authMethod) {this.authMethod = authMethod;}
+        private MyToken accessToken = MyToken.EMPTY;
+        private MyToken refreshToken = MyToken.EMPTY;
 
         public String getUsername() {
             return username;
@@ -103,29 +94,7 @@ public class ClientProperties {
             this.password = password;
         }
 
-        public String getAccessToken() {
-            return accessToken;
-        }
 
-        public void setAccessToken(String accessToken) {
-            this.accessToken = accessToken;
-        }
-
-        public String getRefreshToken() {
-            return refreshToken;
-        }
-
-        public void setRefreshToken(String refreshToken) {
-            this.refreshToken = refreshToken;
-        }
-
-        public Instant getAccessTokenExpiration() {
-            return accessTokenExpiration;
-        }
-
-        public void setAccessTokenExpiration(Instant accessTokenExpiration) {
-            this.accessTokenExpiration = accessTokenExpiration;
-        }
 
         public String getClientId() {
             return clientId;
@@ -143,20 +112,20 @@ public class ClientProperties {
             this.clientSecret = clientSecret;
         }
 
-        public Instant getObtained() {
-            return obtained;
+        public MyToken getAccessToken() {
+            return accessToken;
         }
 
-        public void setObtained(Instant obtained) {
-            this.obtained = obtained;
+        public void setAccessToken(MyToken accessToken) {
+            this.accessToken = accessToken;
         }
 
-        public Long getRefreshId() {
-            return refreshId;
+        public MyToken getRefreshToken() {
+            return refreshToken;
         }
 
-        public void setRefreshId(Long refreshId) {
-            this.refreshId = refreshId;
+        public void setRefreshToken(MyToken refreshToken) {
+            this.refreshToken = refreshToken;
         }
 
         @Override

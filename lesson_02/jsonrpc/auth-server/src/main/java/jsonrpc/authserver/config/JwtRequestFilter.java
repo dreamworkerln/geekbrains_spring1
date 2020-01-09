@@ -48,10 +48,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
 
-//    @Override
-//    public void doFilter(ServletRequest requestBase, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-//        HttpServletRequest request = (HttpServletRequest)requestBase;
-
+        // get header "Authorization"
         final String requestTokenHeader = request.getHeader("Authorization");
 
 
@@ -63,14 +60,18 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
             try {
 
-                // decode & validate token
+                // decode & !validate! token
                 Claims claims = jwtTokenService.decodeJWT(jwtToken);
+
+                // token id
                 Long id = Long.valueOf(claims.getId());
 
-                // check that token is in my DB and not rotten
+                // TOKEN issued by ME // не особо нужно
+                // TOKEN Is NOT ROTTEN
+                // TOKEN is PRESENT in my DB (NOT BLACKLISTED)
                 if (claims.getIssuer().equals(ISSUER) &&
-                    tokenService.findById(id) != null &&
-                    claims.getExpiration().toInstant().toEpochMilli() >= Instant.now().toEpochMilli()) {
+                    claims.getExpiration().toInstant().toEpochMilli() > Instant.now().toEpochMilli() &&
+                    tokenService.findById(id) != null) {
 
                     UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
 
@@ -104,3 +105,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     }
 
 }
+
+
+//    @Override
+//    public void doFilter(ServletRequest requestBase, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+//        HttpServletRequest request = (HttpServletRequest)requestBase;

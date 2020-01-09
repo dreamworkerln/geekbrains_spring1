@@ -16,6 +16,9 @@ public enum TokenType {
         this.name = name;
     }
 
+    /**
+     * In seconds
+     */
     public long getTtl() {
         return ttl;
     }

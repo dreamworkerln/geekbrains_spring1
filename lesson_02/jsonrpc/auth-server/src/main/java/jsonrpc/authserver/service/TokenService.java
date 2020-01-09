@@ -1,6 +1,5 @@
 package jsonrpc.authserver.service;
 
-import io.jsonwebtoken.Claims;
 import jsonrpc.authserver.entities.Role;
 import jsonrpc.authserver.entities.User;
 import jsonrpc.authserver.entities.Token;
@@ -13,17 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpSession;
 import java.lang.invoke.MethodHandles;
+import java.time.Instant;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static jsonrpc.authserver.config.SpringConfiguration.ISSUER;
-import static jsonrpc.utils.Utils.rolesToSet;
 
 @Service
 @Transactional
@@ -34,12 +29,17 @@ public class TokenService {
     private final JwtTokenService jwtTokenService;
     private final UserService userService;
     private final TokenRepository tokenRepository;
+    private final BlacklistTokenService blacklistTokenService;
 
     @Autowired
-    public TokenService(JwtTokenService jwtTokenService, TokenRepository tokenRepository, UserService userService) {
+    public TokenService(JwtTokenService jwtTokenService,
+                        TokenRepository tokenRepository,
+                        UserService userService,
+                        BlacklistTokenService blacklistTokenService) {
         this.jwtTokenService = jwtTokenService;
         this.tokenRepository = tokenRepository;
         this.userService = userService;
+        this.blacklistTokenService = blacklistTokenService;
     }
 
 
@@ -98,24 +98,19 @@ public class TokenService {
 
         // Delete here deprecated access and refresh tokens -------------------------
         if (oldRefreshToken != null) {
-            delete(oldRefreshToken);
 
-            if (oldRefreshToken.getAccessToken() != null) {
-                delete(oldRefreshToken.getAccessToken());
+            Token oldAccessToken = oldRefreshToken.getAccessToken();
+
+            if(oldAccessToken != null) {
+                blacklistTokenService.blacklist(oldAccessToken);
             }
+
+            // will delete both tokens(if has)
+            delete(oldRefreshToken);
         }
         return new OauthResponse(accessString, refreshString);
     }
 
-
-    public boolean isTokenEnabled(Long id) {
-
-        AtomicBoolean result = new AtomicBoolean(false);
-        if (id != null) {
-            tokenRepository.findById(id).ifPresent(token -> result.set(token.isEnabled()));
-        }
-        return result.get();
-    }
 
 
     public Token findById(Long id) {
@@ -149,6 +144,30 @@ public class TokenService {
             log.error("", e);
         }
     }
+
+
+    public void vacuum() {
+
+        Long accessS = Instant.now().getEpochSecond() - TokenType.ACCESS.getTtl();
+        Instant access = Instant.ofEpochSecond(accessS);
+
+        Long refreshS = Instant.now().getEpochSecond() - TokenType.REFRESH.getTtl();
+        Instant refresh = Instant.ofEpochSecond(refreshS);
+
+        tokenRepository.vacuum(access, refresh);
+    }
+
+}
+
+
+
+//    /**
+//     * Return token that client used in bearer authentication (if has)
+//     */
+//    public Token getTokenUsedInAuthentication() {
+//        return findById(getAuthTokenId());
+//    }
+
 
 
 //    /**
@@ -186,31 +205,6 @@ public class TokenService {
 //    }
 
 
-    public Long getAuthTokenId() {
-
-        Long result = null;
-
-        ServletRequestAttributes attr = (ServletRequestAttributes)RequestContextHolder.currentRequestAttributes();
-        HttpSession session = attr.getRequest().getSession();
-        Claims claims = (Claims)session.getAttribute("claims");
-
-        if (claims != null) {
-            result = Long.valueOf(claims.getId());
-        }
-
-        return result;
-    }
-
-    /**
-     * Return token that client used in authentication (if has)
-     */
-    public Token getAuthToken() {
-        return findById(getAuthTokenId());
-    }
-
-}
-
-
 
 
 
@@ -230,6 +224,16 @@ public class TokenService {
 ////user = new User(userDetails.getUsername(), "[PROTECTED]", authorities);
 
 //authorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + "REFRESH"));
+
+
+//    public boolean isTokenEnabled(Long id) {
+//
+//        AtomicBoolean result = new AtomicBoolean(false);
+//        if (id != null) {
+//            tokenRepository.findById(id).ifPresent(token -> result.set(token.isEnabled()));
+//        }
+//        return result.get();
+//    }
 
 
 

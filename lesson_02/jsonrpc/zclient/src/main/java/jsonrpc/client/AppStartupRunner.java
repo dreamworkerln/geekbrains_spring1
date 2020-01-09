@@ -4,7 +4,8 @@ import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.client.request.OrderRequest;
 import jsonrpc.client.request.ProductRequest;
 import jsonrpc.client.request.StorageRequest;
-import jsonrpc.protocol.dto.base.HandlerName;
+import jsonrpc.client.request.base.MyToken;
+import jsonrpc.client.request.base.OauthRequest;
 import jsonrpc.protocol.dto.product.spec.ProductSpecDto;
 import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
@@ -34,18 +35,21 @@ public class AppStartupRunner implements ApplicationRunner {
     private final ProductRequest productRequest;
     private final StorageRequest storageRequest;
     private final OrderRequest orderRequest;
+    private final OauthRequest oauthRequest;
 
 
     @Autowired
     public AppStartupRunner(ClientProperties clientProperties,
                             ProductRequest productRequest,
                             StorageRequest storageRequest,
-                            OrderRequest orderRequest) {
+                            OrderRequest orderRequest,
+                            OauthRequest oauthRequest) {
 
         this.clientProperties = clientProperties;
         this.productRequest = productRequest;
         this.storageRequest = storageRequest;
         this.orderRequest = orderRequest;
+        this.oauthRequest = oauthRequest;
     }
 
 
@@ -69,13 +73,10 @@ public class AppStartupRunner implements ApplicationRunner {
             System.out.println("login as ADMIN\n");
 
             // перелогинимся
-            clientProperties.getCredentials().setAccessToken(null);
-            clientProperties.getCredentials().setRefreshToken(null);
-
+            clientProperties.getCredentials().setAccessToken(MyToken.EMPTY);
+            clientProperties.getCredentials().setRefreshToken(MyToken.EMPTY);
             clientProperties.getCredentials().setUsername("admin");
             clientProperties.getCredentials().setPassword("password");
-
-
         }
 
 
@@ -274,8 +275,11 @@ public class AppStartupRunner implements ApplicationRunner {
         }
 
 
+        log.info("Refresh token to get banned previous one -------------");
 
+        oauthRequest.refreshToken();
 
+        log.info("Blocked access_token on auth_server: {}", oauthRequest.getBlackList(0L));
     }
 
 }

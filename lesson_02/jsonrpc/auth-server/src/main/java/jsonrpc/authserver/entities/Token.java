@@ -7,7 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
-@Table(indexes = { @Index(name = "idx_created", columnList = "created") })
+@Table(indexes = { @Index(name = "idx_created", columnList = "created")})
 public class Token extends AbstractEntity {
 
     // link from refresh token to access token
@@ -49,5 +49,4 @@ public class Token extends AbstractEntity {
     public TokenType getType() {return type;}
 
     public User getUser() {return user;}
-
 }

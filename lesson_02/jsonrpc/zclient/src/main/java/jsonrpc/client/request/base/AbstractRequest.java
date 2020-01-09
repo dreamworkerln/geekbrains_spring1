@@ -37,6 +37,8 @@ public abstract class AbstractRequest {
     private ApplicationContext context;
     private ClientProperties clientProperties;
     private RestTemplate restTemplate;
+    private OauthRequest oauthRequest;
+
 
     protected ObjectMapper objectMapper;
 
@@ -64,6 +66,11 @@ public abstract class AbstractRequest {
         this.objectMapper = objectMapper;
     }
 
+    @Autowired
+    public void setOauthRequest(OauthRequest oauthRequest) {
+        this.oauthRequest = oauthRequest;
+    }
+
     @PostConstruct
     private void postConstruct() {
         apiURL = String.format("http://%1$s:%2$s/api/%3$s/",
@@ -73,7 +80,7 @@ public abstract class AbstractRequest {
 
     }
 
-
+    // --------------------------------------------------------------------
 
 
 
@@ -82,34 +89,34 @@ public abstract class AbstractRequest {
         ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
 
         // Oauth2.0 authorization -------------------------------------------
-        if (clientCredentials.getAccessToken() == null ||clientCredentials.getRefreshToken() == null) {
 
-            if (clientCredentials.getRefreshToken() != null) {
-                refreshToken();
+        // если устарел access_token или refresh_token
+        if (clientCredentials.getAccessToken().isRotten() ||
+            clientCredentials.getRefreshToken().isRotten()) {
+
+
+            // Если refresh_token не протух
+            if (!clientCredentials.getRefreshToken().isRotten()) {
+                // refresh refresh_token
+                // получим заодно новый access_token
+                oauthRequest.refreshToken();
+            } else {
+
+                // get tokens (really get only reduced functionality 1 refresh token - waiting to token have been approved)
+                oauthRequest.obtainToken();
+
+                // simulate approving this refresh token from "confidential client (maybe from mobile app)"
+                oauthRequest.approve(clientCredentials.getRefreshToken().getId());
+
+                // then get fully functional access+refresh tokens pair with normal access level
+                oauthRequest.refreshToken();
             }
 
-            // get tokens (really get only reduced functionality 1 refresh token - waiting to token have been approved)
-            obtainToken();
-
-            // simulate approving this refresh token from "confidential client (maybe from mobile app)"
-            approve(clientCredentials.getRefreshId());
-
-            // then get fully functional access+refresh tokens pair with normal access level
-            refreshToken();
-
-
         }
-        else if (clientCredentials.getAccessTokenExpiration().toEpochMilli() < Instant.now().toEpochMilli()) {
-
-            log.info("OAUTH refresh TOKEN");
-            refreshToken();
-        }
-        // --------------------------------------------------------------------
-
 
         JsonNode result;
 
-        // JrpcRequest не был запихнут в @Bean //context.getBean(JrpcRequest.class);
+        // JrpcRequest не был запихнут в @Bean //context.getBean(JrpcRequest.class); поэтому new()
         JrpcRequest jrpcRequest = new JrpcRequest();
         jrpcRequest.setMethod(uri);
         jrpcRequest.setId(id);
@@ -143,173 +150,5 @@ public abstract class AbstractRequest {
         return result;
     }
 
-
-
-
-    private void obtainTokenAbstract(GrantType grantType) {
-
-        ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
-
-        String params = String.format("grant_type=%1$s", grantType.getValue());
-
-        String getTokenURL = String.format("http://%1$s:%2$s/oauzz/token/get",
-                this.clientProperties.getAuthServer().getHostName(),
-                this.clientProperties.getAuthServer().getPort());
-
-
-        RequestEntity<String> requestEntity = null;
-        if (grantType == GrantType.PASSWORD) {
-
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            headers.setBasicAuth(clientCredentials.getUsername(), clientCredentials.getPassword());
-            requestEntity = RequestEntity
-                    .post(URI.create(getTokenURL))
-                    .headers(headers)
-                    .body(params);
-        }
-        else if (grantType == GrantType.REFRESH) {
-
-            String authorization = "Bearer " + clientCredentials.getRefreshToken();
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.set("Authorization", authorization);
-            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-            requestEntity = RequestEntity
-                    .post(URI.create(getTokenURL))
-                    .headers(headers)
-                    .body(params);
-        }
-
-        assert requestEntity != null;
-        ResponseEntity<OauthResponse> response = restTemplate.exchange(requestEntity, OauthResponse.class);
-
-        OauthResponse oauthResponse = response.getBody();
-        clientCredentials.setAccessToken(oauthResponse.getAccessToken());
-        clientCredentials.setRefreshToken(oauthResponse.getRefreshToken());
-        clientCredentials.setObtained(Instant.now());
-
-        Claims claims = getClaims(oauthResponse.getAccessToken());
-
-        if (claims != null) {
-            clientCredentials.setAccessTokenExpiration(claims.getExpiration().toInstant());
-        }
-
-        claims = getClaims(oauthResponse.getRefreshToken());
-        if (claims != null) {
-            clientCredentials.setRefreshId(Long.valueOf(claims.getId()));
-        }
-
-
-
-        log.info("access_token: {}", clientCredentials.getAccessToken());
-        log.info("access_token expiration: {}", clientCredentials.getAccessTokenExpiration());
-        log.info("refresh_token: {}", clientCredentials.getRefreshToken());
-
-    }
-
-
-    private boolean checkTokenApproval() {
-
-        ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
-
-        String authorization = "Bearer " + clientCredentials.getRefreshToken();
-
-        String checkTokenURL = String.format("http://%1$s:%2$s/oauzz/token/check_approved",
-                this.clientProperties.getAuthServer().getHostName(),
-                this.clientProperties.getAuthServer().getPort());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", authorization);
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        RequestEntity requestEntity = RequestEntity
-                .post(URI.create(checkTokenURL))
-                .headers(headers)
-                .build();
-
-        ResponseEntity<OauthResponse> response = restTemplate.exchange(requestEntity, OauthResponse.class);
-
-        return response.getStatusCode() == HttpStatus.OK;
-    }
-
-
-
-    public void approve(Long id) {
-
-        ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
-
-        log.info("APPROVING TOKEN id={}", id);
-
-        String approveTokenURL = String.format("http://%1$s:%2$s/oauzz/token/approve",
-                this.clientProperties.getAuthServer().getHostName(),
-                this.clientProperties.getAuthServer().getPort());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setBasicAuth(clientCredentials.getUsername(), clientCredentials.getPassword());
-
-        RequestEntity<String> requestEntity = RequestEntity
-                .post(URI.create(approveTokenURL))
-                .headers(headers)
-                .body("id=" + id);
-
-        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
-        log.info("{}", response.getStatusCode());
-    }
-
-
-
-
-
-    private void obtainToken() {
-        log.info("OAUTH GET TOKEN");
-        obtainTokenAbstract(GrantType.PASSWORD);
-    }
-
-
-
-    private void refreshToken() {
-        log.info("OAUTH REFRESH TOKEN");
-
-        // check that token is approved
-        if (!checkTokenApproval()) {
-            String s = "OAUTH REFRESH TOKEN NOT APPROVED";
-            log.error(s);
-            throw new RuntimeException(s);
-        }
-
-        obtainTokenAbstract(GrantType.REFRESH);
-    }
-
-
-
-    // get claims without checking key signing
-    private Claims getClaims(String token) {
-
-        final AtomicReference<Claims> result = new AtomicReference<>();
-
-        SigningKeyResolver signingKeyResolver = new SigningKeyResolverAdapter() {
-            @Override
-            public Key resolveSigningKey(JwsHeader header, Claims claims) {
-                result.set(claims);
-                // Examine header and claims
-                return null; // will throw exception, can be caught in caller
-            }
-        };
-
-        try {
-
-            Jwts.parser()
-                    .setSigningKeyResolver(signingKeyResolver)
-                    .parseClaimsJws(token)
-                    .getBody();
-        }
-        catch (Exception e) {
-            // no signing key on client. 
-            // We trust that this JWT came from the trusted server and has been verified(issued) there.
-        }
-        return result.get();
-    }
 
 }

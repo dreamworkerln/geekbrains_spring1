@@ -70,8 +70,11 @@ public class JwtTokenService implements Serializable {
     }
 
 
-
-
+    /**
+     * Decode and validate token by SECRET_KEY
+     * @param jwt token
+     * @return Claims
+     */
     public Claims decodeJWT(String jwt) {
 
         return Jwts.parser()
