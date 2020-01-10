@@ -57,7 +57,7 @@ This will approve previously obtained refresh_token.
   
 3. Go on auth_server and refresh you refresh_token  
   
-curl -X POST /oauzz/token -H "Authorization: Bearer YOU_REFRESH_TOKEN_FROM_STEP_1"  
+curl -X POST /oauzz/token/refresh -H "Authorization: Bearer YOU_REFRESH_TOKEN_FROM_STEP_1"  
   
 will get normal 2 tokens  
   
@@ -73,7 +73,16 @@ curl -X POST /api/... -H "Authorization: Bearer YOU_ACCESS_TOKEN_FROM_STEP_3"
   
 // ------------------------------------------------------------------------------------  
     
-Possible improvements:
-Provide blacklist token controller/service on auth-server that allows resource-server
-obtain revoked tokens informations -- seems done, need tests  
+Addition available improvements:  
+  
+Clien may check is his refresh_token has been approved:  
+
+curl -X POST /oauzz/token/check_is_approved -H "Authorization: Bearer YOU_ACCESS_TOKEN_FROM_STEP_1"  
+  
+  
+resource-server may update database of banned access_tokens  
+curl -X POST /oauzz/token/listblack --data from=LAST_BANNED_ACCES_TOKEN_COUNTER  
+
+
+
   
