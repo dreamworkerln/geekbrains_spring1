@@ -1,14 +1,13 @@
 package jsonrpc.resourceserver.configuration;
 
 import io.jsonwebtoken.Claims;
-import jsonrpc.protocol.http.TokenType;
+import jsonrpc.protocol.token.TokenType;
 import jsonrpc.resourceserver.service.jwt.JwtTokenService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,10 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.invoke.MethodHandles;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static jsonrpc.resourceserver.configuration.SpringConfiguration.ISSUER;
 import static jsonrpc.utils.Utils.rolesToGrantedAuthority;

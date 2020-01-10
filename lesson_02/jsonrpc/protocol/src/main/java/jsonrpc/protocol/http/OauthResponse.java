@@ -9,7 +9,7 @@ public class OauthResponse {
     private String accessToken;
     private String refreshToken;
 
-    public OauthResponse() {}
+    protected OauthResponse() {}
 
     public OauthResponse(String accessToken, String refreshToken) {
         this.accessToken = accessToken;

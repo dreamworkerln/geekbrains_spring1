@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.invoke.MethodHandles;
+import java.time.Instant;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ public class BlacklistTokenService {
      * @param token AccessToken
      */
     public void blacklist(AccessToken token) {
-        blacklistedTokenRepository.save(new BlacklistedToken(token.getId()));
+        blacklistedTokenRepository.save(new BlacklistedToken(token.getId(), token.getExpiredAt()));
     }
 
 
@@ -50,8 +51,12 @@ public class BlacklistTokenService {
     public Map<Long,Long> getFrom(Long from) {
        return blacklistedTokenRepository.findByIdGreaterThanEqual(from).stream()
                .collect(Collectors.toMap(BlacklistedToken::getId, BlacklistedToken::getTokenId));
-
     }
+
+    public void vacuum() {
+        blacklistedTokenRepository.vacuum();
+    }
+
 }
 
 

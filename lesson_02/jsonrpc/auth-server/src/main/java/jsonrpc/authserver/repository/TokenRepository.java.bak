@@ -14,7 +14,7 @@ public interface TokenRepository extends JpaRepository<Token, Long> {
 
 //    @Modifying
 //    @Query("DELETE FROM Token t WHERE " +
-//           "(t.type = jsonrpc.protocol.http.TokenType.ACCESS  AND t.created < :accessI ) OR " +
-//           "(t.type = jsonrpc.protocol.http.TokenType.REFRESH AND t.created < :refreshI)")
+//           "(t.type = jsonrpc.protocol.token.TokenType.ACCESS  AND t.created < :accessI ) OR " +
+//           "(t.type = jsonrpc.protocol.token.TokenType.REFRESH AND t.created < :refreshI)")
 //    void vacuum(@Param("accessI")Instant access, @Param("refreshI")Instant refresh);
 }

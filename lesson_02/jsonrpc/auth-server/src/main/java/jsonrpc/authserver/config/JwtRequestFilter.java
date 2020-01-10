@@ -1,14 +1,16 @@
 package jsonrpc.authserver.config;
 
 import io.jsonwebtoken.Claims;
+import jsonrpc.authserver.config.misc.RequestScopeBean;
 import jsonrpc.authserver.entities.Role;
 import jsonrpc.authserver.entities.token.Token;
 import jsonrpc.authserver.service.JwtTokenService;
 import jsonrpc.authserver.service.TokenService;
-import jsonrpc.protocol.http.TokenType;
+import jsonrpc.protocol.token.TokenType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,12 +47,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final UserDetailsService userDetailsService;
     private final JwtTokenService jwtTokenService;
     private final TokenService tokenService;
+    private final RequestScopeBean requestScopeBean;
 
     @Autowired
-    public JwtRequestFilter(UserDetailsService userDetailsService, JwtTokenService jwtTokenService, TokenService tokenService) {
+    public JwtRequestFilter(@Qualifier("myUserDetailsService") UserDetailsService userDetailsService, JwtTokenService jwtTokenService, TokenService tokenService, RequestScopeBean requestScopeBean) {
         this.userDetailsService = userDetailsService;
         this.jwtTokenService = jwtTokenService;
         this.tokenService = tokenService;
+        this.requestScopeBean = requestScopeBean;
     }
 
 
@@ -82,14 +86,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 
                     UsernamePasswordAuthenticationToken authToken = getAuthToken(claims);
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    //TokenWebAuthenticationDetails details = new TokenWebAuthenticationDetails(request);
+                    //details.setToken(token);
+                    //authToken.setDetails(details);
 
-                    TokenWebAuthenticationDetails details = new TokenWebAuthenticationDetails(request);
-                    details.setToken(token);
-
-                    authToken.setDetails(details);
-                    // Save token to session
-                    //request.getSession().setAttribute("token", token);
-
+                    // save token
+                    requestScopeBean.setToken(token);
 
                     // After setting the Authentication in the context, we specify
                     // that the current user is authenticated.

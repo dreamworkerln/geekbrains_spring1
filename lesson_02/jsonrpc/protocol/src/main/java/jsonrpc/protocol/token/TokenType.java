@@ -1,4 +1,4 @@
-package jsonrpc.protocol.http;
+package jsonrpc.protocol.token;
 
 import java.util.HashMap;
 import java.util.Map;

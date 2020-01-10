@@ -3,10 +3,7 @@ package jsonrpc.client.request.base;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.*;
 import jsonrpc.client.configuration.ClientProperties;
-import jsonrpc.protocol.http.GrantType;
-import jsonrpc.protocol.http.OauthResponse;
 import jsonrpc.protocol.jrpc.request.JrpcRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +17,6 @@ import org.springframework.web.client.RestTemplate;
 import javax.annotation.PostConstruct;
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.security.Key;
-import java.time.Instant;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 @Scope("prototype")

@@ -8,7 +8,7 @@ import jsonrpc.authserver.entities.token.RefreshToken;
 import jsonrpc.authserver.repository.token.AccessTokenRepository;
 import jsonrpc.authserver.repository.token.RefreshTokenRepository;
 import jsonrpc.protocol.http.OauthResponse;
-import jsonrpc.protocol.http.TokenType;
+import jsonrpc.protocol.token.TokenType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +37,10 @@ public class TokenService {
 
     @Autowired
     public TokenService(JwtTokenService jwtTokenService,
-        UserService userService,
-        AccessTokenRepository accessTokenRepository,
-        RefreshTokenRepository refreshTokenRepository,
-        BlacklistTokenService blacklistTokenService) {
+                        UserService userService,
+                        AccessTokenRepository accessTokenRepository,
+                        RefreshTokenRepository refreshTokenRepository,
+                        BlacklistTokenService blacklistTokenService) {
 
         this.jwtTokenService = jwtTokenService;
         this.userService = userService;
@@ -52,6 +52,7 @@ public class TokenService {
 
     /**
      * Create new token, delete previous(on refreshing)
+     *
      * @param userName
      * @param refreshToken current refresh_token if available
      * @return
@@ -72,43 +73,46 @@ public class TokenService {
 
         // find user
         User user = userService.findByName(userName).orElseThrow(
-            () -> new UsernameNotFoundException("User not exists: " + userName));
-
-        // 1. Access Token ---------------------------------------------------------------------
+                () -> new UsernameNotFoundException("User not exists: " + userName));
 
 
-        if (isTokenApproved) {
+        // 1. Refresh Token -------------------------------------------------------------------
 
-            Instant expiredAt = Instant.now().plusSeconds(TokenType.ACCESS.getTtl());
-            accessToken = new AccessToken(user, true, expiredAt);
-            accessTokenRepository.save(accessToken);
-
-            Set<String> roles =
-                user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
-
-            accessTokenString = jwtTokenService.createJWT(
-                TokenType.ACCESS, refreshToken.getId(), ISSUER, user.getName(), roles, TokenType.ACCESS.getTtl());
-
-        }
-
-        // 2. Refresh Token -------------------------------------------------------------------
-
-        long ttl = isTokenApproved ? TokenType.REFRESH.getTtl(): 1800;
+        long ttl = isTokenApproved ? TokenType.REFRESH.getTtl() : 1800;
         Instant expiredAt = Instant.now().plusSeconds(ttl);
 
-        refreshToken = new RefreshToken(user, accessToken, isTokenApproved, expiredAt);
+        refreshToken = new RefreshToken(user, isTokenApproved, expiredAt);
         refreshTokenRepository.save(refreshToken);
 
         Set<String> refreshRoles = new HashSet<>(Collections.singletonList(Role.REFRESH));
 
         refreshTokenString = jwtTokenService.createJWT(
-            TokenType.REFRESH, refreshToken.getId(), ISSUER, user.getName(), refreshRoles, ttl);
+                TokenType.REFRESH, refreshToken.getId(), ISSUER, user.getName(), refreshRoles, ttl);
+
+        // 2. Access Token ---------------------------------------------------------------------
+
+
+        if (isTokenApproved) {
+
+            expiredAt = Instant.now().plusSeconds(TokenType.ACCESS.getTtl());
+            accessToken = new AccessToken(user, true, refreshToken, expiredAt);
+            refreshToken.setAccessToken(accessToken);
+            
+            accessTokenRepository.save(accessToken);
+
+            Set<String> roles =
+                    user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+
+            accessTokenString = jwtTokenService.createJWT(
+                    TokenType.ACCESS, refreshToken.getId(), ISSUER, user.getName(), roles, TokenType.ACCESS.getTtl());
+
+        }
 
         // Delete here deprecated access and refresh token --------------------------------------
 
         if (oldRefreshToken != null) {
             AccessToken oldAccessToken = oldRefreshToken.getAccessToken();
-            if(oldAccessToken != null) {
+            if (oldAccessToken != null) {
                 blacklistTokenService.blacklist(oldAccessToken);
             }
             // will delete both token(old refresh and old access if has)
@@ -118,12 +122,11 @@ public class TokenService {
     }
 
 
-
     public AccessToken findAccessToken(Long id) {
 
         AccessToken result = null;
 
-        if (id!= null) {
+        if (id != null) {
             result = accessTokenRepository.findById(id).orElse(null);
         }
         return result;
@@ -134,7 +137,7 @@ public class TokenService {
 
         RefreshToken result = null;
 
-        if (id!= null) {
+        if (id != null) {
             result = refreshTokenRepository.findById(id).orElse(null);
         }
         return result;
@@ -143,8 +146,8 @@ public class TokenService {
 
     public void approveToken(RefreshToken token) {
 
-        assert token!= null;
-        assert token.getId()!= null;
+        assert token != null;
+        assert token.getId() != null;
         refreshTokenRepository.approveById(token.getId());
     }
 
@@ -154,21 +157,26 @@ public class TokenService {
         try {
 
             if (token instanceof AccessToken) {
-                accessTokenRepository.delete((AccessToken)token);
+                accessTokenRepository.delete((AccessToken) token);
+            } else if (token instanceof RefreshToken) {
+                refreshTokenRepository.delete((RefreshToken) token);
             }
-            else if (token instanceof RefreshToken) {
-                refreshTokenRepository.delete((RefreshToken)token);
-            }
-        }
-
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("", e);
         }
     }
 
 
-//    public void vacuum() {
-//
+    public void vacuum() {
+
+        accessTokenRepository.vacuum();
+        refreshTokenRepository.vacuum();
+
+    }
+}
+
+
+
 //        Long accessS = Instant.now().getEpochSecond() - TokenType.ACCESS.getTtl();
 //        Instant access = Instant.ofEpochSecond(accessS);
 //
@@ -176,9 +184,9 @@ public class TokenService {
 //        Instant refresh = Instant.ofEpochSecond(refreshS);
 //
 //        tokenRepository.vacuum(access, refresh);
-//    }
 
-}
+
+
 
 
 

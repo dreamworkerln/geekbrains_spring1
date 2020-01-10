@@ -1,6 +1,6 @@
 package jsonrpc.authserver.controller;
 
-import jsonrpc.authserver.config.TokenWebAuthenticationDetails;
+import jsonrpc.authserver.config.misc.RequestScopeBean;
 import jsonrpc.authserver.entities.Role;
 import jsonrpc.authserver.entities.token.Token;
 import jsonrpc.authserver.entities.token.AccessToken;
@@ -24,10 +24,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpSession;
 import java.lang.invoke.MethodHandles;
 
 
@@ -42,12 +39,13 @@ public class OauthController {
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final TokenService tokenService;
-
     private final BlacklistTokenService blacklistTokenService;
+    private final RequestScopeBean requestScopeBean;
 
-    public OauthController(TokenService tokenService, BlacklistTokenService blacklistTokenService) {
+    public OauthController(TokenService tokenService, BlacklistTokenService blacklistTokenService, RequestScopeBean requestScopeBean) {
         this.tokenService = tokenService;
         this.blacklistTokenService = blacklistTokenService;
+        this.requestScopeBean = requestScopeBean;
     }
 
 
@@ -125,15 +123,12 @@ public class OauthController {
      * <br> Allow Basic and Bearer access_token Authorisation
      */
     @PostMapping("/approve")
-    @Secured({Role.USER,Role.ADMIN})
+    @Secured({Role.USER, Role.ADMIN})
     public ResponseEntity approveToken(@Param("id") Long id) {
 
-        // Пользователь мой зайти сюда используя Authentication:
-        // BasicAuth либо
-        // Bearer (access_token)
-
         // check if user authenticated by access_token
-        if (isBearerAuthenticated()) {
+        // then make sure that token type is access_token_type
+        if (isBearerAuthentication()) {
             getTokenFromAuthentication(AccessToken.class);
         }
 
@@ -155,13 +150,14 @@ public class OauthController {
     }
 
 
+
     /**
      * Return blacklisted access_tokens
      * @param from from that index to last available (is not token id)
      * @return List of denied token id
      */
     @PostMapping(value = "/listblack")
-    @Secured({"ROLE_RESOURCE","ROLE_ADMIN"})
+    @Secured({Role.RESOURCE, Role.ADMIN})
     public ResponseEntity<BlackListResponse> getBlackList(@Param("from") Long from) {
 
         HttpStatus status;
@@ -169,7 +165,7 @@ public class OauthController {
         BlackListResponse result = new BlackListResponse();
 
         // check if user authenticated by access_token
-        if (isBearerAuthenticated()) {
+        if (isBearerAuthentication()) {
             getTokenFromAuthentication(AccessToken.class);
         }
 
@@ -180,53 +176,20 @@ public class OauthController {
 
     // ==============================================================================
 
-    private static UsernamePasswordAuthenticationToken getAuthentication() {
-
-        UsernamePasswordAuthenticationToken result = null;
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof UsernamePasswordAuthenticationToken) {
-            result = (UsernamePasswordAuthenticationToken)authentication;
-        }
-        return result;
+    private boolean isBearerAuthentication() {
+        return requestScopeBean.getToken() != null;
     }
 
 
-    private static boolean isBearerAuthenticated() {
+    private <T extends Token> T getTokenFromAuthentication(Class<T> tokenClass) {
 
-        boolean result = false;
-        UsernamePasswordAuthenticationToken authentication = getAuthentication();
-        if(authentication != null) {
-            result = authentication.getDetails() instanceof TokenWebAuthenticationDetails;
+        Token token = requestScopeBean.getToken();
+        // check wrong token type (access instead refresh and vise versa)
+        if (token.getClass() != tokenClass) {
+            throw new AccessDeniedException("Unauthenticated");
         }
-        return result;
+        return tokenClass.cast(token);
     }
-
-
-    // get token from authentication
-    private static <T extends Token> T getTokenFromAuthentication(Class<T> tokenClass) {
-        T result = null;
-
-        UsernamePasswordAuthenticationToken authentication = getAuthentication();
-        if (authentication!= null) {
-
-            Object details = authentication.getDetails();
-
-            if(details instanceof TokenWebAuthenticationDetails) {
-
-                Token token = ((TokenWebAuthenticationDetails)details).getToken();
-                // check wrong token type (access instead refresh and vise versa)
-                if (token.getClass() != tokenClass) {
-                    throw new AccessDeniedException("Unauthenticated");
-                }
-                result = tokenClass.cast(token);
-            }
-        }
-        return result;
-    }
-
-
-
 
     // get current user name
     private static String getUsername() {
@@ -239,6 +202,20 @@ public class OauthController {
 
 
     // ---------------------------------------------------------------------------------------
+
+
+//    private static UsernamePasswordAuthenticationToken getAuthentication() {
+//
+//        UsernamePasswordAuthenticationToken result = null;
+//
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        if (authentication instanceof UsernamePasswordAuthenticationToken) {
+//            result = (UsernamePasswordAuthenticationToken)authentication;
+//        }
+//        return result;
+//    }
+
+
 
 //    // get current session
 //    private static HttpSession getSession() {

@@ -10,6 +10,7 @@ import java.util.Set;
 @Table(name="rolez")
 public class Role extends AbstractEntity {
 
+    public static final String RESOURCE   = "ROLE_RESOURCE";
     public static final String REFRESH   = "ROLE_REFRESH";
     public static final String ANONYMOUS = "ROLE_ANONYMOUS";
     public static final String USER      = "ROLE_USER";

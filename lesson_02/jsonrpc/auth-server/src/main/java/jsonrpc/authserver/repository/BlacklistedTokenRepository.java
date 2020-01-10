@@ -12,8 +12,8 @@ import java.util.List;
 public interface BlacklistedTokenRepository extends JpaRepository<BlacklistedToken, Long> {
 
     @Modifying
-    @Query("DELETE FROM BlacklistedToken bt WHERE bt.created < :i")
-    void vacuum(@Param("i")Instant i);
+    @Query("DELETE FROM BlacklistedToken t WHERE t.expiredAt < CURRENT_TIMESTAMP")
+    void vacuum();
 
     List<BlacklistedToken> findByIdGreaterThanEqual(@Param("from")Long from);
 }

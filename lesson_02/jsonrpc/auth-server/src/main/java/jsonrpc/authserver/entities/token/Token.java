@@ -2,7 +2,6 @@ package jsonrpc.authserver.entities.token;
 
 import jsonrpc.authserver.entities.User;
 import jsonrpc.authserver.entities.base.AbstractEntity;
-import jsonrpc.protocol.http.TokenType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;

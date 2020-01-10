@@ -1,26 +1,19 @@
 package jsonrpc.client.request.base;
 
-import io.jsonwebtoken.*;
 import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.protocol.http.BlackListResponse;
-import jsonrpc.protocol.http.GrantType;
+import jsonrpc.protocol.token.GrantType;
 import jsonrpc.protocol.http.OauthResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.lang.invoke.MethodHandles;
 import java.net.URI;
-import java.security.Key;
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 @Scope("prototype")
