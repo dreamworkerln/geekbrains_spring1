@@ -86,7 +86,7 @@ public class OauthController {
 
         RefreshToken refreshToken = getTokenFromAuthentication(RefreshToken.class);
 
-        // Тот, кто зашел по паролю получает урезаннй по времени жизни REFRESH токен.
+        // Тот, кто зашел по паролю получает урезанный по времени жизни REFRESH токен.
         // Если пользователь подтвердит этого клиента
         // (через другое, доверенное приложение-клиент - мобильное приложение),
         // то клиент сможет обновить токен и получить пару нормальных токенов ACCESS + REFRESH
@@ -160,11 +160,10 @@ public class OauthController {
     @Secured({Role.RESOURCE, Role.ADMIN})
     public ResponseEntity<BlackListResponse> getBlackList(@Param("from") Long from) {
 
-        HttpStatus status;
-
         BlackListResponse result = new BlackListResponse();
 
         // check if user authenticated by access_token
+        // then make sure that token type is access_token_type
         if (isBearerAuthentication()) {
             getTokenFromAuthentication(AccessToken.class);
         }
