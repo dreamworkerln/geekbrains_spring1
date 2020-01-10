@@ -102,13 +102,13 @@ public abstract class AbstractRequest {
                 oauthRequest.refreshToken();
             } else {
 
-                // get tokens (really get only reduced functionality 1 refresh token - waiting to token have been approved)
+                // get token (really get only reduced functionality 1 refresh token - waiting to token have been approved)
                 oauthRequest.obtainToken();
 
                 // simulate approving this refresh token from "confidential client (maybe from mobile app)"
                 oauthRequest.approve(clientCredentials.getRefreshToken().getId());
 
-                // then get fully functional access+refresh tokens pair with normal access level
+                // then get fully functional access+refresh token pair with normal access level
                 oauthRequest.refreshToken();
             }
 

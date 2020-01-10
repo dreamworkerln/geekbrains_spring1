@@ -83,7 +83,7 @@ public class MultipleWebSecurityConfig {
         protected void configure(HttpSecurity http) throws Exception {
 
             http.antMatcher("/admin/**").authorizeRequests().anyRequest().authenticated()
-                    .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and().csrf().disable()
                     .httpBasic()
                     .and().addFilterBefore(jwtRequestFilter, BasicAuthenticationFilter.class);
@@ -112,7 +112,7 @@ public class MultipleWebSecurityConfig {
 
 
             http.antMatcher("/oauzz/token**/**").authorizeRequests().anyRequest().authenticated()
-                    .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and().csrf().disable()
                     .httpBasic()
                     .and().addFilterBefore(jwtRequestFilter, BasicAuthenticationFilter.class);

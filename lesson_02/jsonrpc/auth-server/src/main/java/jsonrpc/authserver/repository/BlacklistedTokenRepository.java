@@ -1,7 +1,6 @@
 package jsonrpc.authserver.repository;
 
 import jsonrpc.authserver.entities.BlacklistedToken;
-import jsonrpc.authserver.entities.Token;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;

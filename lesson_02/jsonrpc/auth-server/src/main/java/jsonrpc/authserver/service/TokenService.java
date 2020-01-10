@@ -2,8 +2,11 @@ package jsonrpc.authserver.service;
 
 import jsonrpc.authserver.entities.Role;
 import jsonrpc.authserver.entities.User;
-import jsonrpc.authserver.entities.Token;
-import jsonrpc.authserver.repository.TokenRepository;
+import jsonrpc.authserver.entities.token.Token;
+import jsonrpc.authserver.entities.token.AccessToken;
+import jsonrpc.authserver.entities.token.RefreshToken;
+import jsonrpc.authserver.repository.token.AccessTokenRepository;
+import jsonrpc.authserver.repository.token.RefreshTokenRepository;
 import jsonrpc.protocol.http.OauthResponse;
 import jsonrpc.protocol.http.TokenType;
 import org.slf4j.Logger;
@@ -28,60 +31,62 @@ public class TokenService {
 
     private final JwtTokenService jwtTokenService;
     private final UserService userService;
-    private final TokenRepository tokenRepository;
+    private final AccessTokenRepository accessTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final BlacklistTokenService blacklistTokenService;
 
     @Autowired
     public TokenService(JwtTokenService jwtTokenService,
-                        TokenRepository tokenRepository,
-                        UserService userService,
-                        BlacklistTokenService blacklistTokenService) {
+        UserService userService,
+        AccessTokenRepository accessTokenRepository,
+        RefreshTokenRepository refreshTokenRepository,
+        BlacklistTokenService blacklistTokenService) {
+
         this.jwtTokenService = jwtTokenService;
-        this.tokenRepository = tokenRepository;
         this.userService = userService;
+        this.accessTokenRepository = accessTokenRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.blacklistTokenService = blacklistTokenService;
     }
 
 
     /**
-     * Create new tokens, delete previous(on refreshing)
+     * Create new token, delete previous(on refreshing)
      * @param userName
      * @param refreshToken current refresh_token if available
      * @return
      */
-    public OauthResponse issueTokens(String userName, Token refreshToken) {
+    public OauthResponse issueTokens(String userName, RefreshToken refreshToken) {
 
-        if (refreshToken!=null && refreshToken.getType() != TokenType.REFRESH) {
-            throw new IllegalArgumentException("token.type should be refresh_token");
-        }
 
         boolean isTokenApproved = refreshToken != null && refreshToken.isEnabled();
 
-        Token oldRefreshToken = refreshToken;
-        Token accessToken = null;
+        RefreshToken oldRefreshToken = refreshToken;
+        AccessToken accessToken = null;
         //
-        String accessString = null;
-        String refreshString;
+        String accessTokenString = null;
+        String refreshTokenString = null;
         //
         //
 
 
         // find user
         User user = userService.findByName(userName).orElseThrow(
-                () -> new UsernameNotFoundException("User not exists: " + userName));
-
-        Set<String> roles =
-                user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
-
+            () -> new UsernameNotFoundException("User not exists: " + userName));
 
         // 1. Access Token ---------------------------------------------------------------------
 
 
         if (isTokenApproved) {
-            accessToken = new Token(TokenType.ACCESS, user, true);
-            tokenRepository.save(accessToken);
 
-            accessString = jwtTokenService.createJWT(
+            Instant expiredAt = Instant.now().plusSeconds(TokenType.ACCESS.getTtl());
+            accessToken = new AccessToken(user, true, expiredAt);
+            accessTokenRepository.save(accessToken);
+
+            Set<String> roles =
+                user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+
+            accessTokenString = jwtTokenService.createJWT(
                 TokenType.ACCESS, refreshToken.getId(), ISSUER, user.getName(), roles, TokenType.ACCESS.getTtl());
 
         }
@@ -89,73 +94,89 @@ public class TokenService {
         // 2. Refresh Token -------------------------------------------------------------------
 
         long ttl = isTokenApproved ? TokenType.REFRESH.getTtl(): 1800;
+        Instant expiredAt = Instant.now().plusSeconds(ttl);
 
-        refreshToken = new Token(TokenType.REFRESH, user, accessToken, isTokenApproved);
-        tokenRepository.save(refreshToken);
+        refreshToken = new RefreshToken(user, accessToken, isTokenApproved, expiredAt);
+        refreshTokenRepository.save(refreshToken);
 
-        refreshString = jwtTokenService.createJWT(
-            TokenType.REFRESH, refreshToken.getId(), ISSUER, user.getName(), roles, ttl);
+        Set<String> refreshRoles = new HashSet<>(Collections.singletonList(Role.REFRESH));
 
-        // Delete here deprecated access and refresh tokens -------------------------
+        refreshTokenString = jwtTokenService.createJWT(
+            TokenType.REFRESH, refreshToken.getId(), ISSUER, user.getName(), refreshRoles, ttl);
+
+        // Delete here deprecated access and refresh token --------------------------------------
+
         if (oldRefreshToken != null) {
-
-            Token oldAccessToken = oldRefreshToken.getAccessToken();
-
+            AccessToken oldAccessToken = oldRefreshToken.getAccessToken();
             if(oldAccessToken != null) {
                 blacklistTokenService.blacklist(oldAccessToken);
             }
-
-            // will delete both tokens(if has)
+            // will delete both token(old refresh and old access if has)
             delete(oldRefreshToken);
         }
-        return new OauthResponse(accessString, refreshString);
+        return new OauthResponse(accessTokenString, refreshTokenString);
     }
 
 
 
-    public Token findById(Long id) {
+    public AccessToken findAccessToken(Long id) {
 
-        Token result = null;
+        AccessToken result = null;
 
         if (id!= null) {
-            result = tokenRepository.findById(id).orElse(null);
+            result = accessTokenRepository.findById(id).orElse(null);
         }
         return result;
     }
 
 
-    public void approveToken(Token token) {
+    public RefreshToken findRefreshToken(Long id) {
 
-        if (token.getType() != TokenType.REFRESH) {
-            throw new IllegalArgumentException("Bat token type, should be refresh_token");
-        }
+        RefreshToken result = null;
 
-        if (token.getId() != null) {
-            tokenRepository.ApproveTokenById(token.getId());
+        if (id!= null) {
+            result = refreshTokenRepository.findById(id).orElse(null);
         }
+        return result;
+    }
+
+
+    public void approveToken(RefreshToken token) {
+
+        assert token!= null;
+        assert token.getId()!= null;
+        refreshTokenRepository.approveById(token.getId());
     }
 
 
     public void delete(Token token) {
+
         try {
-            tokenRepository.deleteById(token.getId());
+
+            if (token instanceof AccessToken) {
+                accessTokenRepository.delete((AccessToken)token);
+            }
+            else if (token instanceof RefreshToken) {
+                refreshTokenRepository.delete((RefreshToken)token);
+            }
         }
+
         catch (Exception e) {
             log.error("", e);
         }
     }
 
 
-    public void vacuum() {
-
-        Long accessS = Instant.now().getEpochSecond() - TokenType.ACCESS.getTtl();
-        Instant access = Instant.ofEpochSecond(accessS);
-
-        Long refreshS = Instant.now().getEpochSecond() - TokenType.REFRESH.getTtl();
-        Instant refresh = Instant.ofEpochSecond(refreshS);
-
-        tokenRepository.vacuum(access, refresh);
-    }
+//    public void vacuum() {
+//
+//        Long accessS = Instant.now().getEpochSecond() - TokenType.ACCESS.getTtl();
+//        Instant access = Instant.ofEpochSecond(accessS);
+//
+//        Long refreshS = Instant.now().getEpochSecond() - TokenType.REFRESH.getTtl();
+//        Instant refresh = Instant.ofEpochSecond(refreshS);
+//
+//        tokenRepository.vacuum(access, refresh);
+//    }
 
 }
 

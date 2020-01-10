@@ -72,7 +72,7 @@ public class JwtTokenService implements Serializable {
 	}
 
 	private Boolean ignoreTokenExpiration(String token) {
-		// here you specify tokens, for that the expiration is ignored
+		// here you specify token, for that the expiration is ignored
 		return false;
 	}
 

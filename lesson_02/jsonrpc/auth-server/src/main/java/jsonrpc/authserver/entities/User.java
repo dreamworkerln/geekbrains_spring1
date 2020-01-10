@@ -1,7 +1,9 @@
 package jsonrpc.authserver.entities;
 
 import jsonrpc.authserver.entities.base.AbstractEntity;
-import org.springframework.security.core.GrantedAuthority;
+import jsonrpc.authserver.entities.token.AccessToken;
+import jsonrpc.authserver.entities.token.Token;
+import jsonrpc.authserver.entities.token.RefreshToken;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -16,11 +18,20 @@ public class User extends AbstractEntity {
 
     private String password;
 
+//    // Это список только access_token
+//    @NotNull
+//    @OneToMany(mappedBy= "user", orphanRemoval = true, cascade = CascadeType.ALL)
+//    @OrderBy("id ASC")
+//    private List<AccessToken> accessTokens = new ArrayList<>();
+
     // Это список только refresh_token
     @NotNull
     @OneToMany(mappedBy= "user", orphanRemoval = true, cascade = CascadeType.ALL)
     @OrderBy("id ASC")
-    private List<Token> refreshTokens = new ArrayList<>();
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+
+
 
 
     @ManyToMany(cascade = CascadeType.MERGE)
@@ -54,7 +65,7 @@ public class User extends AbstractEntity {
         return roles;
     }
 
-    public List<Token> getRefreshTokens() {
+    public List<RefreshToken> getRefreshTokens() {
         return refreshTokens;
     }
 

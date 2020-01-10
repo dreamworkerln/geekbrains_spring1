@@ -58,8 +58,9 @@ public class Utils {
 
 
     public static Set<GrantedAuthority> rolesToGrantedAuthority(Set<String> authorities) {
-
-        return null;
+        //noinspection unchecked
+        return authorities
+            .stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
     }
 
     public static Set<GrantedAuthority> rolesToGrantedAuthority(Object authorities) {

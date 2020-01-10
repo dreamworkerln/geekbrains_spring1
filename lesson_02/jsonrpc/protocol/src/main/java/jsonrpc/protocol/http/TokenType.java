@@ -1,11 +1,22 @@
 package jsonrpc.protocol.http;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public enum TokenType {
 
 
 
     ACCESS("access_token", 3600),
     REFRESH("refresh_token", 3600*24*30);
+
+    private static Map<String, TokenType> values = new HashMap<>();
+
+    static {
+        for (TokenType t :TokenType.values()) {
+            values.put(t.name, t);
+        }
+    }
 
     private long ttl;
     private String name;
@@ -26,4 +37,11 @@ public enum TokenType {
     public String getName() {
         return name;
     }
+
+    public static TokenType parseName(String name) {
+        return values.get(name);
+    }
+
+
+
 }

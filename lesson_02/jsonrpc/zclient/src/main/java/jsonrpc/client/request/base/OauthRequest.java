@@ -50,14 +50,16 @@ public class OauthRequest {
 
         ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
 
-        String params = String.format("grant_type=%1$s", grantType.getValue());
+        //String params = String.format("grant_type=%1$s", grantType.getValue());
 
-        String getTokenURL = String.format("http://%1$s:%2$s/oauzz/token/get",
-                this.clientProperties.getAuthServer().getHostName(),
-                this.clientProperties.getAuthServer().getPort());
+        String getTokenURL = String.format("http://%1$s:%2$s/oauzz/token/%3$s",
+            this.clientProperties.getAuthServer().getHostName(),
+            this.clientProperties.getAuthServer().getPort(),
+            grantType == GrantType.PASSWORD ? "/get" : "/refresh"
+        );
 
 
-        RequestEntity<String> requestEntity = null;
+        RequestEntity requestEntity = null;
         if (grantType == GrantType.PASSWORD) {
 
 
@@ -65,9 +67,10 @@ public class OauthRequest {
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             headers.setBasicAuth(clientCredentials.getUsername(), clientCredentials.getPassword());
             requestEntity = RequestEntity
-                    .post(URI.create(getTokenURL))
-                    .headers(headers)
-                    .body(params);
+                .post(URI.create(getTokenURL))
+                .headers(headers)
+                .build();
+
         }
         else if (grantType == GrantType.REFRESH) {
 
@@ -77,9 +80,9 @@ public class OauthRequest {
             headers.set("Authorization", authorization);
             headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             requestEntity = RequestEntity
-                    .post(URI.create(getTokenURL))
-                    .headers(headers)
-                    .body(params);
+                .post(URI.create(getTokenURL))
+                .headers(headers)
+                .build();
         }
 
         assert requestEntity != null;
@@ -105,16 +108,16 @@ public class OauthRequest {
         String authorization = "Bearer " + clientCredentials.getRefreshToken();
 
         String checkTokenURL = String.format("http://%1$s:%2$s/oauzz/token/check_is_approved",
-                this.clientProperties.getAuthServer().getHostName(),
-                this.clientProperties.getAuthServer().getPort());
+            this.clientProperties.getAuthServer().getHostName(),
+            this.clientProperties.getAuthServer().getPort());
 
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authorization);
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         RequestEntity requestEntity = RequestEntity
-                .post(URI.create(checkTokenURL))
-                .headers(headers)
-                .build();
+            .post(URI.create(checkTokenURL))
+            .headers(headers)
+            .build();
 
         ResponseEntity<OauthResponse> response = restTemplate.exchange(requestEntity, OauthResponse.class);
 
@@ -130,17 +133,17 @@ public class OauthRequest {
         log.info("APPROVING TOKEN id={}", id);
 
         String approveTokenURL = String.format("http://%1$s:%2$s/oauzz/token/approve",
-                this.clientProperties.getAuthServer().getHostName(),
-                this.clientProperties.getAuthServer().getPort());
+            this.clientProperties.getAuthServer().getHostName(),
+            this.clientProperties.getAuthServer().getPort());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setBasicAuth(clientCredentials.getUsername(), clientCredentials.getPassword());
 
         RequestEntity<String> requestEntity = RequestEntity
-                .post(URI.create(approveTokenURL))
-                .headers(headers)
-                .body("id=" + id);
+            .post(URI.create(approveTokenURL))
+            .headers(headers)
+            .body("id=" + id);
 
         ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
         log.info("{}", response.getStatusCode());
@@ -176,20 +179,20 @@ public class OauthRequest {
 
         ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
 
-        String checkTokenURL = String.format("http://%1$s:%2$s/oauzz/token/blackList",
-                this.clientProperties.getAuthServer().getHostName(),
-                this.clientProperties.getAuthServer().getPort());
+        String checkTokenURL = String.format("http://%1$s:%2$s/oauzz/token/listblack",
+            this.clientProperties.getAuthServer().getHostName(),
+            this.clientProperties.getAuthServer().getPort());
 
         HttpHeaders headers = new HttpHeaders();
         headers.setBasicAuth(clientCredentials.getUsername(), clientCredentials.getPassword());
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         RequestEntity requestEntity = RequestEntity
-                .post(URI.create(checkTokenURL))
-                .headers(headers)
-                .body("from=" + from);
+            .post(URI.create(checkTokenURL))
+            .headers(headers)
+            .body("from=" + from);
 
         ResponseEntity<BlackListResponse> response =
-                restTemplate.exchange(requestEntity, BlackListResponse.class);
+            restTemplate.exchange(requestEntity, BlackListResponse.class);
 
         return response.getBody();
     }

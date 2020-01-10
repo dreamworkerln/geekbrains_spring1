@@ -76,7 +76,7 @@ public class ApiController {
         // => самодельный routing (аналог @GetMapping, будем маршрутизировать по классам/именам методов)
 
 
-        // OAuth2 / tokens, etc -  сказали credentials передавать в инкапсулирующем потоке
+        // OAuth2 / token, etc -  сказали credentials передавать в инкапсулирующем потоке
         // (играющим роль транспортного для json-rpc)
         // в случае http - в заголовке,
         // в случае websocket - также в http заголовке (до апгрейда http в websocket)

@@ -31,11 +31,11 @@ public class AuthServerRunner implements ApplicationRunner {
 
     private void initRoles() {
 //
-//        Role refresh = new Role(Role.REFRESH);
-//        roleService.save(refresh);
+        Role refresh = new Role(Role.REFRESH);
+        roleService.save(refresh);
 
-        Role anonymous = new Role(Role.ANONYMOUS);
-        roleService.save(anonymous);
+//        Role anonymous = new Role(Role.ANONYMOUS);
+//        roleService.save(anonymous);
 
         Role user = new Role(Role.USER);
         roleService.save(user);
