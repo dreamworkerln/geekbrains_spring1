@@ -77,7 +77,7 @@ Addition available improvements:
   
 Clien may check is his refresh_token has been approved:  
 
-curl -X POST /oauzz/token/check_is_approved -H "Authorization: Bearer YOU_ACCESS_TOKEN_FROM_STEP_1"  
+curl -X POST /oauzz/token/check_is_approved -H "Authorization: Bearer YOU_REFRESH_TOKEN_FROM_STEP_1"  
   
   
 resource-server may update database of banned access_tokens  
