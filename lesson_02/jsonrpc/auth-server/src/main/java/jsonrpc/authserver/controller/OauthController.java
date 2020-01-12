@@ -82,7 +82,7 @@ public class OauthController {
      * <br> Allow Bearer refresh_token Authorization only
      */
     @PostMapping(value = "/refresh")
-    @ValidAuthenticationType(AuthType.BEARER_REFRESH)
+    @ValidAuthenticationType(AuthType.REFRESH_TOKEN)
     @Secured(Role.REFRESH)
     public ResponseEntity<OauthResponse> refreshToken() {
 
@@ -105,7 +105,7 @@ public class OauthController {
      * <br>Allow Bearer refresh_token Authorization only
      */
     @PostMapping(value = "/check_is_approved")
-    @ValidAuthenticationType(AuthType.BEARER_REFRESH)
+    @ValidAuthenticationType(AuthType.REFRESH_TOKEN)
     @Secured(Role.REFRESH)
     public ResponseEntity checkIsTokenApproved() {
 
@@ -124,7 +124,7 @@ public class OauthController {
      * <br> Allow Basic and Bearer access_token Authorization
      */
     @PostMapping("/approve")
-    @ValidAuthenticationType({AuthType.BASIC_AUTH, AuthType.BEARER_ACCESS})
+    @ValidAuthenticationType({AuthType.BASIC_AUTH, AuthType.ACCESS_TOKEN})
     @Secured({Role.USER, Role.ADMIN})
     public ResponseEntity approveToken(@Param("id") Long id) {
 
@@ -155,7 +155,7 @@ public class OauthController {
      * @return List of denied token id
      */
     @PostMapping(value = "/listblack")
-    @ValidAuthenticationType({AuthType.BASIC_AUTH, AuthType.BEARER_ACCESS})
+    @ValidAuthenticationType({AuthType.BASIC_AUTH, AuthType.ACCESS_TOKEN})
     @Secured({Role.RESOURCE, Role.ADMIN})
     public ResponseEntity<BlackListResponse> getBlackList(@Param("from") Long from) {
 

@@ -94,10 +94,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                     // save auth type
                     if (token instanceof AccessToken) {
-                        requestScopeBean.setAuthType(AuthType.BEARER_ACCESS);
+                        requestScopeBean.setAuthType(AuthType.ACCESS_TOKEN);
                     }
                     else if (token instanceof RefreshToken) {
-                        requestScopeBean.setAuthType(AuthType.BEARER_REFRESH);
+                        requestScopeBean.setAuthType(AuthType.REFRESH_TOKEN);
                     }
 
                     // save token
