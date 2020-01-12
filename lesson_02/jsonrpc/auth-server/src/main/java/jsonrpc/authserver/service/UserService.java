@@ -21,10 +21,13 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public Optional<User> findByName(String name) {
+    public User findByName(String name) {
 
-        return userRepository.findOneByName(name);
+        User result = null;
+        if (name != null) {
+            result = userRepository.findOneByName(name).orElse(null);
+        }
+        return result;
     }
-
 
 }

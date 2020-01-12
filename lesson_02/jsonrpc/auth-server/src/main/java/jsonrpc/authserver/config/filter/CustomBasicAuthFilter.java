@@ -1,6 +1,7 @@
 package jsonrpc.authserver.config.filter;
 
 import jsonrpc.authserver.config.RequestScopeBean;
+import jsonrpc.authserver.config.AuthType;
 import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +69,7 @@ public class CustomBasicAuthFilter extends OncePerRequestFilter {
                 UsernamePasswordAuthenticationToken authToken = getAuthToken(userName, password);
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                requestScopeBean.setAuthenticationType(RequestScopeBean.AuthenticationType.BASIC_AUTH);
+                requestScopeBean.setAuthType(AuthType.BASIC_AUTH);
 
                 SecurityContextHolder.getContext().setAuthentication(authToken);
 

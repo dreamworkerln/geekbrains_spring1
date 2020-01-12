@@ -1,9 +1,9 @@
 package jsonrpc.authserver.controller;
 
 import jsonrpc.authserver.config.RequestScopeBean;
+import jsonrpc.authserver.config.aspect.ValidAuthenticationType;
+import jsonrpc.authserver.config.AuthType;
 import jsonrpc.authserver.entities.Role;
-import jsonrpc.authserver.entities.token.Token;
-import jsonrpc.authserver.entities.token.AccessToken;
 import jsonrpc.authserver.entities.token.RefreshToken;
 import jsonrpc.authserver.service.BlacklistTokenService;
 import jsonrpc.authserver.service.TokenService;
@@ -18,7 +18,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,28 +30,35 @@ import java.lang.invoke.MethodHandles;
 
 @RestController
 @RequestMapping("/oauzz/token/")
-@CrossOrigin
+//@CrossOrigin
 public class OauthController {
 
     private final static Logger log = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
 
     private final TokenService tokenService;
-    private final BlacklistTokenService blacklistTokenService;
     private final RequestScopeBean requestScopeBean;
+    private final BlacklistTokenService blacklistTokenService;
 
-    public OauthController(TokenService tokenService, BlacklistTokenService blacklistTokenService, RequestScopeBean requestScopeBean) {
+
+
+    public OauthController(TokenService tokenService,
+        RequestScopeBean requestScopeBean, BlacklistTokenService blacklistTokenService) {
+
         this.tokenService = tokenService;
-        this.blacklistTokenService = blacklistTokenService;
         this.requestScopeBean = requestScopeBean;
+        this.blacklistTokenService = blacklistTokenService;
     }
 
 
 
 
     /**
-     * Obtain new access and refresh token by BasicAuth
+     * Obtain new access and refresh tokens
+     * <br> Allow Basic Authorization only
      */
     @PostMapping(value = "/get")
+    @ValidAuthenticationType(AuthType.BASIC_AUTH)
+    @Secured({Role.USER, Role.ADMIN})
     public ResponseEntity<OauthResponse> getToken() {
 
         OauthResponse result;
@@ -72,15 +78,17 @@ public class OauthController {
 
 
     /**
-     * Refresh tokens by Bearer refresh_token
+     * Refresh tokens by refresh_token
+     * <br> Allow Bearer refresh_token Authorization only
      */
     @PostMapping(value = "/refresh")
-    @Secured({Role.REFRESH})
+    @ValidAuthenticationType(AuthType.BEARER_REFRESH)
+    @Secured(Role.REFRESH)
     public ResponseEntity<OauthResponse> refreshToken() {
 
         OauthResponse result;
 
-        RefreshToken refreshToken = getTokenFromAuthentication(RefreshToken.class);
+        RefreshToken refreshToken = requestScopeBean.getRefreshToken();
 
         // пара нормальных токенов ACCESS + REFRESH выдается только для подтвержденного refresh_token
         // для неподтвержденного refresh_token будет выдан такой же урезанный refresh_token
@@ -94,15 +102,16 @@ public class OauthController {
 
     /**
      * Check if refresh_token is approved by confidential client
-     * <br>Bearer refresh_token Authorization only
+     * <br>Allow Bearer refresh_token Authorization only
      */
     @PostMapping(value = "/check_is_approved")
-    @Secured({Role.REFRESH})
+    @ValidAuthenticationType(AuthType.BEARER_REFRESH)
+    @Secured(Role.REFRESH)
     public ResponseEntity checkIsTokenApproved() {
 
         HttpStatus status;
 
-        RefreshToken refreshToken = getTokenFromAuthentication(RefreshToken.class);
+        RefreshToken refreshToken = requestScopeBean.getRefreshToken();
 
         status = refreshToken.isEnabled() ? HttpStatus.OK : HttpStatus.NO_CONTENT;
 
@@ -115,18 +124,11 @@ public class OauthController {
      * <br> Allow Basic and Bearer access_token Authorization
      */
     @PostMapping("/approve")
+    @ValidAuthenticationType({AuthType.BASIC_AUTH, AuthType.BEARER_ACCESS})
     @Secured({Role.USER, Role.ADMIN})
     public ResponseEntity approveToken(@Param("id") Long id) {
 
-        // check if user authenticated by access_token
-        // then make sure that token type is access_token_type
-        if (isBearerAuthentication()) {
-            getTokenFromAuthentication(AccessToken.class);
-        }
-
-        // ------------------------------------------------------------
-
-        // переходим к управлению refresh_token, который надо включить
+        // управляем refresh_token'ом, который надо включить
         RefreshToken refreshToken = tokenService.findRefreshToken(id);
 
         if (refreshToken == null) {
@@ -148,20 +150,16 @@ public class OauthController {
 
     /**
      * Return blacklisted access_tokens
+     * <br> Allow Basic and Bearer access_token Authorization
      * @param from from that index to last available (from is not token id)
      * @return List of denied token id
      */
     @PostMapping(value = "/listblack")
+    @ValidAuthenticationType({AuthType.BASIC_AUTH, AuthType.BEARER_ACCESS})
     @Secured({Role.RESOURCE, Role.ADMIN})
     public ResponseEntity<BlackListResponse> getBlackList(@Param("from") Long from) {
 
         BlackListResponse result = new BlackListResponse();
-
-        // check if user authenticated by access_token
-        // then make sure that token type is access_token_type
-        if (isBearerAuthentication()) {
-            getTokenFromAuthentication(AccessToken.class);
-        }
 
         result.setList(blacklistTokenService.getFrom(from));
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -169,21 +167,6 @@ public class OauthController {
 
 
     // ==============================================================================
-
-    private boolean isBearerAuthentication() {
-        return requestScopeBean.getAuthenticationType() == RequestScopeBean.AuthenticationType.BEARER;
-    }
-
-
-    private <T extends Token> T getTokenFromAuthentication(Class<T> tokenClass) {
-
-        Token token = requestScopeBean.getToken();
-        // check wrong token type (access instead refresh and vise versa)
-        if (token.getClass() != tokenClass) {
-            throw new AccessDeniedException("Unauthenticated");
-        }
-        return tokenClass.cast(token);
-    }
 
 
     // get current user name
@@ -194,6 +177,17 @@ public class OauthController {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
 
 
     // ---------------------------------------------------------------------------------------

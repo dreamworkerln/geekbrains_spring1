@@ -2,7 +2,10 @@ package jsonrpc.authserver.config.filter;
 
 import io.jsonwebtoken.Claims;
 import jsonrpc.authserver.config.RequestScopeBean;
+import jsonrpc.authserver.config.AuthType;
 import jsonrpc.authserver.entities.Role;
+import jsonrpc.authserver.entities.token.AccessToken;
+import jsonrpc.authserver.entities.token.RefreshToken;
 import jsonrpc.authserver.entities.token.Token;
 import jsonrpc.authserver.service.JwtTokenService;
 import jsonrpc.authserver.service.TokenService;
@@ -88,12 +91,16 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
                     UsernamePasswordAuthenticationToken authToken = getAuthToken(claims);
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    //TokenWebAuthenticationDetails details = new TokenWebAuthenticationDetails(request);
-                    //details.setToken(token);
-                    //authToken.setDetails(details);
+
+                    // save auth type
+                    if (token instanceof AccessToken) {
+                        requestScopeBean.setAuthType(AuthType.BEARER_ACCESS);
+                    }
+                    else if (token instanceof RefreshToken) {
+                        requestScopeBean.setAuthType(AuthType.BEARER_REFRESH);
+                    }
 
                     // save token
-                    requestScopeBean.setAuthenticationType(RequestScopeBean.AuthenticationType.BEARER);
                     requestScopeBean.setToken(token);
 
                     // After setting the Authentication in the context, we specify

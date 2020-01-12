@@ -37,10 +37,10 @@ public class TokenService {
 
     @Autowired
     public TokenService(JwtTokenService jwtTokenService,
-                        UserService userService,
-                        AccessTokenRepository accessTokenRepository,
-                        RefreshTokenRepository refreshTokenRepository,
-                        BlacklistTokenService blacklistTokenService) {
+        UserService userService,
+        AccessTokenRepository accessTokenRepository,
+        RefreshTokenRepository refreshTokenRepository,
+        BlacklistTokenService blacklistTokenService) {
 
         this.jwtTokenService = jwtTokenService;
         this.userService = userService;
@@ -69,11 +69,11 @@ public class TokenService {
         String refreshTokenString = null;
         //
         //
-
-
         // find user
-        User user = userService.findByName(userName).orElseThrow(
-                () -> new UsernameNotFoundException("User not exists: " + userName));
+        User user = userService.findByName(userName);
+        if(user == null) {
+            throw  new UsernameNotFoundException("User not exists: " + userName);
+        }
 
 
         // 1. Refresh Token -------------------------------------------------------------------
@@ -87,7 +87,7 @@ public class TokenService {
         Set<String> refreshRoles = new HashSet<>(Collections.singletonList(Role.REFRESH));
 
         refreshTokenString = jwtTokenService.createJWT(
-                TokenType.REFRESH, refreshToken.getId(), ISSUER, user.getName(), refreshRoles, ttl);
+            TokenType.REFRESH, refreshToken.getId(), ISSUER, user.getName(), refreshRoles, ttl);
 
         // 2. Access Token ---------------------------------------------------------------------
 
@@ -97,14 +97,14 @@ public class TokenService {
             expiredAt = Instant.now().plusSeconds(TokenType.ACCESS.getTtl());
             accessToken = new AccessToken(user, true, refreshToken, expiredAt);
             refreshToken.setAccessToken(accessToken);
-            
+
             accessTokenRepository.save(accessToken);
 
             Set<String> roles =
-                    user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+                user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
 
             accessTokenString = jwtTokenService.createJWT(
-                    TokenType.ACCESS, refreshToken.getId(), ISSUER, user.getName(), roles, TokenType.ACCESS.getTtl());
+                TokenType.ACCESS, accessToken.getId(), ISSUER, user.getName(), roles, TokenType.ACCESS.getTtl());
 
         }
 
@@ -120,6 +120,9 @@ public class TokenService {
         }
         return new OauthResponse(accessTokenString, refreshTokenString);
     }
+
+
+
 
 
     public AccessToken findAccessToken(Long id) {
@@ -164,11 +167,16 @@ public class TokenService {
             if (token instanceof AccessToken) {
                 accessTokenRepository.delete((AccessToken) token);
             } else if (token instanceof RefreshToken) {
+                // will also delete access_token
                 refreshTokenRepository.delete((RefreshToken) token);
             }
         } catch (Exception e) {
             log.error("", e);
         }
+    }
+
+    public void deleteByUser(User user) {
+        refreshTokenRepository.deleteByUser(user);
     }
 
 

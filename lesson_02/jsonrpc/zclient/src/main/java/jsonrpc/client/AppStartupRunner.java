@@ -4,6 +4,7 @@ import jsonrpc.client.configuration.ClientProperties;
 import jsonrpc.client.request.OrderRequest;
 import jsonrpc.client.request.ProductRequest;
 import jsonrpc.client.request.StorageRequest;
+import jsonrpc.client.request.admin.AdminRequest;
 import jsonrpc.client.request.base.MyToken;
 import jsonrpc.client.request.base.OauthRequest;
 import jsonrpc.protocol.dto.product.spec.ProductSpecDto;
@@ -37,19 +38,22 @@ public class AppStartupRunner implements ApplicationRunner {
     private final OrderRequest orderRequest;
     private final OauthRequest oauthRequest;
 
+    private final AdminRequest adminRequest;
+
 
     @Autowired
     public AppStartupRunner(ClientProperties clientProperties,
-                            ProductRequest productRequest,
-                            StorageRequest storageRequest,
-                            OrderRequest orderRequest,
-                            OauthRequest oauthRequest) {
+        ProductRequest productRequest,
+        StorageRequest storageRequest,
+        OrderRequest orderRequest,
+        OauthRequest oauthRequest, AdminRequest adminRequest) {
 
         this.clientProperties = clientProperties;
         this.productRequest = productRequest;
         this.storageRequest = storageRequest;
         this.orderRequest = orderRequest;
         this.oauthRequest = oauthRequest;
+        this.adminRequest = adminRequest;
     }
 
 
@@ -61,7 +65,7 @@ public class AppStartupRunner implements ApplicationRunner {
         // Обнесем склад
 
         try {
-            System.out.println("Обнесем склад с товаром id=1:\n");
+            System.out.println("Обнесем склад с товаром id=1 -----------------------------------------------------------\n");
             storageRequest.remove(2L, 99999);
             System.out.println("\n");
         }
@@ -121,13 +125,13 @@ public class AppStartupRunner implements ApplicationRunner {
         List<ProductDto> productDtoList;
 
 
-        System.out.println("Список товаров:\n");
+        System.out.println("Список товаров -----------------------------------------------------------------------------\n");
         productDtoList = productRequest.findAll(null);
         System.out.println(productDtoList);
         System.out.println("\n");
 
 
-        System.out.println("Список товаров с ценой от 0 до 50 категории [1,2], цена ASC:\n");
+        System.out.println("Список товаров с ценой от 0 до 50 категории [1,2], цена ASC --------------------------------\n");
         ProductSpecDto spec = new ProductSpecDto();
         spec.getCategoryList().add(1L);
         spec.getCategoryList().add(2L);
@@ -139,14 +143,14 @@ public class AppStartupRunner implements ApplicationRunner {
         System.out.println("\n");
 
 
-        System.out.println("Список товаров с ценой выше 30:\n");
+        System.out.println("Список товаров с ценой выше 30 -------------------------------------------------------------\n");
         spec = new ProductSpecDto();
         spec.setPriceMin(BigDecimal.valueOf(30));
         productDtoList = productRequest.findAll(spec);
         System.out.println(productDtoList);
         System.out.println("\n");
 
-        System.out.println("Список всех товаров, пакетами по 3 элемента\n");
+        System.out.println("Список всех товаров, пакетами по 3 элемента ------------------------------------------------\n");
         spec = new ProductSpecDto();
         spec.setPriceOrderBy(ProductSpecDto.OrderBy.ASC);
         spec.setLimit(3);
@@ -168,25 +172,25 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
 
-        System.out.println("Запасы на складе:\n");
+        System.out.println("Запасы на складе ---------------------------------------------------------------------------\n");
         List<ProductItemDto> productItemDtoList = storageRequest.getAll();
         System.out.println(productItemDtoList);
         System.out.println("\n");
 
 
-        System.out.println("Завезем на склад 500 единиц товара с id=2:\n");
+        System.out.println("Завезем на склад 500 единиц товара с id=2 --------------------------------------------------\n");
         storageRequest.put(2L, 500);
         System.out.println("\n");
 
 
-        System.out.println("Запасы товара id=2 на складе:\n");
+        System.out.println("Запасы товара id=2 на складе ---------------------------------------------------------------\n");
         ProductItemDto productItemDto = storageRequest.getById(2L);
         System.out.println(productItemDto);
         System.out.println("\n");
 
 
         try {
-            System.out.println("Попытаемся забрать со склада 9999 единиц товара с id=2:\n");
+            System.out.println("Попытаемся забрать со склада 9999 единиц товара с id=2 ---------------------------------\n");
             storageRequest.remove(2L, 9999);
         } catch (HttpStatusCodeException e) {
             log.error("HTTP " + e.getStatusCode().toString() +"\n" +
@@ -195,7 +199,7 @@ public class AppStartupRunner implements ApplicationRunner {
 
         try {
 
-            System.out.println("Создадим новый продукт и затем изменим его:\n");
+            System.out.println("Создадим новый продукт и затем изменим его ---------------------------------------------\n");
             ProductDto productDto = new ProductDto();
             productDto.setName("Валенки");
             productDto.setCategoryId(1L);
@@ -216,7 +220,7 @@ public class AppStartupRunner implements ApplicationRunner {
 
         try {
 
-            System.out.println("Сделаем заказ:\n");
+            System.out.println("Сделаем заказ --------------------------------------------------------------------------\n");
             OrderDto orderDto = new OrderDto();
             orderDto.addItem(new OrderItemDto(1L, 1));
             orderDto.addItem(new OrderItemDto(2L, 2));
@@ -238,7 +242,7 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
 
-            System.out.println("Изменим заказ:\n");
+            System.out.println("Изменим заказ --------------------------------------------------------------------------\n");
             // Не засоряем канал лишними данными
             // (о времени, сервер все равно нам не доверяет и использует свои данные)
             orderDto.setCreated(null);
@@ -260,7 +264,7 @@ public class AppStartupRunner implements ApplicationRunner {
             System.out.println(orderDto);
             System.out.println("\n");
 
-            System.out.println("Продолжаем делать новые заказы, пока товар не закончится:\n");
+            System.out.println("Продолжаем делать новые заказы, пока товар не закончится -------------------------------\n");
 
             while(true) {
                 orderDto.setId(null);
@@ -274,12 +278,32 @@ public class AppStartupRunner implements ApplicationRunner {
                       new String(e.getResponseBodyAsByteArray(),StandardCharsets.UTF_8.name()));
         }
 
-
-        log.info("Refresh token to get banned previous one -------------");
+        System.out.println("\n");
+        System.out.println("Refresh token to get banned previous one ---------------------------------------------------\n");
 
         oauthRequest.refreshToken();
 
+        System.out.println("\n");
         log.info("Blocked access_token on auth_server: {}", oauthRequest.getBlackList(0L));
+
+
+        System.out.println("\n");
+        System.out.println("Revoke all 'admin' tokens (also will kick myself) -----------------------------------------\n");
+
+        adminRequest.revokeToken("admin");
+
+        System.out.println("\n");
+        System.out.println("Now required re-authentication or will get 403 on Bearer Authorization");
+
+        clientProperties.getCredentials().setAccessToken(MyToken.EMPTY);
+        clientProperties.getCredentials().setRefreshToken(MyToken.EMPTY);
+
+        System.out.println("\n");
+        System.out.println("Revoke all 'user' tokens -------------------------------------------------------------------\n");
+
+        adminRequest.revokeToken("user");
+
+
     }
 
 }

@@ -190,4 +190,37 @@ public class OauthRequest {
         return response.getBody();
     }
 
+
+
+    public void authorize() {
+        ClientProperties.Credentials clientCredentials = clientProperties.getCredentials();
+
+        // Oauth2.0 authorization -------------------------------------------
+
+        // если устарел access_token или refresh_token
+        if (clientCredentials.getAccessToken().isRotten() ||
+            clientCredentials.getRefreshToken().isRotten()) {
+
+
+            // Если refresh_token не протух
+            if (!clientCredentials.getRefreshToken().isRotten()) {
+                // refresh refresh_token
+                // получим заодно новый access_token
+                refreshToken();
+            } else {
+
+                // get token (really get only reduced functionality 1 refresh token - waiting to token have been approved)
+                obtainToken();
+
+                // simulate approving this refresh token from "confidential client (maybe from mobile app)"
+                approve(clientCredentials.getRefreshToken().getId());
+
+                // then get fully functional access+refresh token pair with normal access level
+                refreshToken();
+            }
+
+        }
+
+    }
+
 }

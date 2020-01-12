@@ -2,6 +2,7 @@ package jsonrpc.authserver.config;
 
 import jsonrpc.authserver.config.filter.CustomBasicAuthFilter;
 import jsonrpc.authserver.config.filter.JwtRequestFilter;
+import jsonrpc.authserver.entities.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +65,6 @@ public class MultipleWebSecurityConfig {
 
 
 
-    // Не используется сейчас
     /**
      * Administration
      * Authorisation: Basic + Bearer
@@ -85,7 +85,7 @@ public class MultipleWebSecurityConfig {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
 
-            http.antMatcher("/admin/**").authorizeRequests().anyRequest().authenticated()
+            http.antMatcher("/admin/**").authorizeRequests().anyRequest().hasAuthority(Role.ADMIN)
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable()
                 .addFilterAfter(jwtRequestFilter, LogoutFilter.class)
