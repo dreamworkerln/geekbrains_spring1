@@ -1,7 +1,7 @@
-package jsonrpc.authserver.config;
+package jsonrpc.authserver.config.filter;
 
 import io.jsonwebtoken.Claims;
-import jsonrpc.authserver.config.misc.RequestScopeBean;
+import jsonrpc.authserver.config.RequestScopeBean;
 import jsonrpc.authserver.entities.Role;
 import jsonrpc.authserver.entities.token.Token;
 import jsonrpc.authserver.service.JwtTokenService;
@@ -36,9 +36,7 @@ import static jsonrpc.utils.Utils.rolesToGrantedAuthority;
 
 
 
-//@Component
-//RegistrationBean
-//@WebFilter(urlPatterns = "/hellow")
+
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
@@ -50,7 +48,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private final RequestScopeBean requestScopeBean;
 
     @Autowired
-    public JwtRequestFilter(@Qualifier("myUserDetailsService") UserDetailsService userDetailsService, JwtTokenService jwtTokenService, TokenService tokenService, RequestScopeBean requestScopeBean) {
+    public JwtRequestFilter(@Qualifier("myUserDetailsService")UserDetailsService userDetailsService,
+        JwtTokenService jwtTokenService, TokenService tokenService, RequestScopeBean requestScopeBean) {
+
         this.userDetailsService = userDetailsService;
         this.jwtTokenService = jwtTokenService;
         this.tokenService = tokenService;
@@ -67,13 +67,14 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
 
         // JWT Token is in the form "Bearer token". Remove Bearer word and get only the Token
-        if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
-
-            String jwtToken = requestTokenHeader.substring(7);
+        if (requestTokenHeader != null &&
+            requestTokenHeader.startsWith("Bearer ")) {
 
             try {
 
-                // decode & !validate! token
+                String jwtToken = requestTokenHeader.substring(7);
+
+                // decode & validate token
                 Claims claims = jwtTokenService.decodeJWT(jwtToken);
                 Token token = null;
 
@@ -92,6 +93,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                     //authToken.setDetails(details);
 
                     // save token
+                    requestScopeBean.setAuthenticationType(RequestScopeBean.AuthenticationType.BEARER);
                     requestScopeBean.setToken(token);
 
                     // After setting the Authentication in the context, we specify
@@ -112,25 +114,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     // ------------------------------------------------------------
 
 
-//    /**
-//     * Token is known to server(not deleted/blacklisted)
-//     */
-//    private boolean tokenIsPresent(Claims claims) {
-//
-//        boolean result = false;
-//
-//        TokenType type = TokenType.parseName((String) claims.get("type"));
-//
-//        Long tokenId = Long.valueOf(claims.getId());
-//
-//        if (type == TokenType.ACCESS) {
-//            result = tokenService.findAccessToken(tokenId) != null;
-//        } else if (type == TokenType.REFRESH) {
-//            result = tokenService.findRefreshToken(tokenId) != null;
-//        }
-//
-//        return result;
-//    }
+
 
 
     private boolean tokenIsActive(Claims claims) {
@@ -190,6 +174,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 }
 
 
+
+//@Component
+//RegistrationBean
+//@WebFilter(urlPatterns = "/hellow")
+
+
 // КАК СОХРАНЯТЬ ДАННЫЕ В СЕССИЮ ------------------------------------------------------------------------------
 
 //        Сохраняем claims в сессии
@@ -202,6 +192,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //    Claims claims = (Claims)session.getAttribute("claims");
 // -------------------------------------------------------------------------------------------------------------
 
+
+// КАК ПОЛУЧИТЬ ТЕКУЩИЙ HttpServletRequest ---------------------------------------------------------------------
+
+//    HttpServletRequest curRequest =
+//            ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+//                    .getRequest();
+// -------------------------------------------------------------------------------------------------------------
 
 
 
@@ -242,6 +239,28 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 //        }
 //        else if(type == TokenType.REFRESH) {
 //            result = tokenService.findRefreshToken(tokenId);
+//        }
+//
+//        return result;
+//    }
+
+
+
+//    /**
+//     * Token is known to server(not deleted/blacklisted)
+//     */
+//    private boolean tokenIsPresent(Claims claims) {
+//
+//        boolean result = false;
+//
+//        TokenType type = TokenType.parseName((String) claims.get("type"));
+//
+//        Long tokenId = Long.valueOf(claims.getId());
+//
+//        if (type == TokenType.ACCESS) {
+//            result = tokenService.findAccessToken(tokenId) != null;
+//        } else if (type == TokenType.REFRESH) {
+//            result = tokenService.findRefreshToken(tokenId) != null;
 //        }
 //
 //        return result;

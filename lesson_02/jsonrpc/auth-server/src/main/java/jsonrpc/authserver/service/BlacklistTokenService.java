@@ -33,22 +33,13 @@ public class BlacklistTokenService {
         blacklistedTokenRepository.save(new BlacklistedToken(token.getId(), token.getExpiredAt()));
     }
 
-
-//    /**
-//     * Cleanup blacklist from rotten token
-//     */
-//    public void vacuum() {
-//
-//        Long beforeS = Instant.now().getEpochSecond() - TokenType.ACCESS.getTtl();
-//        Instant before = Instant.ofEpochSecond(beforeS);
-//
-//        blacklistedTokenRepository.vacuum(before);
-//    }
-
     /**
      * Get all blacklisted tokens from position to now
      */
     public Map<Long,Long> getFrom(Long from) {
+       
+       //ToDo: replace by projection ?
+
        return blacklistedTokenRepository.findByIdGreaterThanEqual(from).stream()
                .collect(Collectors.toMap(BlacklistedToken::getId, BlacklistedToken::getTokenId));
     }

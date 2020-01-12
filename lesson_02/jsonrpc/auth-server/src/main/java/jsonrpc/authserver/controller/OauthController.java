@@ -1,6 +1,6 @@
 package jsonrpc.authserver.controller;
 
-import jsonrpc.authserver.config.misc.RequestScopeBean;
+import jsonrpc.authserver.config.RequestScopeBean;
 import jsonrpc.authserver.entities.Role;
 import jsonrpc.authserver.entities.token.Token;
 import jsonrpc.authserver.entities.token.AccessToken;
@@ -16,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -64,10 +62,8 @@ public class OauthController {
         // (через другое, доверенное приложение-клиент - мобильное приложение),
         // то клиент сможет обновить токен и получить пару нормальных токенов ACCESS + REFRESH
         //
-        // Клиенту перед upgrade(refresh) урезанного refresh токена стоит проверить,
-        // что его refresh_token был подтвержден.
-        // Иначе клиент получит новый урезанный refresh_token,
-        // который снова надо будет заново подтверждать.
+        // Клиенту перед upgrade(refresh) урезанного refresh токена стоит проверить, что он был подтвержден.
+        // Иначе клиент получит новый урезанный refresh_token, который надо будет заново подтверждать.
 
         result = tokenService.issueTokens(getUsername(), null);
 
@@ -86,14 +82,10 @@ public class OauthController {
 
         RefreshToken refreshToken = getTokenFromAuthentication(RefreshToken.class);
 
-        // Тот, кто зашел по паролю получает урезанный по времени жизни REFRESH токен.
-        // Если пользователь подтвердит этого клиента
-        // (через другое, доверенное приложение-клиент - мобильное приложение),
-        // то клиент сможет обновить токен и получить пару нормальных токенов ACCESS + REFRESH
+        // пара нормальных токенов ACCESS + REFRESH выдается только для подтвержденного refresh_token
+        // для неподтвержденного refresh_token будет выдан такой же урезанный refresh_token
         //
-        // Клиенту перед upgrade(refresh) урезанного refresh токена стоит проверить, что он был подтвержден.
-        // Иначе клиент получит новый урезанный refresh_token, который надо будет заново подтверждать.
-
+        // refresh_token is approved == (refresh_token.isEnabled == true)
         result = tokenService.issueTokens(getUsername(), refreshToken);
 
         return ResponseEntity.ok(result);
@@ -120,7 +112,7 @@ public class OauthController {
 
     /**
      * Approve refresh_token
-     * <br> Allow Basic and Bearer access_token Authorisation
+     * <br> Allow Basic and Bearer access_token Authorization
      */
     @PostMapping("/approve")
     @Secured({Role.USER, Role.ADMIN})
@@ -131,6 +123,8 @@ public class OauthController {
         if (isBearerAuthentication()) {
             getTokenFromAuthentication(AccessToken.class);
         }
+
+        // ------------------------------------------------------------
 
         // переходим к управлению refresh_token, который надо включить
         RefreshToken refreshToken = tokenService.findRefreshToken(id);
@@ -144,6 +138,7 @@ public class OauthController {
             throw new AccessDeniedException("It's not you token");
         }
 
+        // Set token.enabled = true
         tokenService.approveToken(refreshToken);
 
         return new ResponseEntity(null, HttpStatus.OK);
@@ -153,7 +148,7 @@ public class OauthController {
 
     /**
      * Return blacklisted access_tokens
-     * @param from from that index to last available (is not token id)
+     * @param from from that index to last available (from is not token id)
      * @return List of denied token id
      */
     @PostMapping(value = "/listblack")
@@ -176,7 +171,7 @@ public class OauthController {
     // ==============================================================================
 
     private boolean isBearerAuthentication() {
-        return requestScopeBean.getToken() != null;
+        return requestScopeBean.getAuthenticationType() == RequestScopeBean.AuthenticationType.BEARER;
     }
 
 
@@ -189,6 +184,7 @@ public class OauthController {
         }
         return tokenClass.cast(token);
     }
+
 
     // get current user name
     private static String getUsername() {

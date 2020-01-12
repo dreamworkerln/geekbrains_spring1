@@ -8,9 +8,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long> {
 
-    @Modifying
-    @Query("UPDATE RefreshToken t set t.enabled = true WHERE t.id = :id")
-    void approveById(@Param("id")Long id);
+//    @Modifying
+//    @Query("UPDATE RefreshToken t set t.enabled = true WHERE t.id = :id")
+//    void approveById(@Param("id")Long id);
 
     @Modifying
     @Query("DELETE FROM RefreshToken t WHERE t.expiredAt < CURRENT_TIMESTAMP")

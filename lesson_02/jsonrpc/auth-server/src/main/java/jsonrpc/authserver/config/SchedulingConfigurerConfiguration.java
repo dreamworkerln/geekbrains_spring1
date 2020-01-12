@@ -2,8 +2,11 @@ package jsonrpc.authserver.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
+import org.springframework.scheduling.concurrent.CustomizableThreadFactory;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
+
+import java.util.concurrent.ThreadFactory;
 
 @Configuration
 public class SchedulingConfigurerConfiguration implements SchedulingConfigurer {
@@ -12,7 +15,13 @@ public class SchedulingConfigurerConfiguration implements SchedulingConfigurer {
     // https://stackoverflow.com/questions/29796651/what-is-the-default-scheduler-pool-size-in-spring-boot
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
+
+        final CustomizableThreadFactory threadFactory = new CustomizableThreadFactory();
+        threadFactory.setDaemon(true);
+        threadFactory.setThreadNamePrefix("SchedulingPool-");
+
         ThreadPoolTaskScheduler taskScheduler = new ThreadPoolTaskScheduler();
+        taskScheduler.setThreadFactory(threadFactory);
         taskScheduler.setPoolSize(10);
         taskScheduler.initialize();
         taskRegistrar.setTaskScheduler(taskScheduler);

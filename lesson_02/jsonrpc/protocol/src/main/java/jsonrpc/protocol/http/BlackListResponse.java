@@ -5,6 +5,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class BlackListResponse {
+
     private Map<Long,Long> list = new TreeMap<>();
 
     public Map<Long, Long> getList() {

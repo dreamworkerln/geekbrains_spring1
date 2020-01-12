@@ -23,8 +23,8 @@ public class Scheduler {
     }
 
 
-    // каждый час пылесосить таблицы - убирать протухшие токены
-    @Scheduled(cron = "* * */1 * * *")
+    // every hour -  пылесосить таблицы - убирать протухшие токены
+    @Scheduled(cron = "0 0 * * * *")
     private void vacuumTables() {
 
         log.info("Vacuuming tables ...");

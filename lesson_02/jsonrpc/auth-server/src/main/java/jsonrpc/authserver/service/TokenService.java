@@ -144,11 +144,16 @@ public class TokenService {
     }
 
 
+    /**
+     * Set token.enabled=true
+     */
     public void approveToken(RefreshToken token) {
 
-        assert token != null;
-        assert token.getId() != null;
-        refreshTokenRepository.approveById(token.getId());
+        //assert token != null;
+        //assert token.getId() != null;
+
+        token.setEnabled(true);
+        refreshTokenRepository.save(token);
     }
 
 
