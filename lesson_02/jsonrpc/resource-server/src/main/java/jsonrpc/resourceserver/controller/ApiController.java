@@ -101,16 +101,15 @@ public class ApiController {
         // remote-alias - алиас ssh-соединения, сконфигурировано в ~/.ssh/config
         //
         // Будет держать туннель(проброс портов) до посинения
-        // ssh -fNT -L 8084:localhost:8084 -L 5005:localhost:5005 -L 9001:localhost:9001 remote-alias
+        // ssh -fNT -L 5005:localhost:5005 -L 5006:localhost:5006 remote-alias
         //
         //
         // Через 100с тунель автоматически закроется, если не был открыт сокет
         // (если соединение было установлено - будет ждать когда сокет закроется)
-        // ssh -f -L 8084:localhost:8084 -L 5005:localhost:5005 -L 9001:localhost:9001 remote-alias sleep 100;
+        // ssh -f -L 5005:localhost:5005 -L 5006:localhost:5006 remote-alias sleep 100;
         //
         //
-        // 8084 порт можно не пробрасывать (как и 9001)
-        // по этим портам, можно например, ходить клиентом(браузер, curl) к приложению, если оно слушает этот порт
+        // по дополнительным портам, можно, например, ходить клиентом(браузер, curl) к приложению, если оно слушает этот порт
         //
         // -f run in background
         // -N no command execution
