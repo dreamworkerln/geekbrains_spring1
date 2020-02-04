@@ -12,17 +12,23 @@ import jsonrpc.protocol.dto.order.OrderDto;
 import jsonrpc.protocol.dto.order.OrderItemDto;
 import jsonrpc.protocol.dto.product.ProductDto;
 import jsonrpc.protocol.dto.product.ProductItemDto;
+import jsonrpc.utils.RestTemplateFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestTemplate;
 
 import java.lang.invoke.MethodHandles;
 import java.math.BigDecimal;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -59,8 +65,22 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
 
+
+
+
+
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
+
+
+
+
+
+
+
+        someTest();
+
 
         // Обнесем склад
 
@@ -306,4 +326,47 @@ public class AppStartupRunner implements ApplicationRunner {
 
     }
 
+
+
+
+
+
+    private void someTest() {
+
+        RestTemplate restTemplate = RestTemplateFactory.getRestTemplate(4000);
+
+        String url = "https://httpstat.us/301";
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("user-agent","gorodok 2.0");
+        //headers.setContentType(MediaType.APPLICATION_JSON);
+
+        RequestEntity requestEntity = RequestEntity
+                .get(URI.create(url))
+                .headers(headers)
+                .build();
+
+        log.info("REQUEST\n" + requestEntity);
+
+        ResponseEntity<String> response = restTemplate.exchange(requestEntity, String.class);
+
+        System.out.println("status: " + response.getStatusCode());
+        System.out.println("body: " + response.getBody());
+    }
+
+
+
+
+
+
+
+
+
+
+
 }
+
+
+
+
+
+

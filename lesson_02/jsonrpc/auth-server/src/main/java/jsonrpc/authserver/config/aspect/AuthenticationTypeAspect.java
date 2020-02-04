@@ -27,7 +27,7 @@ public class AuthenticationTypeAspect {
     }
 
     @Before("@annotation(jsonrpc.authserver.config.aspect.ValidAuthenticationType)")
-    public void logExecutionTime(JoinPoint joinPoint) {
+    public void validateAuthenticationType(JoinPoint joinPoint) {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
@@ -42,6 +42,7 @@ public class AuthenticationTypeAspect {
             throw new AccessDeniedException("Unauthenticated");
         }
     }
+
 }
 
 

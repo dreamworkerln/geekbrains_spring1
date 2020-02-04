@@ -87,6 +87,17 @@ public class ApiController {
         // java -agentlib:jdwp=transport=dt_socket,resourceserver=y,suspend=n,address=5005 -jar jsonrpc-resourceserver-0.1.jar
         // may set suspend=y to suspend application execution until debugger has been attached
         //
+        // REMOTE JMX MONITORING AND DEBUG TCP v4
+        // -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+        // -Dcom.sun.management.jmxremote.port=5006
+        // -Dcom.sun.management.jmxremote.rmi.port=5006
+        // -Dcom.sun.management.jmxremote.local.only=true
+        // -Dcom.sun.management.jmxremote.host=localhost
+        // -Dcom.sun.management.jmxremote.authenticate=false
+        // -Dcom.sun.management.jmxremote.ssl=false
+        // -Dcom.sun.management.jmxremote.authenticate=false
+        // -Djava.rmi.server.hostname=127.0.0.1
+        //
         // remote-alias - алиас ssh-соединения, сконфигурировано в ~/.ssh/config
         //
         // Будет держать туннель(проброс портов) до посинения
@@ -109,6 +120,7 @@ public class ApiController {
         Long id = null;
 
         // http response
+
         HttpResponse httpResponse;
 
         log.info("POST " + API_PATH + ": " + request);

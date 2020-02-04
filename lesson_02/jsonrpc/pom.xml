@@ -92,8 +92,8 @@
             </exclusions>
         </dependency>
                                                                                                             <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-devtools</artifactId>-->
+        <!--<groupId>org.springframework.boot</groupId>-->
+        <!--<artifactId>spring-boot-devtools</artifactId>-->
         <!--</dependency>-->
         <!--add spring boot tests support, fix android-json class duplicate -->
         <dependency>

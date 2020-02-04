@@ -1,10 +1,16 @@
 package jsonrpc.utils;
 
+import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
+import org.apache.http.ProtocolException;
+import org.apache.http.client.RedirectStrategy;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultRedirectStrategy;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.protocol.HttpContext;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
@@ -48,6 +54,9 @@ public class RestTemplateFactory {
         return  getRestTemplateInternal(checkCert, throwOnError, timeout);
     }
 
+
+    
+
     private static RestTemplate getRestTemplateInternal(boolean checkCert, boolean throwOnError, int timeout) {
 
         HttpComponentsClientHttpRequestFactory requestFactory;
@@ -74,9 +83,41 @@ public class RestTemplateFactory {
 
 
                 SSLConnectionSocketFactory csf = new SSLConnectionSocketFactory(sslContext);
+
+
+                RedirectStrategy redirectStrategy = new DefaultRedirectStrategy() {
+                    @Override
+                    public boolean isRedirected(HttpRequest request, HttpResponse response,
+                                                HttpContext context) throws ProtocolException {
+
+                        boolean isRedirected = false;
+
+                        System.out.println(response);
+
+                        isRedirected = super.isRedirected(request, response, context);
+
+                        // If redirect intercept intermediate response.
+                        if (isRedirected) {
+                            //int statusCode  = response.getStatusLine().getStatusCode();
+                            String redirectURL = response.getFirstHeader("Location").getValue();
+                            System.out.println("redirectURL: " + redirectURL);
+                        }
+
+                        return isRedirected;
+                    }
+                };
+
+
+
+
+
+
+
+                
                 CloseableHttpClient httpClient = HttpClients.custom()
                         .setDefaultRequestConfig(requestConfig)
                         .setSSLSocketFactory(csf)
+                        .setRedirectStrategy(redirectStrategy)
                         .build();
 
                 requestFactory =
