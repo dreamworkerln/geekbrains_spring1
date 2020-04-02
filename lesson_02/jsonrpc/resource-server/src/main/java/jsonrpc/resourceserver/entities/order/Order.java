@@ -18,7 +18,7 @@ import java.util.List;
 public class Order extends AbstractEntity {
 
 
-    // orphanRemoval - чтоб осиротевшие заказы сами удалились. Хибер крут!
+    // orphanRemoval - чтоб осиротевшие OrderItem сами удалились.
     @NotNull
     @OneToMany(mappedBy= "order", orphanRemoval = true, cascade = CascadeType.ALL)
     @OrderBy("id ASC")

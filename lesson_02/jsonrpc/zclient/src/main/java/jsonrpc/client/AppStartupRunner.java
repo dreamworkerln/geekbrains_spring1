@@ -79,7 +79,7 @@ public class AppStartupRunner implements ApplicationRunner {
 
 
 
-        someTest();
+        //someTest();
 
 
         // Обнесем склад

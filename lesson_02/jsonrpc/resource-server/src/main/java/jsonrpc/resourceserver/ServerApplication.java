@@ -15,7 +15,7 @@ import java.lang.invoke.MethodHandles;
 import java.util.Locale;
 
 @SpringBootApplication
-// делаем нашу реализацию репо-интерфейса базовым для Spring Data JPA,
+// делаем нашу реализацию репо-интерфейса  CustomRepository базовым для Spring Data JPA,
 // Spring будет генерить для него методы доступа(Find.One.By.Parent.Address и т.д.)
 // См мануал по @NoRepositoryBean
 // (providing an extended base interface for all repositories
@@ -35,6 +35,7 @@ import java.util.Locale;
 // через сущность до полностью подгруженных ее детей не достучишься.
 // Зато если после save() сделать refresh(), то пойдет запрос к базе и все данные детей подтянутся
 // и можно будет нормально бродить по полноценному графу объектов.
+
 @EnableJpaRepositories(repositoryBaseClass = CustomRepositoryImpl.class)
 @EnableScheduling
 public class ServerApplication {
