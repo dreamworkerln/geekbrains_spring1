@@ -84,11 +84,11 @@ public class ApiController {
         // REMOTE DEBUG
         // mvn -DskipTests package (will obtain .jar)
         //
-        // java -agentlib:jdwp=transport=dt_socket,resourceserver=y,suspend=n,address=5005 -jar jsonrpc-resourceserver-0.1.jar
+        // java -agentlib:jdwp=transport=dt_socket,resourceserver=y,suspend=n,address=localhost:5005 -jar jsonrpc-resourceserver-0.1.jar
         // may set suspend=y to suspend application execution until debugger has been attached
         //
         // REMOTE JMX MONITORING AND DEBUG TCP v4
-        // -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+        // -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=localhost:5005
         // -Dcom.sun.management.jmxremote.port=5006
         // -Dcom.sun.management.jmxremote.rmi.port=5006
         // -Dcom.sun.management.jmxremote.local.only=true
@@ -96,7 +96,7 @@ public class ApiController {
         // -Dcom.sun.management.jmxremote.authenticate=false
         // -Dcom.sun.management.jmxremote.ssl=false
         // -Dcom.sun.management.jmxremote.authenticate=false
-        // -Djava.rmi.server.hostname=127.0.0.1
+        // -Djava.rmi.server.hostname=localhost
         //
         // remote-alias - алиас ssh-соединения, сконфигурировано в ~/.ssh/config
         //
